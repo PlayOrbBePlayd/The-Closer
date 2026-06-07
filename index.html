@@ -2166,12 +2166,16 @@ function resetProgress(){
    hardware, laundry, theo, barista2, shopkeep2, resident2, sister3, contractor3,
    neighbor3, frontdesk4, fleet4, owner4. */
 const SCENES = {
-  // Demo placeholder so you can see the full scene swap right away.
-  // Replace it with your image, for example:  maria: "images/maria.jpg",
-  maria: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iMTIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMWIyNzQyIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMGIxMDIwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PHJlY3QgeD0iMzQiIHk9IjM0IiB3aWR0aD0iODMyIiBoZWlnaHQ9IjExMzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmY2I0NyIgc3Ryb2tlLXdpZHRoPSI2IiByeD0iMjAiLz48dGV4dCB4PSI0NTAiIHk9IjU0MCIgZmlsbD0iI2ZmZTA4YSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RlVMTCBTQ0VORTwvdGV4dD48dGV4dCB4PSI0NTAiIHk9IjYwMiIgZmlsbD0iI2ZmZTA4YSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SU1BR0UgR09FUyBIRVJFPC90ZXh0Pjx0ZXh0IHg9IjQ1MCIgeT0iNjg0IiBmaWxsPSIjOWZiMGQ0IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5kcm9wIHlvdXIgaW1hZ2UgYXQ8L3RleHQ+PHRleHQgeD0iNDUwIiB5PSI3MjYiIGZpbGw9IiMzNGUwYzQiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmltYWdlcy9tYXJpYS5qcGc8L3RleHQ+PC9zdmc+Cg==",
-  // marcus: "images/marcus.jpg",
-  // diane: "images/diane.jpg",
-  // earl: "images/earl.jpg",
+  // Level 1 scenes are live. Put these files in an images folder next to index.html.
+  maria:    "images/maria.jpg",
+  cafe:     "images/cafe.jpg",
+  hardware: "images/hardware.jpg",
+  laundry:  "images/laundry.jpg",
+  // Add later, same pattern:
+  // Level 2: marcus, barista2, shopkeep2, resident2
+  // Level 3: diane, sister3, contractor3, neighbor3
+  // Level 4: earl, frontdesk4, fleet4, owner4
+  // Sales University: university (ask me to wire the lesson screen when you have the image)
 };
 function setConversationScene(id){
   const img = el("convScene"), scrim = el("convScrim");
