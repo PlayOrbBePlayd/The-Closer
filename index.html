@@ -64,16 +64,24 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
 .titleWrap, .brief, #dialogue, .modal, .done, .lessonCard, #pitch, .introCard{ animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.1) !important; }
 
 /* full scene image (optional, shown over the pixel scene during conversations) */
-#convScene{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  z-index:11; pointer-events:none; background:#0b1020;
+#convStage{
+  position:absolute; inset:0; z-index:11; pointer-events:none; background:#0b1020; overflow:hidden;
 }
+#convSceneBg{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;
+  transform:scale(1.12); filter:blur(26px) brightness(.5);
+  opacity:0; transition:opacity .35s ease;
+}
+#convScene{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2;
+  pointer-events:none; opacity:0; transition:opacity .35s ease;
+}
+@media(min-width:900px){ #convScene{ object-fit:contain; } }
 #convScrim{
-  position:absolute; inset:0; z-index:12; pointer-events:none;
+  position:absolute; inset:0; z-index:3; pointer-events:none;
   background:linear-gradient(180deg, rgba(7,11,22,0) 38%, rgba(7,11,22,.35) 68%, rgba(7,11,22,.85) 100%);
 }
-#convScene.show{ animation:sceneFade .35s ease both; }
-@keyframes sceneFade{ from{ opacity:0; transform:scale(1.03); } to{ opacity:1; transform:scale(1); } }
+#convSceneBg.show, #convScene.show{ opacity:1; }
 
 /* title */
 .titleWrap{text-align:center; max-width:540px; animation:rise .5s ease both;}
@@ -293,8 +301,11 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
 <div id="game">
   <canvas id="view"></canvas>
   <div id="fx"></div>
-  <img id="convScene" class="hidden" alt="">
-  <div id="convScrim" class="hidden"></div>
+  <div id="convStage" class="hidden">
+    <img id="convSceneBg" alt="">
+    <img id="convScene" alt="">
+    <div id="convScrim"></div>
+  </div>
 
   <!-- HUD -->
   <div id="hud" class="hidden">
@@ -2178,20 +2189,27 @@ const SCENES = {
   // Sales University: university (ask me to wire the lesson screen when you have the image)
 };
 function setConversationScene(id){
-  const img = el("convScene"), scrim = el("convScrim");
-  if(!img) return;
+  const stage = el("convStage"), bg = el("convSceneBg"), img = el("convScene");
+  if(!stage || !img) return;
   const src = id && SCENES[id];
-  if(!src){ hideConversationScene(); img.removeAttribute("src"); return; }
+  if(!src){ hideConversationScene(); return; }
+  stage.classList.remove("hidden");
   img.onerror = () => hideConversationScene();
-  img.onload = () => { img.classList.remove("hidden"); if(scrim) scrim.classList.remove("hidden"); void img.offsetWidth; img.classList.add("show"); };
-  if(img.getAttribute("src") !== src){ img.classList.remove("show"); img.src = src; }
-  else { img.classList.remove("hidden"); if(scrim) scrim.classList.remove("hidden"); }
+  img.onload = () => { img.classList.add("show"); if(bg) bg.classList.add("show"); };
+  if(img.getAttribute("src") !== src){
+    img.classList.remove("show"); img.src = src;
+    if(bg){ bg.classList.remove("show"); bg.src = src; }
+  } else {
+    img.classList.add("show"); if(bg) bg.classList.add("show");
+  }
 }
 function hideConversationScene(){
-  const img = el("convScene"), scrim = el("convScrim");
-  if(img){ img.classList.add("hidden"); img.classList.remove("show"); }
-  if(scrim) scrim.classList.add("hidden");
+  const stage = el("convStage"), bg = el("convSceneBg"), img = el("convScene");
+  if(stage) stage.classList.add("hidden");
+  if(img) img.classList.remove("show");
+  if(bg) bg.classList.remove("show");
 }
+(function preloadScenes(){ try{ for(const k in SCENES){ const v=SCENES[k]; if(v && v.slice(0,5)!=="data:"){ const im=new Image(); im.src=v; } } }catch(e){} })();
 
 /* dialogue */
 function openTalk(talk){
