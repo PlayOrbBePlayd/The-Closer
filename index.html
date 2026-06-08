@@ -186,6 +186,7 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
 .doneActions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
 
 /* lesson */
+#lesson{ background:transparent; backdrop-filter:none; }
 .lessonCard{
   width:min(640px,100%); max-height:88dvh; overflow:auto; display:flex; flex-direction:column;
   background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(255,255,255,.12);
@@ -2090,7 +2091,7 @@ function setScene(s){
   vis(el("screenJobWin"), s === "jobwin");
   vis(el("screenJobFail"),s === "jobfail");
   if(s !== "job"){ jobHold.left = jobHold.right = jobHold.up = jobHold.down = jobHold.fire = jobHold.jumpHeld = false; jobJumpQueued = false; }
-  if(s !== "dialogue" && s !== "pitch") hideConversationScene();
+  if(s !== "dialogue" && s !== "pitch" && s !== "lesson") hideConversationScene();
   if(s !== "overworld" && s !== "dialogue"){ hold.up = hold.down = hold.left = hold.right = false; }
   if(s !== "overworld") state.near = null;
 }
@@ -2182,6 +2183,7 @@ const SCENES = {
   cafe:     "Images/cafe.jpg",
   hardware: "Images/hardware.jpg",
   laundry:  "Images/laundry.jpg",
+  university: "Images/university.jpg",
   // Add later, same pattern:
   // Level 2: marcus, barista2, shopkeep2, resident2
   // Level 3: diane, sister3, contractor3, neighbor3
@@ -2278,7 +2280,7 @@ function setFeedback(kind, text){
   fb.className = "feedback " + kind;
   fb.textContent = text;
 }
-function openLesson(){ lessonIndex = 0; setScene("lesson"); renderLesson(); sfxBlip(); }
+function openLesson(){ lessonIndex = 0; setScene("lesson"); setConversationScene("university"); renderLesson(); sfxBlip(); }
 function leaveLesson(){ transitionTo("overworld"); }
 function renderDots(){
   let h = "";
