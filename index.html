@@ -1377,12 +1377,12 @@ const LEVELS = {
   },
   5: {
     no:"WORK ORDER #005", chapterName:"CHAPTER FIVE", title:"The Committee", pill:"Level 5 &nbsp;&middot;&nbsp; The Committee",
-    style:"town", heroKind:"closer",
+    style:"roman", heroKind:"closer",
     palette:[
-      {body:"#e9c79a", roof:"#9c5a2c", door:"#4a2e1a", accent:"#34e0c4", glow:"#ffe39a"},
-      {body:"#d9b783", roof:"#7a4a2a", door:"#3a2818", accent:"#ffcb47", glow:"#ffe39a"},
-      {body:"#e3c8a4", roof:"#8a5a3a", door:"#33271a", accent:"#ff9e5a", glow:"#ffd9b0"},
-      {body:"#edd2a8", roof:"#a05a30", door:"#3a2a1c", accent:"#ffd76a", glow:"#ffe6b0"}
+      {body:"#e7d3a6", roof:"#b5562e", door:"#6b4a30", accent:"#34e0c4", glow:"#ffe6a8"},
+      {body:"#ddc59a", roof:"#a64c2a", door:"#5e4228", accent:"#ffcb47", glow:"#ffe0a0"},
+      {body:"#ecdbb0", roof:"#bb5e34", door:"#5a3e26", accent:"#ff9e5a", glow:"#ffdf9c"},
+      {body:"#efdfb4", roof:"#c2632f", door:"#6b4a30", accent:"#ffd76a", glow:"#ffe6b0"}
     ],
     brief:{ client:"Marchetti's Bakery",
       says:'"My granddaughter wants some computer system for the register. We have sold bread here forty years just fine. I do not see the point."',
@@ -1673,6 +1673,7 @@ function drawBuilding(b){
   if(LV.style === "downtown") return drawTower(b);
   if(LV.style === "suburb") return drawMansion(b);
   if(LV.style === "industrial") return drawGarage(b);
+  if(LV.style === "roman") return drawVilla(b);
   const dcx = b.x + b.w/2;
   ctx.fillStyle = "rgba(0,0,0,.25)"; rr(ctx, b.x+8, b.y+b.h-4, b.w-4, 16, 8); ctx.fill();
   ctx.fillStyle = b.body; rr(ctx, b.x, b.y+28, b.w, b.h-28, 6); ctx.fill();
@@ -1687,6 +1688,52 @@ function drawBuilding(b){
   ctx.fillStyle = b.door; rr(ctx, dcx-23, b.y+b.h-46, 46, 46, 6); ctx.fill();
   ctx.globalAlpha = .5; ctx.fillStyle = b.glow; rr(ctx, dcx-12, b.y+b.h-40, 24, 14, 3); ctx.fill(); ctx.globalAlpha = 1;
   ctx.fillStyle = b.accent; circle(dcx+14, b.y+b.h-22, 2.4);
+}
+function drawArchWin(x, y, w, h, glow){
+  const cx = x + w/2;
+  ctx.fillStyle = "#3a2a1c";
+  rr(ctx, x-3, y-1, w+6, h+3, 3); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, y, w/2+3, Math.PI, Math.PI*2); ctx.fill();
+  ctx.fillStyle = glow;
+  rr(ctx, x, y, w, h, 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, y, w/2, Math.PI, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "rgba(255,210,120,.22)"; rr(ctx, x, y, w, Math.max(4, h*0.4), 2); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.22)";
+  ctx.fillRect(cx-1, y - w/2, 2, h + w/2);
+  ctx.fillRect(x, y + h/2 - 1, w, 2);
+}
+function drawVilla(b){
+  const dcx = b.x + b.w/2;
+  ctx.fillStyle = "rgba(0,0,0,.25)"; rr(ctx, b.x+8, b.y+b.h-4, b.w-4, 16, 8); ctx.fill();
+  ctx.fillStyle = b.body; rr(ctx, b.x, b.y+30, b.w, b.h-30, 6); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.06)"; rr(ctx, b.x, b.y+30, b.w*0.42, b.h-30, 6); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.10)"; ctx.fillRect(b.x, b.y+b.h-14, b.w, 14);
+  ctx.fillStyle = "rgba(120,80,50,.10)"; ctx.fillRect(b.x+6, b.y+30+(b.h-30)*0.5, b.w-12, 2);
+  ctx.fillStyle = "rgba(255,250,235,.45)"; ctx.fillRect(b.x+4, b.y+34, 10, b.h-44); ctx.fillRect(b.x+b.w-14, b.y+34, 10, b.h-44);
+  ctx.fillStyle = "rgba(0,0,0,.12)"; ctx.fillRect(b.x+12, b.y+34, 2, b.h-44); ctx.fillRect(b.x+b.w-16, b.y+34, 2, b.h-44);
+  ctx.fillStyle = b.roof; ctx.beginPath(); ctx.moveTo(b.x-12, b.y+36); ctx.lineTo(dcx, b.y+4); ctx.lineTo(b.x+b.w+12, b.y+36); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.10)"; ctx.beginPath(); ctx.moveTo(dcx, b.y+4); ctx.lineTo(b.x+b.w+12, b.y+36); ctx.lineTo(b.x+b.w-6, b.y+36); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.fillRect(b.x-6, b.y+34, b.w+12, 4);
+  ctx.fillStyle = "rgba(0,0,0,.14)"; for(let tx=b.x-6; tx<b.x+b.w+6; tx+=12){ ctx.fillRect(tx, b.y+30, 2, 6); }
+  drawArchWin(b.x+26, b.y+54, 30, 26, b.glow);
+  drawArchWin(b.x+b.w-56, b.y+54, 30, 26, b.glow);
+  ctx.fillStyle = "rgba(0,0,0,.42)"; rr(ctx, dcx-58, b.y+b.h-82, 116, 24, 6); ctx.fill();
+  ctx.strokeStyle = b.accent; ctx.lineWidth = 2; rr(ctx, dcx-58, b.y+b.h-82, 116, 24, 6); ctx.stroke();
+  drawText(b.name, dcx, b.y+b.h-70, "9px", b.accent, "center");
+  const colY = b.y+b.h-52, colH = 42;
+  [-30, 30].forEach(off => {
+    const cxp = dcx + off;
+    ctx.fillStyle = "#e9e1cf"; ctx.fillRect(cxp-4, colY, 8, colH);
+    ctx.fillStyle = "rgba(0,0,0,.10)"; ctx.fillRect(cxp+2, colY, 2, colH);
+    ctx.fillStyle = "#f3ecdb"; ctx.fillRect(cxp-6, colY-4, 12, 5);
+    ctx.fillStyle = "#dcd3bf"; ctx.fillRect(cxp-6, colY+colH-3, 12, 4);
+  });
+  const dw = 44, dx2 = dcx - dw/2, dy = b.y+b.h-46;
+  ctx.fillStyle = b.door; rr(ctx, dx2, dy, dw, 46, 4); ctx.fill();
+  ctx.beginPath(); ctx.arc(dcx, dy, dw/2, Math.PI, Math.PI*2); ctx.fill();
+  ctx.globalAlpha = .5; ctx.fillStyle = b.glow; rr(ctx, dcx-12, b.y+b.h-40, 24, 16, 3); ctx.fill(); ctx.globalAlpha = 1;
+  ctx.fillStyle = "#f3ecdb"; ctx.fillRect(dcx-4, dy-dw/2-2, 8, 8);
+  ctx.fillStyle = b.accent; circle(dcx+13, b.y+b.h-22, 2.4);
 }
 function drawStar(cx, cyBase, phase){
   const y = cyBase + Math.sin(t*3 + phase*0.01)*6 - 2;
@@ -1745,6 +1792,20 @@ function drawDecor(){
         ctx.save(); ctx.shadowColor = "rgba(255,225,160,.6)"; ctx.shadowBlur = 14; ctx.fillStyle = "#ffe6a8"; rr(ctx, x-7, y-27, 14, 6, 2); ctx.fill(); ctx.restore();
       }
     });
+  } else if(LV.style === "roman"){
+    TREES.forEach(tr => {
+      const x = tr.x+22, baseY = tr.y+38;
+      ctx.fillStyle = "#5b3d22"; ctx.fillRect(x-3, baseY-8, 6, 12);
+      ctx.fillStyle = "#1f5a37"; ctx.beginPath(); ctx.ellipse(x, baseY-26, 9, 24, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = "#2a6e44"; ctx.beginPath(); ctx.ellipse(x-2, baseY-30, 4, 14, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.05)"; ctx.beginPath(); ctx.ellipse(x-3, baseY-34, 2, 7, 0, 0, Math.PI*2); ctx.fill();
+    });
+    const cxp = 500, baseY = 344;
+    ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.beginPath(); ctx.ellipse(cxp, baseY+4, 14, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#d8cfb8"; ctx.fillRect(cxp-7, baseY-44, 14, 46);
+    ctx.fillStyle = "rgba(0,0,0,.10)"; ctx.fillRect(cxp+1, baseY-44, 3, 46); ctx.fillRect(cxp-3, baseY-44, 1, 46);
+    ctx.fillStyle = "#efe7d2"; ctx.fillRect(cxp-10, baseY-50, 20, 7);
+    ctx.fillStyle = "#cfc6af"; ctx.fillRect(cxp-10, baseY-2, 20, 6);
   } else {
     TREES.forEach(tr => {
       const x = tr.x+22, y = tr.y+22;
@@ -1765,8 +1826,8 @@ function drawDecor(){
 function drawTheo(){
   const x = 730, feet = 720;
   const st = LV.style;
-  const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : "#2f8f7e";
-  const hair = st === "downtown" ? "#6b5440" : st === "suburb" ? "#d8c08a" : st === "industrial" ? "#3a2a1c" : "#2a2a33";
+  const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : st === "roman" ? "#b5462f" : "#2f8f7e";
+  const hair = st === "downtown" ? "#6b5440" : st === "suburb" ? "#d8c08a" : st === "industrial" ? "#3a2a1c" : st === "roman" ? "#2a2018" : "#2a2a33";
   ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(x, feet, 12, 4, 0, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = coat; rr(ctx, x-8, feet-22, 16, 16, 4); ctx.fill();          // coat / hoodie
   ctx.fillStyle = "#e8b48a"; circle(x, feet-26, 6);                          // head
@@ -1890,7 +1951,7 @@ function starTargets(){
 }
 function drawTown(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.fillStyle = "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
   ctx.save(); ctx.translate(-camX, -camY);
   // ground tiles: grass for town, pavement for downtown
   const ts = 48;
@@ -1899,12 +1960,14 @@ function drawTown(){
   const downtown = LV.style === "downtown";
   const suburb = LV.style === "suburb";
   const industrial = LV.style === "industrial";
+  const roman = LV.style === "roman";
   for(let x=gx0; x<gx1; x+=ts){
     for(let y=gy0; y<gy1; y+=ts){
       const even = (x/ts + y/ts) % 2 === 0;
       ctx.fillStyle = downtown ? (even ? "#20242e" : "#252b37")
         : suburb ? (even ? "#244a2c" : "#295233")
         : industrial ? (even ? "#2a2c30" : "#303338")
+        : roman ? (even ? "#5f4d34" : "#665338")
         : (even ? "#1c3b30" : "#1f4234");
       ctx.fillRect(x, y, ts, ts);
     }
@@ -1935,12 +1998,20 @@ function drawTown(){
       if(r.w >= r.h){ const yy = r.y + r.h/2 - 1; for(let dx=r.x+12; dx<r.x+r.w-12; dx+=46) ctx.fillRect(dx, yy, 22, 2); }
       else { const xx = r.x + r.w/2 - 1; for(let dy=r.y+12; dy<r.y+r.h-12; dy+=46) ctx.fillRect(xx, dy, 2, 22); }
     });
+  } else if(roman){
+    ROADS.forEach(r => { ctx.fillStyle = "#7d6a4c"; rr(ctx, r.x, r.y, r.w, r.h, 5); ctx.fill(); });
+    ROADS.forEach(r => {
+      ctx.fillStyle = "rgba(0,0,0,.14)";
+      for(let xx=r.x+6; xx<r.x+r.w-4; xx+=22){ ctx.fillRect(xx, r.y+2, 2, r.h-4); }
+      for(let yy=r.y+6; yy<r.y+r.h-4; yy+=22){ ctx.fillRect(r.x+2, yy, r.w-4, 2); }
+      ctx.fillStyle = "rgba(255,250,235,.05)"; ctx.fillRect(r.x, r.y, r.w, 2);
+    });
   } else {
     ROADS.forEach(r => { ctx.fillStyle = "#6d5436"; rr(ctx, r.x, r.y, r.w, r.h, 6); ctx.fill(); });
     ROADS.forEach(r => { ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(r.x, r.y, r.w, 3); });
   }
   // plaza
-  ctx.fillStyle = downtown ? "#3a3f48" : suburb ? "#9a948a" : industrial ? "#3a3d44" : "#8a8475"; ctx.beginPath(); ctx.ellipse(755, 520, 188, 152, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = downtown ? "#3a3f48" : suburb ? "#9a948a" : industrial ? "#3a3d44" : roman ? "#9a8260" : "#8a8475"; ctx.beginPath(); ctx.ellipse(755, 520, 188, 152, 0, 0, Math.PI*2); ctx.fill();
   ctx.strokeStyle = "rgba(0,0,0,.18)"; ctx.lineWidth = 3; ctx.stroke();
   // decor and structures
   drawDecor();
