@@ -4644,19 +4644,18 @@ function openIntro(from){
 }
 const FINALE_CREDITS = [
   {k:"head", t:"THE PLAYBOOK"},
-  {k:"sub", t:"the books behind the moves"},
-  {k:"gap"},
-  {k:"title", t:"Never Split the Difference"}, {k:"author", t:"Chris Voss"},
-  {k:"title", t:"SPIN Selling"}, {k:"author", t:"Neil Rackham"},
-  {k:"title", t:"The Sandler Selling System"}, {k:"author", t:"David Sandler"},
-  {k:"title", t:"Strategic Selling"}, {k:"author", t:"Miller and Heiman"},
-  {k:"title", t:"The Challenger Sale"}, {k:"author", t:"Dixon and Adamson"},
-  {k:"title", t:"Fanatical Prospecting"}, {k:"author", t:"Jeb Blount"},
-  {k:"title", t:"Secrets of Closing the Sale"}, {k:"author", t:"Zig Ziglar"},
-  {k:"title", t:"The Psychology of Selling"}, {k:"author", t:"Brian Tracy"},
-  {k:"title", t:"Getting to Yes"}, {k:"author", t:"Fisher and Ury"},
-  {k:"title", t:"The Sales Bible"}, {k:"author", t:"Jeffrey Gitomer"},
-  {k:"gap"},
+  {k:"sub", t:"the real books behind every move"},
+  {k:"gap"},{k:"gap"},
+  {k:"title", t:"Never Split the Difference"}, {k:"by", t:"Chris Voss, 2016"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"SPIN Selling"}, {k:"by", t:"Neil Rackham, 1988"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"You Can't Teach a Kid to Ride a Bike at a Seminar"}, {k:"by", t:"David Sandler, 1995"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"Strategic Selling"}, {k:"by", t:"Robert Miller and Stephen Heiman, 1985"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"The Challenger Sale"}, {k:"by", t:"Matthew Dixon and Brent Adamson, 2011"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"Fanatical Prospecting"}, {k:"by", t:"Jeb Blount, 2015"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"Secrets of Closing the Sale"}, {k:"by", t:"Zig Ziglar, 1984"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"The Psychology of Selling"}, {k:"by", t:"Brian Tracy, 2004"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"Getting to Yes"}, {k:"by", t:"Roger Fisher and William Ury, 1981"}, {k:"gap"},{k:"gap"},
+  {k:"title", t:"The Sales Bible"}, {k:"by", t:"Jeffrey Gitomer, 1994"}, {k:"gap"},{k:"gap"},
   {k:"foot", t:"Every move, learned ethically, through play."}
 ];
 let fin = null;
@@ -4669,7 +4668,7 @@ function openFinale(){
     y: 110 + Math.random()*Math.max(40, H-260),
     vx: (Math.random()<0.5?-1:1)*(55+Math.random()*55),
     vy: (Math.random()<0.5?-1:1)*(45+Math.random()*55),
-    t: Math.random()*6, pop:0
+    t: Math.random()*6, pop:0, say:0
   }));
   fin = { prof:{ x:W*0.5, y:H*0.62, faceX:1, moving:false, t:0 }, icons, t:0, kellyShake:0, kellyNear:false, crawl:0 };
   transitionTo("finale");
@@ -4677,7 +4676,7 @@ function openFinale(){
 function updateFinale(dt){
   const F = fin; if(!F) return;
   F.t += dt;
-  F.crawl += dt*22;
+  F.crawl += dt*18;
   const W = viewW, H = viewH;
   let dx=0, dy=0;
   if(hold.left) dx-=1; if(hold.right) dx+=1; if(hold.up) dy-=1; if(hold.down) dy+=1;
@@ -4691,13 +4690,16 @@ function updateFinale(dt){
     o.t += dt; o.x += o.vx*dt; o.y += o.vy*dt;
     if(o.x < 26){ o.x=26; o.vx=Math.abs(o.vx); } if(o.x > W-26){ o.x=W-26; o.vx=-Math.abs(o.vx); }
     if(o.y < 100){ o.y=100; o.vy=Math.abs(o.vy); } if(o.y > H-44){ o.y=H-44; o.vy=-Math.abs(o.vy); }
-    if(o.pop>0) o.pop-=dt;
+    if(o.pop>0) o.pop-=dt; if(o.say>0) o.say-=dt;
     const d = Math.hypot(o.x-F.prof.x, o.y-F.prof.y);
-    if(d < 40 && o.pop<=0){ o.pop=0.5; const a=Math.atan2(o.y-F.prof.y, o.x-F.prof.x), spd=Math.max(70, Math.hypot(o.vx,o.vy)); o.vx=Math.cos(a)*spd; o.vy=Math.sin(a)*spd; sfxBlip(); }
+    if(d < 40 && o.pop<=0){ o.pop=0.5; o.say=1.6; const a=Math.atan2(o.y-F.prof.y, o.x-F.prof.x), spd=Math.max(70, Math.hypot(o.vx,o.vy)); o.vx=Math.cos(a)*spd; o.vy=Math.sin(a)*spd; sfxBlip(); }
   }
-  const kx = W*0.5, ky = H*0.45;
+  const kx = W*0.5, ky = H-64;
   F.kellyNear = Math.hypot(F.prof.x-kx, F.prof.y-ky) < 92;
   F.kellyShake = F.kellyNear ? F.kellyShake + dt : 0;
+}
+function finaleSay(k){
+  return k==="worker"?"Plunge!":k==="punk"?"ROCK ON":k==="noble"?"Charmed.":k==="droid"?"BEEP BOOP":k==="centurion"?"Ave!":k==="alien"?"Greetings":k==="horse"?"Neigh!":k==="shark"?"Always be closing":k==="satyr"?"Toot!":"Boo!";
 }
 function drawFinaleIcon(k){
   if(k==="worker"){
@@ -4783,12 +4785,12 @@ function drawProfessor(pf){
   ctx.strokeStyle="#ffd24a"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(8,y-19); ctx.lineTo(10,y-12); ctx.stroke(); ctx.fillStyle="#ffd24a"; circle(10,y-12,1.4);
 }
 function drawFinaleCredits(F){
-  const W=viewW, H=viewH, colX=10, colW=Math.min(196, W*0.46), colTop=86, colBot=H-64;
-  if(colBot - colTop < 70) return;
+  const W=viewW, H=viewH, panW=Math.min(440, W*0.92), panX=(W-panW)/2, colTop=84, colBot=H-96;
+  if(colBot - colTop < 90) return;
   ctx.save();
-  ctx.fillStyle="rgba(8,6,16,.5)"; rr(ctx, colX-2, colTop-4, colW+6, colBot-colTop+8, 8); ctx.fill();
-  ctx.beginPath(); rr(ctx, colX-2, colTop-4, colW+6, colBot-colTop+8, 8); ctx.clip();
-  const cxp = colX + colW/2, lineH=13, listH=FINALE_CREDITS.length*lineH, cycle=listH+(colBot-colTop);
+  ctx.fillStyle="rgba(8,6,16,.62)"; rr(ctx, panX, colTop-4, panW, colBot-colTop+8, 10); ctx.fill();
+  ctx.beginPath(); rr(ctx, panX, colTop-4, panW, colBot-colTop+8, 10); ctx.clip();
+  const cxp = W/2, lineH=16, listH=FINALE_CREDITS.length*lineH, cycle=listH+(colBot-colTop);
   const base = colBot - (F.crawl % cycle);
   for(let rep=-1; rep<=1; rep++){
     for(let i=0;i<FINALE_CREDITS.length;i++){
@@ -4796,15 +4798,15 @@ function drawFinaleCredits(F){
       if(cy < colTop-2 || cy > colBot+2) continue;
       const it = FINALE_CREDITS[i];
       if(it.k==="gap") continue;
-      else if(it.k==="head") drawText(it.t, cxp, cy, "11px", "#ffe08a", "center");
-      else if(it.k==="sub") drawText(it.t, cxp, cy, "8px", "#7fd0ff", "center");
-      else if(it.k==="title") drawText(it.t, cxp, cy, "9px", "#e8e2f0", "center");
-      else if(it.k==="author") drawText(it.t, cxp, cy, "8px", "#9a8fc0", "center");
-      else drawText(it.t, cxp, cy, "8px", "#7fd0ff", "center");
+      else if(it.k==="head") drawText(it.t, cxp, cy, "13px", "#ffe08a", "center");
+      else if(it.k==="sub") drawText(it.t, cxp, cy, "9px", "#7fd0ff", "center");
+      else if(it.k==="title") drawText(it.t, cxp, cy, "9px", "#f0ecf6", "center");
+      else if(it.k==="by") drawText(it.t, cxp, cy, "8px", "#b3a9d6", "center");
+      else drawText(it.t, cxp, cy, "9px", "#7fd0ff", "center");
     }
   }
-  const gt=ctx.createLinearGradient(0,colTop-4,0,colTop+16); gt.addColorStop(0,"rgba(10,8,20,.85)"); gt.addColorStop(1,"rgba(10,8,20,0)"); ctx.fillStyle=gt; ctx.fillRect(colX-2,colTop-4,colW+6,20);
-  const gb=ctx.createLinearGradient(0,colBot-16,0,colBot+4); gb.addColorStop(0,"rgba(10,8,20,0)"); gb.addColorStop(1,"rgba(10,8,20,.85)"); ctx.fillStyle=gb; ctx.fillRect(colX-2,colBot-16,colW+6,20);
+  const gt=ctx.createLinearGradient(0,colTop-4,0,colTop+22); gt.addColorStop(0,"rgba(9,7,18,.96)"); gt.addColorStop(1,"rgba(9,7,18,0)"); ctx.fillStyle=gt; ctx.fillRect(panX,colTop-4,panW,26);
+  const gb=ctx.createLinearGradient(0,colBot-22,0,colBot+4); gb.addColorStop(0,"rgba(9,7,18,0)"); gb.addColorStop(1,"rgba(9,7,18,.96)"); ctx.fillStyle=gb; ctx.fillRect(panX,colBot-22,panW,26);
   ctx.restore();
 }
 function drawFinale(){
@@ -4827,15 +4829,16 @@ function drawFinale(){
   for(const o of F.icons){
     const pop = o.pop>0 ? 1+Math.sin((1-o.pop/0.5)*Math.PI)*0.3 : 1;
     ctx.save(); ctx.translate(o.x, o.y+Math.sin(o.t*4)*3); ctx.scale(pop,pop); drawFinaleIcon(o.kind); ctx.restore();
+    if(o.say>0){ ctx.save(); ctx.globalAlpha=Math.min(1,o.say*1.4); drawText(finaleSay(o.kind), o.x, o.y-22, "8px", "#fff2c0", "center"); ctx.restore(); }
   }
-  const kx=W*0.5, ky=H*0.45, near=F.kellyNear;
+  const kx=W*0.5, ky=H-64, near=F.kellyNear;
   const jx = near ? Math.sin(F.kellyShake*42)*3 : 0, jy = near ? Math.cos(F.kellyShake*38)*2 : 0;
-  drawText("KELLY SPAIN", kx+jx, ky+jy, near?"23px":"16px", near?"#fff2a0":"#e0d4ef", "center");
-  drawText("creator", kx, ky+18, "8px", "#8a7fb0", "center");
+  drawText("Kelly Spain", kx+jx, ky+jy, near?"22px":"16px", near?"#fff2a0":"#e8e2f0", "center");
+  drawText("The Creator", kx, ky+18, "9px", near?"#ffd24a":"#9a8fc0", "center");
   ctx.save(); ctx.translate(F.prof.x, F.prof.y); ctx.scale(F.prof.faceX,1); drawProfessor(F.prof); ctx.restore();
-  drawText("Play more soon at  [ your website here ]", W/2, H-56, "10px", "#7fd0ff", "center");
-  if(T < 7) drawText("Walk the Professor around with the arrows or the pad. Press A to return to the title.", W/2, H-36, "8px", "#bfe3d6", "center");
+  drawText("Play more soon at [ your website here ]", 12, H-14, "8px", "#7fd0ff", "left");
   drawText("\u00a9 2026 Bella Vita Game Labs  \u00b7  Kelly Spain", W-12, H-14, "9px", "#cdbfe0", "right");
+  if(T < 6) drawText("Walk the Professor with the pad or arrows, bump the characters, press A for the title.", W/2, H-30, "8px", "#bfe3d6", "center");
 }
 let outroNextAction = null;
 function openOutro(){
@@ -6704,11 +6707,11 @@ function newFly(){
     hp:JOB.playerHp, maxHp:JOB.playerHp, invuln:0,
     px: 240, py: 260, pvy:0, tilt:0, wing:0,
     obstacles:[], drops:[], parts:[],
-    speed:220, dist:0, distGoal:60000, dawn:0,
+    speed:220, dist:0, distGoal:30000, dawn:0,
     theme:"night", bossName:(JC.bossName||"THE SUNRISE"),
     boss:{ alive:false, hp:1, maxHp:1 }, bossEngaged:false,
     time:0, combo:0, comboTimer:0, hitsTaken:0, score:0,
-    spawnTimer:1.1, dropTimer:0.9, beams:[], beamTimer:3.2,
+    spawnTimer:1.1, dropTimer:0.9, beams:[], beamTimer:3.2, garlicTimer:3.0,
     arriving:false, arriveT:0, reveal:2.6,
     ended:false, win:false, flash:0, shake:0
   };
@@ -6762,11 +6765,21 @@ function updateFly(dt){
   if(J.spawnTimer <= 0){ J.spawnTimer = Math.max(0.5, 1.45 - prog*0.85) * (0.7 + Math.random()*0.6); spawnFlyObstacle(J, prog); }
   J.dropTimer -= dt;
   if(J.dropTimer <= 0){ J.dropTimer = 1.3 + Math.random()*1.4; J.drops.push({ x: viewW+20, y: 80 + Math.random()*(viewH-180), got:false }); }
+  J.garlicTimer -= dt;
+  if(prog > 0.12 && J.garlicTimer <= 0){
+    J.garlicTimer = Math.max(1.2, 3.0 - prog*1.6) * (0.8 + Math.random()*0.5);
+    const aimY = clamp(J.py + (Math.random()-0.5)*70, 64, viewH-56);
+    J.obstacles.push({ x: viewW+24, y: aimY-11, w:22, h:22, kind:"garlic", vx:-(J.speed+150), vy:(Math.random()-0.5)*40, hit:false, gt:0 });
+  }
   const pad = 7;
   for(const o of J.obstacles){
-    o.x -= J.speed * dt;
-    if(o.kind === "crow") o.y = o.baseY - 12 + Math.sin(J.time*4 + o.phase)*16;
-    if(!o.hit && rectsOverlap(J.px-12, J.py-8, 24, 16, o.x+pad, o.y+pad, o.w-2*pad, o.h-2*pad)){ o.hit = true; hurtPlayer(18, o.x); J.shake = 0.3; burst(J.px, J.py, "#7a1226", 12); }
+    if(o.kind === "garlic"){ o.x += o.vx*dt; o.y += o.vy*dt; o.gt = (o.gt||0)+dt; }
+    else { o.x -= J.speed * dt; if(o.kind === "crow") o.y = o.baseY - 12 + Math.sin(J.time*4 + o.phase)*16; }
+    if(!o.hit && rectsOverlap(J.px-12, J.py-8, 24, 16, o.x+pad, o.y+pad, o.w-2*pad, o.h-2*pad)){
+      o.hit = true;
+      if(o.kind === "garlic"){ hurtPlayer(Math.ceil(J.maxHp*0.5), o.x); J.shake = 0.45; J.flash = 0.3; burst(J.px, J.py, "#eef0e0", 18); }
+      else { hurtPlayer(18, o.x); J.shake = 0.3; burst(J.px, J.py, "#7a1226", 12); }
+    }
   }
   J.obstacles = J.obstacles.filter(o => o.x + o.w > -40);
   for(const dr of J.drops){
@@ -6875,6 +6888,13 @@ function drawFly(){
       ctx.fillStyle = "#0e0a16"; ctx.fillRect(o.x + o.w/2 - 4, 0, 8, o.h);
       ctx.strokeStyle = "#0e0a16"; ctx.lineWidth = 4; ctx.lineCap="round";
       ctx.beginPath(); ctx.moveTo(o.x+o.w/2, o.h-14); ctx.lineTo(o.x+o.w/2+14, o.h+2); ctx.moveTo(o.x+o.w/2, o.h-26); ctx.lineTo(o.x+o.w/2-14, o.h-8); ctx.stroke(); ctx.lineCap="butt";
+    } else if(o.kind === "garlic"){
+      const cxp = o.x+o.w/2, cyp = o.y+o.h/2;
+      ctx.strokeStyle = "rgba(230,235,210,.35)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cxp+6, cyp); ctx.lineTo(cxp+24, cyp); ctx.stroke();
+      ctx.fillStyle = "#eef0e0"; ctx.beginPath(); ctx.moveTo(cxp, cyp-9); ctx.quadraticCurveTo(cxp-9, cyp-2, cxp-6, cyp+6); ctx.quadraticCurveTo(cxp, cyp+10, cxp+6, cyp+6); ctx.quadraticCurveTo(cxp+9, cyp-2, cxp, cyp-9); ctx.fill();
+      ctx.strokeStyle = "#cdd0bd"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cxp, cyp-8); ctx.lineTo(cxp, cyp+8); ctx.moveTo(cxp-3, cyp-6); ctx.lineTo(cxp-4, cyp+6); ctx.moveTo(cxp+3, cyp-6); ctx.lineTo(cxp+4, cyp+6); ctx.stroke();
+      ctx.strokeStyle = "#8aa86a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cxp, cyp-9); ctx.lineTo(cxp-2, cyp-14); ctx.moveTo(cxp, cyp-9); ctx.lineTo(cxp+2, cyp-14); ctx.stroke();
+      ctx.save(); ctx.globalAlpha = 0.4 + Math.sin((o.gt||0)*12)*0.2; ctx.strokeStyle = "#fff6c0"; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cxp, cyp, 13, 0, Math.PI*2); ctx.stroke(); ctx.restore();
     } else {
       const wf = Math.sin(J.time*16 + o.phase)*6, cxp = o.x+o.w/2, cyp = o.y+o.h/2;
       ctx.fillStyle = "#0c0810"; ctx.beginPath(); ctx.ellipse(cxp, cyp, 7, 5, 0, 0, Math.PI*2); ctx.fill();
@@ -6950,7 +6970,7 @@ function drawJobHud(J){
   }
   if(J.time < 4.5){
     const hint = jobMode === "fly"
-      ? "Tap or hold FLAP to rise, release to dive. Weave through the haunted forest and reach the castle before " + J.bossName + " crests the hills."
+      ? "Tap or hold FLAP to rise, release to dive. Weave past the trees and dodge the flying garlic, then reach the castle before " + J.bossName + " crests the hills."
       : jobMode === "topdown"
       ? "Move with the pad, hold SWING to slash. Grab hearts to heal and beat " + J.bossName + "."
       : jobMode === "beatemup"
