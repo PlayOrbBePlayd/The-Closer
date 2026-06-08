@@ -380,6 +380,7 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
         <button id="btnChap4" class="ghostbtn">Chapter 4</button>
         <button id="btnChap5" class="ghostbtn">Chapter 5</button>
         <button id="btnChap6" class="ghostbtn">Chapter 6</button>
+        <button id="btnChap7" class="ghostbtn">Chapter 7</button>
       </div>
       <div class="lvlpill" id="lvlPill">Level 1 &nbsp;&middot;&nbsp; The Backed Up Sink</div>
       <div id="lifeTitle" class="life">Lifetime points 0</div>
@@ -1328,6 +1329,116 @@ const PITCH6 = {
   ]
 };
 
+const INTEL7 = {
+  trade:{ label:"The Empty Trade Ground",
+    clue:"The caravans that once filled this trade ground now roll straight past it to a livelier camp a day's ride on. Khan Tomor's goods sit unsold under the felt.",
+    why:"Tomor swears the camp's name carries itself. The traders riding past are the first symptom, and he has not tied it to anything." },
+  people:{ label:"The Thinning Camp",
+    clue:"Young warriors and families are quietly folding their gers and joining busier camps where envoys come and go and there is always news.",
+    why:"Another symptom Tomor blames on restless youth. The shrinking camp traces back to the very same root." },
+  relay:{ label:"The Silent Relay Post",
+    clue:"The camp once kept arrow riders always on the move, carrying word to other camps and the trade roads and the great Khan's court, the way the whole empire stays joined. Those riders stopped going out a season ago.",
+    why:"This is the key. No riders going out means no trade hearing of the camp, no news riding back, and families watching a camp go quiet. All three trace to one thing: Tomor stopped reaching out and began waiting for the world to come to him." }
+};
+const TALK_CAFE7 = { id:"trader7", name:"Chuluun", sub:"Minds the trade ground", interior:"cafe", intel:INTEL7.trade, intelId:"trade",
+  lines:[
+    "Looking to trade, traveler? Slim pickings here these days, I am afraid.",
+    "Used to be every caravan stopped at Khan Tomor's ground. Now they roll right past us to the Bukha camp, a full day on.",
+    "The Khan says our name carries itself. My empty stall says otherwise."
+  ]};
+const TALK_HARDWARE7 = { id:"rider7", name:"Batu", sub:"An idle arrow rider", interior:"hardware", intel:INTEL7.relay, intelId:"relay",
+  lines:[
+    "Me? I am a relay rider. Or I was, back when this camp still sent riders out.",
+    "We kept riders on the move day and night, carrying word to every camp and trade road, the way the whole empire stays joined. Tomor called them all home a season back.",
+    "No riders going out, so no word coming in. We have gone quiet, and quiet camps get forgotten."
+  ]};
+const TALK_LAUNDRY7 = { id:"elder7", name:"Old Tsetseg", sub:"Eldest of the camp", interior:"laundry", intel:INTEL7.people, intelId:"people",
+  lines:[
+    "Sit a while, young one. Not many young ones left to sit with these days.",
+    "The families are folding their gers and riding to busier camps. Somewhere with envoys coming and going, somewhere with a little life.",
+    "Tomor blames restless youth. An old woman knows better. A camp that stops reaching out goes quiet, and the young will not stay for quiet."
+  ]};
+const TALK_BENCH7 = { id:"theo", name:"Idle Nergui", sub:"Lazing by the fire", interior:null, intel:null, intelId:null,
+  lines:[
+    "Eh, the camp is fine. A great khan never chases. The world comes to him, always has.",
+    "Do not go riding all over the steppe. Just wait. The world remembers the Khan in time.",
+    "Skip the boring lessons. Tell Tomor he is the mightiest khan alive and sell him a taller banner."
+  ]};
+const KHAN_NPC = {id:"khan7", name:"Khan Tomor", sub:"The Iron Khan", interior:"cafe"};
+const LESSON7 = [
+  {type:"teach", who:"Professor Bex", tag:"WELCOME", tagClass:"", title:"You cannot wait an empty pipeline full", body:[
+    "Khan Tomor is proud, and proud in a way you will respect. A great khan, he will tell you, does not chase. The world rides to him. For thirty years it did.",
+    "But it stopped coming, and no amount of waiting will bring it back. The cure for an empty pipeline is reaching out, on purpose, over and over. Your recon found the proof: the camp went quiet the very season its riders stopped riding out. Labels stay off in the pitch."
+  ]},
+  {type:"teach", who:"Field Card", tag:"FIELD CARD", tagClass:"", title:"Prospecting", attr:"Jeb Blount, Fanatical Prospecting", body:[
+    "Prospecting is the work of starting new conversations before you need them. A pipeline is not something you have, it is something you feed, every single day.",
+    "The rule is simple and unforgiving. The people you reach out to today become the trade you close weeks from now. Stop reaching out, and weeks from now your pipeline is empty, exactly like Tomor's camp.",
+    "It is honest work. You are not pestering anyone. You are riding out to people who would truly gain from knowing you, the way the Khan's riders carried real word worth hearing."
+  ]},
+  {type:"teach", who:"Field Card", tag:"FIELD CARD", tagClass:"", title:"Replace every closed conversation", attr:"Always be filling the top", body:[
+    "Here is the discipline that keeps a pipeline full. Every conversation that ends, won or lost, you replace at once with a fresh one. Lose one caravan, send a rider after two more.",
+    "Tailor it to Tomor's pride. He is not lowering himself by reaching out. The empire itself was built by riders who rode to the horizon, not by khans who waited at their tents.",
+    "Avoid the traps. Telling him to simply wait, flattering his greatness, or selling him a taller banner all keep the pipeline empty."
+  ]},
+  {type:"teach", who:"Game Plan", tag:"GAME PLAN", tagClass:"plan", title:"How you move the Iron Khan", body:[
+    "Open with the surprising pattern. The bypassed trade ground, the thinning camp, and the silent relay are not three troubles, they are one. The camp stopped reaching out.",
+    "Tie it to his pride. The greatest khans in history did not wait, they sent riders to the horizon. Reaching out first is how the empire was won.",
+    "Land it on the system. Put the riders back on the roads, on purpose and every day, and the trade, the news, and the families all come back. No labels out there."
+  ]},
+  {type:"practice", tag:"PRACTICE 1", tagClass:"prac", setup:"Khan Tomor, seated on his horsehair throne: I am the Iron Khan. For thirty years the world has ridden to my camp. Why would I ride out to it like some common peddler?", q:"Pick the move that opens a proud khan.", options:[
+    {label:"REFRAME", text:"Because the world stopped riding to you, Khan, and it is not three troubles. Your empty trade ground, your thinning camp, and your silent relay are one. The camp went quiet the day its riders did.", correct:true, fb:"One true pattern tied to his own camp. The proud khan stops bristling and listens."},
+    {label:"FLATTER", text:"A khan as mighty as you needs nothing. The world will surely remember you in time.", correct:false, fb:"Flattery feeds the very pride that emptied his pipeline. He waves you off."},
+    {label:"SHAME", text:"You let this camp wither by sitting on your hands.", correct:false, fb:"You scolded a proud khan to his face. He digs in."}
+  ]},
+  {type:"practice", tag:"PRACTICE 2", tagClass:"prac", setup:"Tomor, leaning forward: One trouble, you say. The riders. Go on, peddler, but make it worth my patience.", q:"Pick the move that lands the reframe.", options:[
+    {label:"SYSTEM", text:"Put your riders back on the roads, every day, not only when you want something. Word reaches the caravans, news rides home, the families see a camp alive again. Reaching out first is how the empire was won.", correct:true, fb:"You named the system and tied it to his pride. He feels like a conqueror again, not a beggar."},
+    {label:"WAIT", text:"Honestly, just hold tight a while longer. These things tend to turn around on their own.", correct:false, fb:"Waiting is exactly what emptied the pipeline. He needs to reach out, not sit."},
+    {label:"BANNER", text:"Raise a taller banner over the camp and the traders are sure to notice you.", correct:false, fb:"A taller banner is not reaching out. The trade still rides right past. He scoffs."}
+  ]},
+  {type:"pass"}
+];
+const PITCH7 = {
+  showLabels: false, startRapport: 30, edgeBonus: 6, closeAt: 75,
+  beats: [
+    { who:"Tomor", whoId:"khan7", line:"So. A peddler with a satchel rides into my camp. I am Khan Tomor, the Iron Khan, and for thirty years the steppe has come to me. Speak quickly, and do not waste a khan's patience.", options:[
+      {label:"REFRAME",  good:true,  d:14, pts:120, text:"I will not flatter you, Khan. I will show you something your own camp is telling you. Your empty trade ground, your thinning families, and your silent relay are not three troubles. They are one.", fb:"A true insight tied to his own camp. The proud khan stops bristling and leans in."},
+      {label:"FLATTER",  good:false, d:-16, pts:0, text:"A khan as mighty as you surely needs nothing from a humble traveler.", fb:"Flattery feeds the pride that emptied his camp. He reaches for his whip."},
+      {label:"BANNER",   good:false, d:-14, pts:0, text:"Let me sell you the tallest banner on the steppe. That will draw them in.", fb:"You led with a trinket. He has no use for peddlers."},
+      {label:"SHAME",    good:false, d:-12, pts:0, text:"Honestly, you let this camp wither by doing nothing at all.", fb:"You scolded a proud khan to his face. He digs in."}
+    ]},
+    { who:"Tomor", whoId:"khan7", line:"One trouble. Bold words. My camp's name has carried itself for thirty years. Why would these be joined?", options:[
+      {label:"PATTERN", good:true,  d:16, pts:140, text:"Because they all follow your riders. When your riders rode the roads, traders heard of you, news came home, and families saw a camp at the center of things. You called the riders in, and all three went quiet together.", fb:"You connected the dots he never connected. The reframe lands."},
+      {label:"VAGUE",   good:false, d:-14, pts:0, text:"Trust me, Khan, these things are always tangled together somehow.", fb:"A khan does not run on trust me. Show him the link."},
+      {label:"FLATTER", good:false, d:-14, pts:0, text:"A warlord of your genius surely sensed it already.", fb:"More flattery. He sees right through it."},
+      {label:"SHAME",   good:false, d:-12, pts:0, text:"You really should have seen this seasons ago.", fb:"You scolded the proudest man on the steppe. Door closing."}
+    ]},
+    { who:"Tomor", whoId:"khan7", line:"The riders. I called them home to spare the horses, and thought nothing of it. Hm. Say I believe you. What would a peddler have the Iron Khan do?", options:[
+      {label:"SYSTEM", good:true,  d:16, pts:150, text:"Put the riders back on the roads, on purpose and every day, not only when you want something. Word rides out to the caravans, news rides back, and the camp sits at the center again. That is the whole of it.", fb:"You named the system and made it his to command. He feels like a conqueror, not a beggar."},
+      {label:"PANIC",  good:false, d:-16, pts:0, text:"Ride out this instant, the camp is finished if you do not, you must agree now.", fb:"Panic reads as a peddler's trick to a man this proud. He pulls back."},
+      {label:"UPSELL", good:false, d:-14, pts:0, text:"We begin with the grand deluxe envoy caravan and forty new banners.", fb:"You got greedy before the trust was set. He bristles."},
+      {label:"DODGE",  good:false, d:-12, pts:0, text:"The how is complicated, Khan. Leave all that to me.", fb:"You hid the answer from a proud commander. He needs to feel in command."}
+    ]},
+    { who:"Tomor", whoId:"khan7", line:"Reaching out first. I always called that the work of lesser men. Yet the pattern fits. Convince me you can truly put my camp back at the center.", options:[
+      {label:"PROOF",   good:true,  d:16, pts:160, text:"I did it for the Naiman camp on the Orhon, gone as quiet as yours. We put their riders back on the roads on a steady plan. Within a season their trade ground was full and their court busy again. I will take you to see it.", fb:"Insight backed by proof and a place he can check. Exactly what flips a skeptic into a buyer."},
+      {label:"BOAST",   good:false, d:-16, pts:0, text:"I am the finest in the land, and that is proof enough for any man.", fb:"You tried to out proud the proudest khan on the steppe. He is unmoved."},
+      {label:"HEDGE",   good:false, d:-14, pts:0, text:"It will most likely work, these things usually do.", fb:"Most likely does not close a proud skeptic. Give him certainty."},
+      {label:"FLATTER", good:false, d:-12, pts:0, text:"And a khan of your brilliance will master it at a single glance.", fb:"Flattery again. He waves it off."}
+    ]},
+    { who:"Tomor", whoId:"khan7", line:"The Naiman camp. I know it well. If you speak true, that is no small thing. Tell me plainly how this goes.", options:[
+      {label:"PLAN",  good:true,  d:14, pts:170, text:"We set a steady ride first, so many riders to the roads each day. Win or lose a trade, you send the next rider out. I ride the first circuit myself and open the way. You stay the Khan, I just put your horizon back within reach.", fb:"A calm plan that leaves him commanding and you in the saddle. The camp is yours to win back."},
+      {label:"VAGUE", good:false, d:-16, pts:0, text:"We will sort the steps out as we ride, do not trouble yourself with it.", fb:"Vague at the close unsettles a precise commander. Give him the plan."},
+      {label:"FAKE",  good:false, d:-16, pts:0, text:"Agree before the moon turns and I halve my price. After that the offer is gone.", fb:"A fake deadline undercuts the trust your insight earned."},
+      {label:"RUSH",  good:false, d:-12, pts:0, text:"So, do we have a bargain or not, Khan?", fb:"You rushed him. Let the alignment settle."}
+    ]},
+    { who:"Tomor", whoId:"khan7", line:"In thirty years, no traveler has shown me my own camp. You did. Very well, peddler. Put my riders back on the roads, and my name back on the steppe.", options:[
+      {label:"CLOSE",  good:true,  d:14, pts:180, text:"Then I ride at dawn. The first riders go out tomorrow, the roads reopen, and you will watch the caravans turn for your trade ground before the season is out. The horizon is yours again, Khan.", fb:"A confident close that hands him the win. The deal is done and the riders are about to ride."},
+      {label:"UPSELL", good:false, d:-18, pts:0, text:"Splendid, now let me add the grand banner package and a second caravan.", fb:"Greedy the instant he said yes. Honor the deal in front of you."},
+      {label:"GLOAT",  good:false, d:-16, pts:0, text:"Told you that waiting was a fool's game, Khan.", fb:"You rubbed his nose in it at the finish. Backwards."},
+      {label:"WAFFLE", good:false, d:-10, pts:0, text:"Cool, I will get some riders out one of these days.", fb:"You went limp at the close. Land it with confidence."}
+    ]}
+  ]
+};
+
 /* ---------- the level table ---------- */
 const LEVELS = {
   1: {
@@ -1560,6 +1671,45 @@ const LEVELS = {
     outro:{ cleared:"CHAPTER SIX CLEARED", tag:"The Know It All",
       recap:"You closed the one buyer who was sure he had nothing left to learn. You did not flatter him and you did not fight him. You taught him one true thing about his own world, handed him the fix, then relit the whole colony with your own two hands.",
       nextK:"What is next", nextV:"Zorbon glows again. Next you face an empty pipeline with no warm leads at all, where the whole game is finding someone worth talking to in the first place. Your lifetime points and learned moves carry over." }
+  },
+  7: {
+    no:"WORK ORDER #007", chapterName:"CHAPTER SEVEN", title:"The Empty Pipeline", pill:"Level 7 &nbsp;&middot;&nbsp; The Empty Pipeline",
+    style:"steppe", heroKind:"closer",
+    palette:[
+      {body:"#efe6d2", roof:"#d8cdb4", door:"#c0392b", accent:"#2f6f8f", glow:"#ffcb47"},
+      {body:"#e8dcc0", roof:"#cfc0a0", door:"#a8341f", accent:"#7a3a8f", glow:"#ffd23f"},
+      {body:"#f0e8d6", roof:"#d8cdb4", door:"#b5462f", accent:"#3f7a4a", glow:"#ffcb47"},
+      {body:"#e6dcc4", roof:"#cdbfa0", door:"#9a4a1f", accent:"#2f6f8f", glow:"#ffe08a"}
+    ],
+    brief:{ client:"Khan Tomor's Camp",
+      says:'"A peddler? I am Khan Tomor, the Iron Khan. For thirty years the steppe has ridden to my camp. I need nothing from a traveler with a satchel."',
+      move:"Do not pitch a proud khan. Walk the camp and find the one truth he will not see, because three troubles he waves off all share one root. Then learn how to fill an empty pipeline.",
+      obj:"Visit every spot marked with a gold star and gather all 3 leads. One loafer near the fire will steer you wrong." },
+    signs:{ cafe:"TRADE GROUND", hardware:"RELAY POST", laundry:"ELDER'S GER", client:"KHAN'S GER" },
+    intel: INTEL7, intelOrder:["trade","people","relay"],
+    saysCase:'"A great khan does not chase. The world rides to me, as it always has."',
+    talks:{ cafe:TALK_CAFE7, hardware:TALK_HARDWARE7, laundry:TALK_LAUNDRY7, bench:TALK_BENCH7 },
+    client:{ npc:KHAN_NPC, first:"Khan Tomor", lockedMsg:"Khan Tomor waits on his throne, certain the world will return to him on its own. Learn Prospecting first, then go show him why it will not." },
+    gap:{ said:"A great khan does not chase. The world rides to my camp, as it always has.", need:"His camp stopped sending its riders out, so the caravans bypass him, the news dries up, and the families drift away. A pipeline he refuses to feed has quietly gone empty, and his pride will not let him see it." },
+    completeNext:"Three troubles, one root. Next stop is Sales University, where you learn Prospecting: how to fill an empty pipeline by reaching out on purpose, again and again, instead of waiting for the world to ride in.",
+    lesson: LESSON7, techKey:"prospecting", techTitle:"Prospecting",
+    techBlurb:"You carry this into the pitch. Do not flatter Tomor and do not tell him to wait. Show him the one pattern his pride hides, then hand him a system that fills the camp.",
+    passToast:"Move equipped. The Khan's Ger is starred. Go show him why waiting will not work.",
+    pitch: PITCH7,
+    winLede1:"You did not out wait an empty pipeline, you filled it. One true pattern showed the proudest khan on the steppe why the world stopped coming, and he chose to ride out and meet it again.",
+    winLede2:"Now for the fun part. With the deal struck, you swing onto a fast steppe pony, sling your bow, and gallop out to carry the Khan's word and reopen the roads yourself. Ride hard, loose true, and scatter what has gone quiet across the steppe. Points from the job bank to your lifetime total.",
+    failLede:"You lost him. Waiting, flattery, a taller banner, and shame all keep a pipeline empty. Win him by showing the one true pattern, then hand him the system that fills it.",
+    job:{ mode:"platformer", theme:"steppe", bossName:"THE LONG SILENCE", W:3600, speedPar:80,
+      enemyHp:3, enemySpeed:88, shotSpeed:680, shotCd:0.18, bossProjSpeed:430, bossAtk:0.9, bossSpread:7,
+      plats:[{x:560,dy:120,w:150},{x:1000,dy:160,w:140},{x:1440,dy:118,w:150},{x:1880,dy:158,w:140},{x:2320,dy:120,w:150},{x:2780,dy:160,w:150}],
+      enemies:[{x:540},{x:780},{x:1040,platIdx:1},{x:1300},{x:1520,big:true,hp:9,speed:58},{x:1780,platIdx:3},{x:2020},{x:2260},{x:2380,platIdx:4},{x:2580,big:true,hp:10,speed:60},{x:2800},{x:3000,big:true,hp:11,speed:60},{x:3180}],
+      boss:{dx:300, w:170, h:150, hp:72}, hazards:[{x:960,w:80},{x:1700,w:90},{x:2520,w:90}],
+      winLede:"The roads are open and the riders pour back onto the steppe. Caravans turn for the trade ground, news rides in from every horizon, and the families unpack their gers. Khan Tomor sits at the center of the steppe again, and he sits there because of you.",
+      failLede:"The silence swallowed your ride this time. The deal still stands, so mount up and gallop back out to reopen the roads.",
+      failH:"LOST IN THE DUST" },
+    outro:{ cleared:"CHAPTER SEVEN CLEARED", tag:"The Empty Pipeline",
+      recap:"You closed a proud khan who was sure the world would always ride to him. You did not flatter him and you did not shame him. You showed him one true pattern, gave him a system to fill his empty camp, then rode out and reopened the roads yourself.",
+      nextK:"What is next", nextV:"The Iron Khan rides again. Next comes the long maybe, a buyer who likes everything and will commit to nothing, where you learn to turn an endless someday into a clear yes. Your lifetime points and learned moves carry over." }
   }
 };
 let currentLevel = 1;
@@ -1585,6 +1735,7 @@ function loadLevel(n){
   else if(LV.style === "future") critters.push(makeCritter("droid"));
   else if(LV.style === "roman") critters.push(makeCritter("centurion"));
   else if(LV.style === "alien"){ critters.push(makeCritter("blob", 620, 500)); critters.push(makeCritter("ufo", 880, 600)); }
+  else if(LV.style === "steppe"){ critters.push(makeCritter("horse", 640, 520)); critters.push(makeCritter("goat", 880, 600)); }
   resetCollected();
 }
 function fillBrief(){
@@ -1868,6 +2019,59 @@ function drawAlienBuilding(b){
   ctx.fillStyle = b.accent; circle(dcx+11, b.y+b.h-22, 2.2);
   ctx.strokeStyle = shade(b.roof, -10); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(b.x+16, b.y+b.h); ctx.lineTo(b.x+8, b.y+b.h+12); ctx.moveTo(b.x+b.w-16, b.y+b.h); ctx.lineTo(b.x+b.w-8, b.y+b.h+12); ctx.stroke();
 }
+function drawHorseAt(cx, feetY, s){
+  const bw = 26*s, bh = 13*s, bodyY = feetY - 16*s;
+  ctx.fillStyle = "#5a3f2a";
+  ctx.fillRect(cx-bw*0.34, bodyY+bh*0.3, 3.2*s, 16*s); ctx.fillRect(cx-bw*0.16, bodyY+bh*0.3, 3.2*s, 16*s);
+  ctx.fillRect(cx+bw*0.1, bodyY+bh*0.3, 3.2*s, 16*s); ctx.fillRect(cx+bw*0.28, bodyY+bh*0.3, 3.2*s, 16*s);
+  ctx.fillStyle = "#7a5436"; ctx.beginPath(); ctx.ellipse(cx, bodyY, bw*0.5, bh, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.beginPath(); ctx.ellipse(cx-bw*0.1, bodyY-bh*0.3, bw*0.3, bh*0.4, 0, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = "#2a1c10"; ctx.lineWidth = 3*s; ctx.beginPath(); ctx.moveTo(cx-bw*0.48, bodyY-2*s); ctx.quadraticCurveTo(cx-bw*0.7, bodyY+6*s, cx-bw*0.62, bodyY+14*s); ctx.stroke();
+  ctx.fillStyle = "#7a5436"; ctx.beginPath(); ctx.moveTo(cx+bw*0.3, bodyY-bh*0.4); ctx.lineTo(cx+bw*0.6, bodyY-bh*1.4); ctx.lineTo(cx+bw*0.76, bodyY-bh*1.1); ctx.lineTo(cx+bw*0.5, bodyY+bh*0.2); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx+bw*0.7, bodyY-bh*1.2, 6*s, 4*s, -0.5, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = "#2a1c10"; ctx.lineWidth = 2*s; ctx.beginPath(); ctx.moveTo(cx+bw*0.34, bodyY-bh*0.6); ctx.lineTo(cx+bw*0.62, bodyY-bh*1.35); ctx.stroke();
+  ctx.fillStyle = "#1a1208"; circle(cx+bw*0.74, bodyY-bh*1.25, 1.2*s);
+}
+function drawGoatAt(cx, feetY, s){
+  const bw=18*s, bh=9*s, bodyY=feetY-11*s;
+  ctx.fillStyle="#3a352e";
+  ctx.fillRect(cx-bw*0.3, bodyY+bh*0.3, 2.6*s, 11*s); ctx.fillRect(cx-bw*0.12, bodyY+bh*0.3, 2.6*s, 11*s);
+  ctx.fillRect(cx+bw*0.1, bodyY+bh*0.3, 2.6*s, 11*s); ctx.fillRect(cx+bw*0.26, bodyY+bh*0.3, 2.6*s, 11*s);
+  ctx.fillStyle="#d8d2c4"; ctx.beginPath(); ctx.ellipse(cx, bodyY, bw*0.5, bh, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle="#cfc8b8"; ctx.beginPath(); ctx.ellipse(cx+bw*0.52, bodyY-bh*0.5, 5*s, 4*s, -0.3, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle="#6b5a44"; ctx.lineWidth=2*s; ctx.beginPath(); ctx.moveTo(cx+bw*0.5, bodyY-bh*1.1); ctx.quadraticCurveTo(cx+bw*0.66, bodyY-bh*1.8, cx+bw*0.76, bodyY-bh*1.2); ctx.stroke();
+  ctx.strokeStyle="#bdb6a6"; ctx.lineWidth=1.5*s; ctx.beginPath(); ctx.moveTo(cx+bw*0.54, bodyY-bh*0.1); ctx.lineTo(cx+bw*0.54, bodyY+bh*0.6); ctx.stroke();
+  ctx.fillStyle="#cfc8b8"; circle(cx-bw*0.5, bodyY-bh*0.4, 2.4*s);
+  ctx.fillStyle="#1a1208"; circle(cx+bw*0.62, bodyY-bh*0.55, 1*s);
+}
+function drawGerBuilding(b){
+  const dcx = b.x + b.w/2;
+  const wallTop = b.y + 44, wallH = b.h - 44;
+  ctx.fillStyle = "rgba(0,0,0,.28)"; ctx.beginPath(); ctx.ellipse(dcx, b.y+b.h+4, b.w*0.56, 14, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = b.body; rr(ctx, b.x+6, wallTop, b.w-12, wallH, 22); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.14)"; rr(ctx, b.x+10, wallTop+6, (b.w-12)*0.4, wallH-12, 16); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.10)"; rr(ctx, dcx + (b.w-12)*0.18, wallTop+6, (b.w-12)*0.3, wallH-12, 16); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.12)"; ctx.fillRect(b.x+6, b.y+b.h-12, b.w-12, 12);
+  ctx.fillStyle = b.accent; ctx.fillRect(b.x+6, wallTop + wallH*0.34, b.w-12, 8);
+  ctx.fillStyle = shade(b.accent, 18); for(let i=0;i<Math.floor((b.w-12)/16);i++){ ctx.fillRect(b.x+10 + i*16, wallTop + wallH*0.34 + 2, 7, 4); }
+  ctx.fillStyle = b.roof; ctx.beginPath(); ctx.moveTo(b.x+2, wallTop+4); ctx.quadraticCurveTo(dcx, b.y-6, b.x+b.w-2, wallTop+4); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.beginPath(); ctx.moveTo(b.x+2, wallTop+4); ctx.quadraticCurveTo(dcx, b.y-6, dcx, wallTop+4); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = shade(b.roof, -14); ctx.lineWidth = 2; for(let i=-2;i<=2;i++){ ctx.beginPath(); ctx.moveTo(dcx, b.y+2); ctx.lineTo(dcx + i*(b.w*0.2), wallTop+5); ctx.stroke(); }
+  ctx.fillStyle = shade(b.roof,-22); circle(dcx, b.y+4, 7); ctx.fillStyle = b.door; circle(dcx, b.y+4, 4);
+  ctx.fillStyle = "#6b4a2a"; ctx.fillRect(dcx-1.5, b.y-26, 3, 30);
+  ctx.save(); ctx.shadowBlur=8; ctx.shadowColor=b.glow; ctx.fillStyle=b.glow; circle(dcx, b.y-26, 3.5); ctx.restore();
+  ctx.strokeStyle = "#2a2018"; ctx.lineWidth = 1.5; for(let i=-2;i<=2;i++){ ctx.beginPath(); ctx.moveTo(dcx, b.y-24); ctx.lineTo(dcx + i*3, b.y-14); ctx.stroke(); }
+  ctx.fillStyle = "rgba(30,22,12,.62)"; rr(ctx, dcx-54, b.y+b.h-74, 108, 22, 7); ctx.fill();
+  ctx.save(); ctx.shadowBlur=6; ctx.shadowColor=b.glow; ctx.strokeStyle=b.glow; ctx.lineWidth=2; rr(ctx, dcx-54, b.y+b.h-74, 108, 22, 7); ctx.stroke(); ctx.restore();
+  drawText(b.name, dcx, b.y+b.h-63, "9px", b.glow, "center");
+  const dw=38, dx2=dcx-dw/2, dy=b.y+b.h-46;
+  ctx.fillStyle = shade(b.door,-18); rr(ctx, dx2-3, dy-3, dw+6, 49, 8); ctx.fill();
+  ctx.fillStyle = b.door; rr(ctx, dx2, dy, dw, 46, 6); ctx.fill();
+  ctx.fillStyle = b.accent; ctx.fillRect(dx2, dy+21, dw, 3);
+  ctx.fillStyle = shade(b.door,16); rr(ctx, dx2+4, dy+4, dw-8, 14, 4); ctx.fill(); rr(ctx, dx2+4, dy+26, dw-8, 14, 4); ctx.fill();
+  ctx.fillStyle = b.glow; circle(dcx+11, dy+30, 2.2);
+  ctx.strokeStyle = shade(b.body,-22); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(b.x+14, b.y+b.h); ctx.lineTo(b.x+6, b.y+b.h+10); ctx.moveTo(b.x+b.w-14, b.y+b.h); ctx.lineTo(b.x+b.w-6, b.y+b.h+10); ctx.stroke();
+}
 function drawBuilding(b){
   if(LV.style === "downtown") return drawTower(b);
   if(LV.style === "suburb") return drawMansion(b);
@@ -1877,6 +2081,7 @@ function drawBuilding(b){
   if(LV.style === "georgian") return drawGeorgianHouse(b);
   if(LV.style === "nineties") return drawNinetiesTower(b);
   if(LV.style === "alien") return drawAlienBuilding(b);
+  if(LV.style === "steppe") return drawGerBuilding(b);
   const dcx = b.x + b.w/2;
   ctx.fillStyle = "rgba(0,0,0,.25)"; rr(ctx, b.x+8, b.y+b.h-4, b.w-4, 16, 8); ctx.fill();
   ctx.fillStyle = b.body; rr(ctx, b.x, b.y+28, b.w, b.h-28, 6); ctx.fill();
@@ -2123,6 +2328,8 @@ function drawCritter(tu){
   else if(tu.kind === "centurion"){ drawCenturionSprite(tu); }
   else if(tu.kind === "blob"){ drawBlobSprite(tu); }
   else if(tu.kind === "ufo"){ drawUfoSprite(tu); }
+  else if(tu.kind === "horse"){ drawHorseAt(0, 14, 1); }
+  else if(tu.kind === "goat"){ drawGoatAt(0, 12, 1); }
   else {
   const lp = Math.sin(tu.t*10);
   ctx.fillStyle = "#3a8a3f";
@@ -2229,6 +2436,8 @@ function critterLine(k){
     : k === "centurion" ? "Ave, champion! \u2694"
     : k === "blob" ? "Blorp blorp! \ud83d\udc7d"
     : k === "ufo" ? "Beep zorp! \ud83d\udef8"
+    : k === "horse" ? "Hrrnn! \ud83d\udc0e"
+    : k === "goat" ? "Maaa! \ud83d\udc10"
     : "Cowabunga, dude! \ud83d\udc22 \ud83c\udf55!!!";
 }
 function critterPrompt(k){
@@ -2238,6 +2447,8 @@ function critterPrompt(k){
     : k === "centurion" ? "SALUTE"
     : k === "blob" ? "BOOP"
     : k === "ufo" ? "BEAM ME"
+    : k === "horse" ? "RIDE"
+    : k === "goat" ? "FEED"
     : "HIGH FIVE";
 }
 function drawBlobSprite(tu){
@@ -2407,6 +2618,19 @@ function drawDecor(){
     ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.moveTo(0,-14); ctx.lineTo(3,-3); ctx.lineTo(0,-1); ctx.lineTo(-3,-3); ctx.closePath(); ctx.fill();
     ctx.restore();
     ctx.fillStyle = "rgba(180,255,120,.7)"; for(let bi=0;bi<3;bi++){ circle(745 + bi*10, 532 - ((t*30 + bi*14)%34), 2); }
+  } else if(LV.style === "steppe"){
+    ctx.fillStyle = "#6b5a44"; ctx.beginPath(); ctx.ellipse(755, 540, 50, 26, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#4a3f30"; ctx.beginPath(); ctx.ellipse(755, 540, 40, 19, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#8a8170"; for(let i=0;i<10;i++){ const a=i*(Math.PI*2/10); circle(755+Math.cos(a)*40, 540+Math.sin(a)*19, 5); }
+    const fl = 1 + Math.sin(t*9)*0.12;
+    ctx.save(); ctx.shadowBlur = 22; ctx.shadowColor = "#ff8a2a";
+    ctx.fillStyle = "#c0392b"; ctx.beginPath(); ctx.moveTo(755-16, 540); ctx.quadraticCurveTo(755, 540-44*fl, 755+16, 540); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#ff8a2a"; ctx.beginPath(); ctx.moveTo(755-11, 540); ctx.quadraticCurveTo(755+3, 540-34*fl, 755+11, 540); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#ffd23f"; ctx.beginPath(); ctx.moveTo(755-6, 540); ctx.quadraticCurveTo(755-1, 540-22*fl, 755+6, 540); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = "#3a2a1c"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(755-22, 548); ctx.lineTo(755, 508); ctx.lineTo(755+22, 548); ctx.moveTo(755, 508); ctx.lineTo(755, 520); ctx.stroke();
+    ctx.fillStyle = "#2a2018"; ctx.beginPath(); ctx.ellipse(755, 524, 8, 5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "rgba(255,180,80,.85)"; for(let bi=0;bi<3;bi++){ circle(748+bi*8, 524 - ((t*40 + bi*18)%40), 1.6); }
   } else {
     ctx.fillStyle = "#5a5650"; rr(ctx, FOUNTAIN.x, FOUNTAIN.y, FOUNTAIN.w, FOUNTAIN.h, 18); ctx.fill();
     ctx.fillStyle = "#6e6a62"; rr(ctx, FOUNTAIN.x+10, FOUNTAIN.y+10, FOUNTAIN.w-20, FOUNTAIN.h-20, 14); ctx.fill();
@@ -2550,6 +2774,27 @@ function drawDecor(){
     ctx.fillStyle = "#52407a"; ctx.fillRect(cxp-3, byc-20, 6, 24);
     ctx.save(); ctx.shadowBlur = 14; ctx.shadowColor = "#b6ff6a"; ctx.strokeStyle = "#b6ff6a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cxp, byc-22, 10, Math.PI*0.1, Math.PI*0.9, true); ctx.stroke(); ctx.restore();
     ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = "#b6ff6a"; ctx.globalAlpha = 0.6 + Math.sin(t*4)*0.2; ctx.fillStyle = "#dfffb0"; circle(cxp, byc-22, 2.5); ctx.restore();
+  } else if(LV.style === "steppe"){
+    ctx.fillStyle = "rgba(80,96,120,.5)"; ctx.beginPath(); ctx.moveTo(0,150); ctx.lineTo(180,96); ctx.lineTo(360,150); ctx.lineTo(620,90); ctx.lineTo(900,150); ctx.lineTo(1200,100); ctx.lineTo(WORLD_W,150); ctx.lineTo(WORLD_W,182); ctx.lineTo(0,182); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(120,135,160,.35)"; ctx.beginPath(); ctx.moveTo(360,150); ctx.lineTo(620,90); ctx.lineTo(760,150); ctx.closePath(); ctx.fill();
+    TREES.forEach((tr, i) => {
+      const x = tr.x+22, baseY = tr.y+38;
+      if(i % 2 === 0){
+        drawHorseAt(x, baseY, 0.85);
+      } else {
+        ctx.fillStyle = "#6b4a2a"; ctx.fillRect(x-2, baseY-46, 4, 46);
+        ctx.fillStyle = "#8a8170"; circle(x, baseY-46, 4);
+        ctx.strokeStyle = "#2a2018"; ctx.lineWidth = 1.5; for(let h=-3;h<=3;h++){ ctx.beginPath(); ctx.moveTo(x, baseY-44); ctx.lineTo(x+h*2.5, baseY-30); ctx.stroke(); }
+        ctx.fillStyle = (i%4===1) ? "#c0392b" : "#2f6f8f"; ctx.beginPath(); ctx.moveTo(x+2, baseY-44); ctx.lineTo(x+20, baseY-40 + Math.sin(t*3+i)*2); ctx.lineTo(x+2, baseY-34); ctx.closePath(); ctx.fill();
+      }
+    });
+    const cxp = 500, byc = 344;
+    ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.beginPath(); ctx.ellipse(cxp, byc+4, 14, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#6b4a2a"; ctx.fillRect(cxp-3, byc-52, 6, 56);
+    ctx.fillStyle = "#cdbf8a"; circle(cxp, byc-54, 6);
+    ctx.strokeStyle = "#e8e2d2"; ctx.lineWidth = 2; for(let h=-4;h<=4;h++){ ctx.beginPath(); ctx.moveTo(cxp, byc-50); ctx.lineTo(cxp + h*4 + Math.sin(t*2+h)*2, byc-30); ctx.stroke(); }
+    ctx.fillStyle = "#c0392b"; ctx.beginPath(); ctx.moveTo(cxp+3, byc-48); ctx.lineTo(cxp+30, byc-43 + Math.sin(t*3)*2); ctx.lineTo(cxp+3, byc-36); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#ffcb47"; circle(cxp+12, byc-42, 2.5);
   } else {
     TREES.forEach(tr => {
       const x = tr.x+22, y = tr.y+22;
@@ -2596,14 +2841,15 @@ function drawDecor(){
 function drawTheo(){
   const x = 730, feet = 720;
   const st = LV.style;
-  const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : st === "roman" ? "#b5462f" : st === "future" ? "#27406a" : st === "georgian" ? "#6e5a3e" : st === "nineties" ? "#3a4a6a" : st === "alien" ? "#6a3aa0" : "#2f8f7e";
-  const hair = st === "downtown" ? "#6b5440" : st === "suburb" ? "#d8c08a" : st === "industrial" ? "#3a2a1c" : st === "roman" ? "#2a2018" : st === "georgian" ? "#e0dccb" : st === "nineties" ? "#1f1f26" : st === "alien" ? "#7be0a0" : "#2a2a33";
+  const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : st === "roman" ? "#b5462f" : st === "future" ? "#27406a" : st === "georgian" ? "#6e5a3e" : st === "nineties" ? "#3a4a6a" : st === "alien" ? "#6a3aa0" : st === "steppe" ? "#3a5a8f" : "#2f8f7e";
+  const hair = st === "downtown" ? "#6b5440" : st === "suburb" ? "#d8c08a" : st === "industrial" ? "#3a2a1c" : st === "roman" ? "#2a2018" : st === "georgian" ? "#e0dccb" : st === "nineties" ? "#1f1f26" : st === "alien" ? "#7be0a0" : st === "steppe" ? "#1a1208" : "#2a2a33";
   ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(x, feet, 12, 4, 0, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = coat; rr(ctx, x-8, feet-22, 16, 16, 4); ctx.fill();          // coat / hoodie
   ctx.fillStyle = "#e8b48a"; circle(x, feet-26, 6);                          // head
   ctx.fillStyle = hair; dome(x, feet-28, 6);                                 // hair
   ctx.fillStyle = "#23304a"; circle(x-2, feet-26, 1.2); circle(x+2, feet-26, 1.2);
   if(st === "alien"){ ctx.strokeStyle = "#7be0a0"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x-3, feet-33); ctx.lineTo(x-5, feet-41); ctx.moveTo(x+3, feet-33); ctx.lineTo(x+5, feet-41); ctx.stroke(); ctx.save(); ctx.shadowBlur=8; ctx.shadowColor="#b6ff6a"; ctx.fillStyle = "#dfffb0"; circle(x-5, feet-42, 2); circle(x+5, feet-42, 2); ctx.restore(); }
+  if(st === "steppe"){ ctx.fillStyle = "#7a3a2a"; ctx.beginPath(); ctx.moveTo(x-7, feet-30); ctx.lineTo(x, feet-43); ctx.lineTo(x+7, feet-30); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#caa86a"; ctx.fillRect(x-7, feet-31, 14, 3); ctx.fillStyle = "#ffcb47"; circle(x, feet-43, 1.6); }
 }
 function drawPlayer(){
   const cx = player.x + player.w/2, top = player.y - (player.moving ? Math.abs(Math.sin(t*12))*2 : Math.sin(t*2)*0.6);
@@ -2687,6 +2933,17 @@ function drawPlayer(){
     ctx.strokeStyle = "#eaf4ff"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, top+1, 9, 0, Math.PI*2); ctx.stroke();
     ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.arc(cx-3, top-2, 4, Math.PI*0.8, Math.PI*1.5); ctx.fill();
     ctx.fillStyle = "#cfd8e6"; ctx.fillRect(cx-9, top+5, 18, 2);
+  } else if((LV.style) === "steppe"){
+    ctx.fillStyle = "#e8b48a"; ctx.fillRect(cx-11, top+12, 3, 9); ctx.fillRect(cx+8, top+12, 3, 9);
+    ctx.fillStyle = "#3a5a8f"; ctx.beginPath(); ctx.moveTo(cx-8, top+9); ctx.lineTo(cx+8, top+9); ctx.lineTo(cx+11, top+34); ctx.lineTo(cx-11, top+34); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.10)"; ctx.beginPath(); ctx.moveTo(cx-8, top+9); ctx.lineTo(cx-3, top+9); ctx.lineTo(cx-6, top+34); ctx.lineTo(cx-11, top+34); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#c0392b"; ctx.fillRect(cx-11, top+22, 22, 3);
+    ctx.fillStyle = "#ffcb47"; ctx.fillRect(cx-2, top+9, 4, 16);
+    ctx.fillStyle = "#e8b48a"; circle(cx, top+2, 7);
+    ctx.fillStyle = "#7a3a2a"; ctx.beginPath(); ctx.moveTo(cx-8, top+0); ctx.lineTo(cx, top-11); ctx.lineTo(cx+8, top+0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#caa86a"; ctx.fillRect(cx-8, top-1, 16, 3);
+    ctx.fillStyle = "#ffcb47"; circle(cx, top-11, 1.8);
+    ctx.fillStyle = "#23304a"; circle(cx-3 + fx, top+2, 1.4); circle(cx+3 + fx, top+2, 1.4);
   } else if((LV.heroKind || "worker") === "closer"){
     // chapter two: woman closer, sharp blazer, no hard hat
     ctx.fillStyle = "#e8b48a"; ctx.fillRect(cx-11, top+12, 3, 9); ctx.fillRect(cx+8, top+12, 3, 9);
@@ -2882,7 +3139,7 @@ function starTargets(){
 }
 function drawTown(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : (LV.style === "future") ? "#070b18" : (LV.style === "georgian") ? "#15131f" : (LV.style === "nineties") ? "#0a0d16" : (LV.style === "alien") ? "#241844" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : (LV.style === "future") ? "#070b18" : (LV.style === "georgian") ? "#15131f" : (LV.style === "nineties") ? "#0a0d16" : (LV.style === "alien") ? "#241844" : (LV.style === "steppe") ? "#16202e" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
   ctx.save(); ctx.translate(-camX, -camY);
   // ground tiles: grass for town, pavement for downtown
   const ts = 48;
@@ -2896,6 +3153,7 @@ function drawTown(){
   const georgian = LV.style === "georgian";
   const nineties = LV.style === "nineties";
   const alien = LV.style === "alien";
+  const steppe = LV.style === "steppe";
   for(let x=gx0; x<gx1; x+=ts){
     for(let y=gy0; y<gy1; y+=ts){
       const even = (x/ts + y/ts) % 2 === 0;
@@ -2907,6 +3165,7 @@ function drawTown(){
         : georgian ? (even ? "#33523a" : "#39593f")
         : nineties ? (even ? "#1c1f26" : "#202329")
         : alien ? (even ? "#3a8a7a" : "#42977f")
+        : steppe ? (even ? "#4a5a32" : "#54663a")
         : (even ? "#1c3b30" : "#1f4234");
       ctx.fillRect(x, y, ts, ts);
     }
@@ -2918,6 +3177,10 @@ function drawTown(){
   }
   if(alien){
     for(let sx=gx0; sx<gx1; sx+=ts){ for(let sy=gy0; sy<gy1; sy+=ts){ if(((sx*3+sy*7)/ts|0)%4===0){ ctx.fillStyle="rgba(180,255,120,.5)"; circle(sx+14, sy+30, 2); } } }
+  }
+  if(steppe){
+    ctx.strokeStyle="rgba(150,170,90,.5)"; ctx.lineWidth=1.5;
+    for(let sx=gx0; sx<gx1; sx+=ts){ for(let sy=gy0; sy<gy1; sy+=ts){ if(((sx*5+sy*3)/ts|0)%3===0){ const gx=sx+12+((sx+sy)%18), gy=sy+36; ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx-2,gy-6); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy-7); ctx.moveTo(gx,gy); ctx.lineTo(gx+2,gy-6); ctx.stroke(); } } }
   }
   if(downtown || nineties) drawSkyline();
   // roads
@@ -2991,12 +3254,20 @@ function drawTown(){
       ctx.restore();
       ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.fillRect(r.x, r.y, r.w, 2);
     });
+  } else if(steppe){
+    ROADS.forEach(r => { ctx.fillStyle = "#6b5436"; rr(ctx, r.x, r.y, r.w, r.h, 6); ctx.fill(); });
+    ROADS.forEach(r => {
+      ctx.fillStyle = "rgba(0,0,0,.16)";
+      if(r.w >= r.h){ for(let dx=r.x+6; dx<r.x+r.w-6; dx+=20) ctx.fillRect(dx, r.y+r.h*0.5-1, 12, 2); }
+      else { for(let dy=r.y+6; dy<r.y+r.h-6; dy+=20) ctx.fillRect(r.x+r.w*0.5-1, dy, 2, 12); }
+      ctx.fillStyle = "rgba(140,120,80,.5)"; ctx.fillRect(r.x, r.y, r.w, 2);
+    });
   } else {
     ROADS.forEach(r => { ctx.fillStyle = "#6d5436"; rr(ctx, r.x, r.y, r.w, r.h, 6); ctx.fill(); });
     ROADS.forEach(r => { ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(r.x, r.y, r.w, 3); });
   }
   // plaza
-  ctx.fillStyle = downtown ? "#3a3f48" : suburb ? "#9a948a" : industrial ? "#3a3d44" : roman ? "#9a8260" : future ? "#12203a" : georgian ? "#b3aa98" : nineties ? "#2a2d33" : alien ? "#5a3f8a" : "#8a8475"; ctx.beginPath(); ctx.ellipse(755, 520, 188, 152, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = downtown ? "#3a3f48" : suburb ? "#9a948a" : industrial ? "#3a3d44" : roman ? "#9a8260" : future ? "#12203a" : georgian ? "#b3aa98" : nineties ? "#2a2d33" : alien ? "#5a3f8a" : steppe ? "#6b5a3a" : "#8a8475"; ctx.beginPath(); ctx.ellipse(755, 520, 188, 152, 0, 0, Math.PI*2); ctx.fill();
   ctx.strokeStyle = "rgba(0,0,0,.18)"; ctx.lineWidth = 3; ctx.stroke();
   // decor and structures
   drawDecor();
@@ -3066,7 +3337,11 @@ function drawBust(id, cx, midY, s){
     zorg6:     {skin:"#5fae6a", top:"#7b5bff", collar:"#bfa8ff", hairStyle:"short", acc:"none",    alien:true, glow:"#b6ff6a"},
     trader6:   {skin:"#c08ad8", top:"#34e0c4", collar:"#d8fff6", hairStyle:"curls", acc:"none",    alien:true, glow:"#ff9ee6"},
     mechanic6: {skin:"#5fb0d8", top:"#ff9e3f", collar:"#ffe0b0", hairStyle:"cap",   acc:"none",    alien:true, glow:"#7fd0ff"},
-    elder6:    {skin:"#6ad0b0", top:"#b06bff", collar:"#e6d0ff", hairStyle:"curls", acc:"glasses", alien:true, glow:"#b6ff6a"}
+    elder6:    {skin:"#6ad0b0", top:"#b06bff", collar:"#e6d0ff", hairStyle:"curls", acc:"glasses", alien:true, glow:"#b6ff6a"},
+    khan7:     {skin:"#c98a5a", top:"#7a1f1f", collar:"#caa86a", hairStyle:"short", acc:"beard"},
+    trader7:   {skin:"#caa06a", top:"#2f7f6b", collar:"#dfe9ff", hairStyle:"short", acc:"none"},
+    rider7:    {skin:"#a86a48", top:"#33415f", collar:"#dfe4f0", hairStyle:"short", acc:"none"},
+    elder7:    {skin:"#caa06a", top:"#6b5a8f", collar:"#e6dccb", hairStyle:"curls", acc:"none"}
   }[id];
   if(!cfg) return;
   const f = s;
@@ -3345,8 +3620,10 @@ function updateTitleInfo(){
   vis(el("btnChap4"), ch >= 4);
   vis(el("btnChap5"), ch >= 5);
   vis(el("btnChap6"), ch >= 6);
+  vis(el("btnChap7"), ch >= 7);
   let status = "New plumber", show = false;
-  if(save.level6Complete){ status = "Level 6 cleared  \u00b7  the Know It All"; show = true; }
+  if(save.level7Complete){ status = "Level 7 cleared  \u00b7  the Empty Pipeline"; show = true; }
+  else if(save.level6Complete){ status = "Level 6 cleared  \u00b7  the Know It All"; show = true; }
   else if(save.level6PitchDone){ status = "Chapter 6  \u00b7  the job"; show = true; }
   else if(save.level6LessonDone){ status = "Chapter 6  \u00b7  the pitch"; show = true; }
   else if(save.level6ReconDone){ status = "Chapter 6  \u00b7  Sales University"; show = true; }
@@ -3451,6 +3728,10 @@ const SCENES = {
   // Level 6 scenes (The Know It All, alien planet):
   zorg6:     "Images/zorg6.jpg",
   trader6:   "Images/trader6.jpg",
+  khan7:     "Images/khan7.jpg",
+  trader7:   "Images/trader7.jpg",
+  rider7:    "Images/rider7.jpg",
+  elder7:    "Images/elder7.jpg",
   mechanic6: "Images/mechanic6.jpg",
   elder6:    "Images/elder6.jpg",
 };
@@ -4397,7 +4678,7 @@ function updateJob(dt){
   }
   for(const q of J.bossProj){
     q.vy += JOB.gravity*0.5*dt; q.x += q.vx*dt; q.y += q.vy*dt; q.life -= dt;
-    if(q.y + q.r >= J.gy){ q.dead = true; splat(q.x, J.gy, J.theme === "digital" ? "#5fd0e0" : J.theme === "permits" ? "#ff6b6b" : J.theme === "backlog" ? "#46d08a" : J.theme === "arena" ? "#caa86a" : J.theme === "cosmic" ? "#b66aff" : "#6fae6a"); }
+    if(q.y + q.r >= J.gy){ q.dead = true; splat(q.x, J.gy, J.theme === "digital" ? "#5fd0e0" : J.theme === "permits" ? "#ff6b6b" : J.theme === "backlog" ? "#46d08a" : J.theme === "arena" ? "#caa86a" : J.theme === "steppe" ? "#c9a86a" : "#6fae6a"); }
     if(!q.dead && rectsOverlap(J.px, J.py, 28, 46, q.x-q.r, q.y-q.r, q.r*2, q.r*2)){ q.dead = true; hurtPlayer(14, q.x); }
   }
   J.bossProj = J.bossProj.filter(q => !q.dead && q.life > 0);
@@ -4419,7 +4700,7 @@ function drawPlungerGun(x,y,f){
   else if(permits){ ctx.fillStyle="#6b6450"; ctx.fillRect(0,-3,12,6); ctx.fillStyle="#ffcb47"; rr(ctx,10,-6,9,12,2); ctx.fill(); ctx.fillStyle="#1a1205"; ctx.fillRect(12,-2,4,4); }
   else if(digital){ ctx.fillStyle="#6b7390"; ctx.fillRect(0,-3,15,6); ctx.fillStyle="#34e0c4"; rr(ctx,13,-5,5,10,2); ctx.fill(); ctx.fillStyle="#bff7ee"; circle(17,0,2.4); }
   else if(job && job.theme === "arena"){ ctx.fillStyle="#8a5a2b"; ctx.fillRect(0,-1.5,18,3); ctx.fillStyle="#cbd3db"; ctx.beginPath(); ctx.moveTo(16,-3); ctx.lineTo(22,0); ctx.lineTo(16,3); ctx.closePath(); ctx.fill(); ctx.fillStyle="#e3a978"; circle(2,0,3); }
-  else if(job && job.theme === "cosmic"){ ctx.fillStyle="#6b7390"; ctx.fillRect(0,-3,13,6); ctx.fillStyle="#b66aff"; rr(ctx,11,-5,6,10,2); ctx.fill(); ctx.save(); ctx.shadowBlur=6; ctx.shadowColor="#b6ff6a"; ctx.fillStyle="#dfffb0"; circle(16,0,2.2); ctx.restore(); }
+  else if(job && job.theme === "steppe"){ ctx.strokeStyle="#6b4a2a"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(2, 0, 12, -1.1, 1.1); ctx.stroke(); ctx.strokeStyle="#d8cdb4"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(2+12*Math.cos(-1.1), 12*Math.sin(-1.1)); ctx.lineTo(2+12*Math.cos(1.1), 12*Math.sin(1.1)); ctx.stroke(); ctx.strokeStyle="#caa86a"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(16,0); ctx.stroke(); ctx.fillStyle="#cbd3db"; ctx.beginPath(); ctx.moveTo(16,-2); ctx.lineTo(20,0); ctx.lineTo(16,2); ctx.closePath(); ctx.fill(); }
   else { ctx.fillStyle="#8a5a2b"; ctx.fillRect(0,-2,14,4); ctx.fillStyle="#c0392b"; rr(ctx,12,-7,8,14,3); ctx.fill(); }
   ctx.restore();
 }
@@ -4432,7 +4713,7 @@ function drawPlunger(x,y,vx){
   else if(permits){ ctx.fillStyle="#ffcb47"; rr(ctx,-6,-5,13,10,2); ctx.fill(); ctx.strokeStyle="#1a1205"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-3,0); ctx.lineTo(-1,3); ctx.lineTo(4,-3); ctx.stroke(); }
   else if(digital){ ctx.fillStyle="#34e0c4"; rr(ctx,-7,-3,16,6,3); ctx.fill(); ctx.fillStyle="#eafffb"; rr(ctx,2,-2,7,4,2); ctx.fill(); }
   else if(job && job.theme === "arena"){ ctx.fillStyle="#8a5a2b"; ctx.fillRect(-12,-1.5,20,3); ctx.fillStyle="#cbd3db"; ctx.beginPath(); ctx.moveTo(8,-4); ctx.lineTo(16,0); ctx.lineTo(8,4); ctx.closePath(); ctx.fill(); ctx.fillStyle="#eef3f8"; ctx.beginPath(); ctx.moveTo(8,-3); ctx.lineTo(13,-0.5); ctx.lineTo(8,0); ctx.closePath(); ctx.fill(); ctx.fillStyle="#b5462f"; ctx.fillRect(-12,-2.5,3,5); }
-  else if(job && job.theme === "cosmic"){ ctx.save(); ctx.shadowBlur=8; ctx.shadowColor="#b6ff6a"; ctx.fillStyle="#dfffb0"; rr(ctx,-7,-3,16,6,3); ctx.fill(); ctx.fillStyle="#b6ff6a"; rr(ctx,-2,-2,8,4,2); ctx.fill(); ctx.restore(); }
+  else if(job && job.theme === "steppe"){ ctx.strokeStyle="#6b4a2a"; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(-10,0); ctx.lineTo(6,0); ctx.stroke(); ctx.fillStyle="#cbd3db"; ctx.beginPath(); ctx.moveTo(6,-3); ctx.lineTo(12,0); ctx.lineTo(6,3); ctx.closePath(); ctx.fill(); ctx.fillStyle="#d8cdb4"; ctx.beginPath(); ctx.moveTo(-10,0); ctx.lineTo(-13,-3); ctx.lineTo(-11,0); ctx.lineTo(-13,3); ctx.closePath(); ctx.fill(); }
   else { ctx.fillStyle="#8a5a2b"; ctx.fillRect(-8,-2,10,4); ctx.fillStyle="#c0392b"; rr(ctx,0,-6,7,12,3); ctx.fill(); }
   ctx.restore();
 }
@@ -4489,14 +4770,19 @@ function drawGunk(x,y,w,h){
     ctx.fillStyle = "#7e8cc0"; ctx.fillRect(cx-1, y-4, 2, 4); ctx.fillStyle = "#ff6b6b"; circle(cx, y-5, 2);
     return;
   }
-  if(job && job.theme === "cosmic"){
-    ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = "#b66aff";
-    ctx.fillStyle = "#3a1f5e"; ctx.beginPath(); ctx.ellipse(cx, cy+3, w/2, h/2, 0, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = "#5a2f8e"; ctx.beginPath(); ctx.ellipse(cx, cy, w/2, h*0.4, 0, 0, Math.PI*2); ctx.fill();
+  if(job && job.theme === "steppe"){
+    const faceLeft = job.px < cx;
+    ctx.save();
+    if(faceLeft){ ctx.translate(cx*2, 0); ctx.scale(-1, 1); }
+    ctx.fillStyle="#4a4a52"; ctx.fillRect(cx-w*0.3, cy+h*0.1, w*0.12, h*0.4); ctx.fillRect(cx-w*0.05, cy+h*0.1, w*0.12, h*0.4); ctx.fillRect(cx+w*0.16, cy+h*0.1, w*0.12, h*0.4);
+    ctx.fillStyle="#6a6a72"; ctx.beginPath(); ctx.ellipse(cx, cy, w*0.42, h*0.3, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle="#5a5a62"; ctx.beginPath(); ctx.moveTo(cx-w*0.4, cy-h*0.05); ctx.lineTo(cx-w*0.62, cy-h*0.22); ctx.lineTo(cx-w*0.58, cy+h*0.06); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="#6a6a72"; ctx.beginPath(); ctx.ellipse(cx+w*0.36, cy-h*0.08, w*0.2, h*0.22, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle="#5a5a62"; ctx.beginPath(); ctx.moveTo(cx+w*0.3, cy-h*0.26); ctx.lineTo(cx+w*0.34, cy-h*0.5); ctx.lineTo(cx+w*0.42, cy-h*0.26); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="#7a7a82"; ctx.beginPath(); ctx.moveTo(cx+w*0.5, cy-h*0.1); ctx.lineTo(cx+w*0.66, cy); ctx.lineTo(cx+w*0.5, cy+h*0.08); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="#1a1a1f"; circle(cx+w*0.64, cy, 1.6);
+    ctx.save(); ctx.shadowBlur=6; ctx.shadowColor="#ffcb47"; ctx.fillStyle="#ffe08a"; circle(cx+w*0.36, cy-h*0.08, 1.8); ctx.restore();
     ctx.restore();
-    ctx.fillStyle = "#2a1646"; for(let i=-1;i<=1;i++){ ctx.beginPath(); ctx.moveTo(cx+i*w*0.28, cy-h*0.3); ctx.lineTo(cx+i*w*0.28-3, cy-h*0.5); ctx.lineTo(cx+i*w*0.28+3, cy-h*0.5); ctx.closePath(); ctx.fill(); }
-    ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "#dfffb0"; circle(cx-5, cy-2, 3.2); circle(cx+5, cy-2, 3.2); ctx.restore();
-    ctx.fillStyle = "#1a0e2a"; circle(cx-5, cy-2, 1.5); circle(cx+5, cy-2, 1.5);
     return;
   }
   ctx.fillStyle="#3a7a4a"; ctx.beginPath(); ctx.ellipse(cx, cy+3, w/2, h/2, 0, 0, Math.PI*2); ctx.fill();
@@ -4595,19 +4881,23 @@ function drawBoss(b){
     ctx.fillStyle = "#ff6b6b"; circle(cx-26, cy-b.h*0.58+wob, 3); circle(cx+26, cy-b.h*0.58+wob, 3);
     return;
   }
-  if(job && job.theme === "cosmic"){
-    const ex = clamp((job.px - cx)/200, -3, 3);
-    ctx.save(); ctx.globalAlpha = 0.4; ctx.fillStyle = "#1a0e2a"; ctx.beginPath(); ctx.ellipse(cx, cy+wob, b.w*0.62, b.h*0.58, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
-    ctx.save(); ctx.shadowBlur = 18; ctx.shadowColor = "#b66aff";
-    ctx.fillStyle = b.hurt>0 ? "#e8d8ff" : "#3a1f5e"; ctx.beginPath(); ctx.ellipse(cx, cy+wob, b.w*0.55, b.h*0.5, 0, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = b.hurt>0 ? "#f3ecff" : "#5a2f8e"; ctx.beginPath(); ctx.ellipse(cx, cy-6+wob, b.w*0.45, b.h*0.34, 0, 0, Math.PI*2); ctx.fill();
+  if(job && job.theme === "steppe"){
+    const hurt = b.hurt>0; const t2 = job.time;
+    ctx.save();
+    for(let i=0;i<5;i++){
+      const ly = cy + b.h*0.4 - i*(b.h*0.22);
+      const rad = b.w*(0.55 - i*0.06);
+      const sway = Math.sin(t2*2 + i)*10;
+      ctx.globalAlpha = hurt ? 0.85 : (0.5 + i*0.08);
+      ctx.fillStyle = hurt ? "#f3ecd8" : (i%2 ? "#9a8a6a" : "#b6a888");
+      ctx.beginPath(); ctx.ellipse(cx + sway, ly+wob, rad, b.h*0.16, 0, 0, Math.PI*2); ctx.fill();
+    }
     ctx.restore();
-    ctx.fillStyle = b.hurt>0 ? "#d8c0ff" : "#33194f"; circle(cx-b.w*0.4, cy+b.h*0.2+wob, 14); circle(cx+b.w*0.38, cy+b.h*0.16+wob, 16); circle(cx+b.w*0.06, cy+b.h*0.3+wob, 11);
-    ctx.fillStyle = "#2a1646"; for(let i=-3;i<=3;i++){ ctx.beginPath(); ctx.moveTo(cx+i*b.w*0.14, cy-b.h*0.3+wob); ctx.lineTo(cx+i*b.w*0.14-6, cy-b.h*0.56+wob); ctx.lineTo(cx+i*b.w*0.14+6, cy-b.h*0.56+wob); ctx.closePath(); ctx.fill(); }
-    ctx.save(); ctx.shadowBlur = 14; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "#dfffb0"; circle(cx-18, cy-4+wob, 10); circle(cx+18, cy-4+wob, 10); ctx.restore();
-    ctx.fillStyle = "#1a0e2a"; circle(cx-18+ex, cy-2+wob, 4.5); circle(cx+18+ex, cy-2+wob, 4.5);
-    ctx.fillStyle = "#1a0e2a"; ctx.beginPath(); ctx.ellipse(cx, cy+b.h*0.2+wob, 16, 9, 0, 0, Math.PI*2); ctx.fill();
-    ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "#8ee65a"; for(let i=-2;i<=2;i++){ ctx.beginPath(); ctx.moveTo(cx+i*6, cy+b.h*0.2-6+wob); ctx.lineTo(cx+i*6-2, cy+b.h*0.2+6+wob); ctx.lineTo(cx+i*6+2, cy+b.h*0.2+6+wob); ctx.closePath(); ctx.fill(); } ctx.restore();
+    ctx.fillStyle = "rgba(240,235,220,.8)";
+    for(let i=0;i<6;i++){ const a=t2*1.5 + i*1.05; const rx=cx+Math.cos(a)*b.w*0.4; const ry=cy+wob+Math.sin(a)*b.h*0.3; ctx.save(); ctx.translate(rx,ry); ctx.rotate(a); ctx.fillRect(-4,-3,8,6); ctx.restore(); }
+    const ey = cy - b.h*0.28 + wob;
+    ctx.save(); ctx.shadowBlur=14; ctx.shadowColor = hurt ? "#ffffff" : "#ffcb47"; ctx.fillStyle = hurt ? "#ffffff" : "#ffe08a"; circle(cx-b.w*0.16, ey, 9); circle(cx+b.w*0.16, ey, 9); ctx.restore();
+    const ex = clamp((job.px - cx)/200, -3, 3); ctx.fillStyle="#2a2018"; circle(cx-b.w*0.16+ex, ey+1, 4); circle(cx+b.w*0.16+ex, ey+1, 4);
     return;
   }
   ctx.fillStyle = b.hurt>0 ? "#bfe8c4" : "#3f7a4a"; ctx.beginPath(); ctx.ellipse(cx, cy+wob, b.w*0.55, b.h*0.5, 0, 0, Math.PI*2); ctx.fill();
@@ -4664,8 +4954,9 @@ function drawPlumber(J){
   const agent = J.hero === "agent";
   const rep = J.hero === "rep";
   const arena = J.theme === "arena";
-  ctx.fillStyle = arena ? "#9a7d3a" : closer ? "#c2477e" : agent ? "#33415f" : rep ? "#2f9e8a" : (digital ? "#2f5fa0" : "#34518f"); rr(ctx, x+3, y+14, 22, 20, 4); ctx.fill();
-  ctx.fillStyle = arena ? "#7a5a2a" : (agent || rep) ? "#eef1f6" : "#3fc7b4"; rr(ctx, x+5, y+10, 18, 8, 3); ctx.fill();
+  const steppe = J.theme === "steppe";
+  ctx.fillStyle = steppe ? "#3a5a8f" : arena ? "#9a7d3a" : closer ? "#c2477e" : agent ? "#33415f" : rep ? "#2f9e8a" : (digital ? "#2f5fa0" : "#34518f"); rr(ctx, x+3, y+14, 22, 20, 4); ctx.fill();
+  ctx.fillStyle = steppe ? "#c0392b" : arena ? "#7a5a2a" : (agent || rep) ? "#eef1f6" : "#3fc7b4"; rr(ctx, x+5, y+10, 18, 8, 3); ctx.fill();
   if(rep){ ctx.fillStyle="#ffcb47"; ctx.fillRect(cx-1, y+12, 2, 8); }
   ctx.fillStyle="#e8b48a"; circle(cx, y+6, 7);
   if(arena){
@@ -4674,6 +4965,11 @@ function drawPlumber(J){
     ctx.fillStyle="#c9a24a"; ctx.fillRect(cx-8, y+4, 16, 2);
     ctx.fillStyle="#1a1208"; ctx.fillRect(cx-2, y+3, 4, 6);
     ctx.fillStyle="#b5462f"; for(let i=-1;i<=1;i++){ ctx.beginPath(); ctx.ellipse(cx+i*3, y-2, 2, 5, 0, 0, Math.PI*2); ctx.fill(); }
+    ctx.fillStyle="#23304a"; circle(cx + (f>0?3:-3), y+6, 1.5);
+  } else if(steppe){
+    ctx.fillStyle="#7a3a2a"; ctx.beginPath(); ctx.moveTo(cx-8, y+4); ctx.lineTo(cx, y-8); ctx.lineTo(cx+8, y+4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="#caa86a"; ctx.fillRect(cx-8, y+3, 16, 3);
+    ctx.fillStyle="#ffcb47"; circle(cx, y-8, 1.6);
     ctx.fillStyle="#23304a"; circle(cx + (f>0?3:-3), y+6, 1.5);
   } else if(closer){
     ctx.fillStyle="#3a2418"; rr(ctx, cx - f*10, y+2, 6, 15, 3); ctx.fill();
@@ -4697,7 +4993,7 @@ function drawPlumber(J){
   }
   ctx.strokeStyle="#e3a978"; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx, y+18); ctx.lineTo(cx + f*14, y+20); ctx.stroke();
   drawPlungerGun(cx + f*14, y+20, f);
-  if(J.muzzle > 0){ ctx.fillStyle = digital ? "rgba(140,240,230,.85)" : (J.theme === "permits" ? "rgba(255,205,90,.95)" : J.theme === "backlog" ? "rgba(120,230,170,.9)" : J.theme === "arena" ? "rgba(255,224,160,.92)" : "rgba(255,220,120,.8)"); circle(cx + f*24, y+20, 4); }
+  if(J.muzzle > 0){ ctx.fillStyle = digital ? "rgba(140,240,230,.85)" : (J.theme === "permits" ? "rgba(255,205,90,.95)" : J.theme === "backlog" ? "rgba(120,230,170,.9)" : J.theme === "arena" ? "rgba(255,224,160,.92)" : J.theme === "steppe" ? "rgba(230,200,150,.9)" : "rgba(255,220,120,.8)"); circle(cx + f*24, y+20, 4); }
 }
 function drawJobBg(J){
   const digital = J.theme === "digital";
@@ -4732,15 +5028,16 @@ function drawJobBg(J){
     for(let x=160; x<JC.W; x+=150){ const dy = (J.time*45 + x*1.1) % (J.gy*0.8); ctx.fillStyle="rgba(192,57,43,.5)"; rr(ctx, x, dy, 14, 18, 2); ctx.fill(); ctx.fillStyle="rgba(255,255,255,.5)"; ctx.fillRect(x+3, dy+5, 8, 2); ctx.fillRect(x+3, dy+9, 8, 2); }
     return;
   }
-  if(J.theme === "cosmic"){
-    for(let i=0;i<60;i++){ const sx=(i*137)%JC.W, sy=(i*89)%(J.gy*0.85); ctx.globalAlpha=0.4+((i*7)%5)*0.1; ctx.fillStyle = (i%3===0)?"#b6ff6a":(i%3===1)?"#7fd0ff":"#ff9ee6"; circle(sx, sy, (i%4===0)?1.8:1); }
-    ctx.globalAlpha=1;
-    ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle="#ff9ee6"; circle(220, 70, 30); ctx.fillStyle="#7fd0ff"; circle(JC.W*0.5, 54, 18);
-    ctx.fillStyle="#b6ff6a"; circle(JC.W*0.8, 90, 24); ctx.strokeStyle="rgba(255,255,255,.4)"; ctx.lineWidth=3; ctx.translate(JC.W*0.8,90); ctx.rotate(-0.5); ctx.beginPath(); ctx.ellipse(0,0,40,11,0,0,Math.PI*2); ctx.stroke(); ctx.restore();
-    ctx.fillStyle="rgba(120,80,180,.22)"; ctx.fillRect(0, J.gy*0.62, JC.W, J.gy*0.38);
-    for(let x=40; x<JC.W; x+=120){ const hh = 30 + ((x*7)%50); ctx.fillStyle="rgba(60,40,90,.6)"; rr(ctx, x, J.gy*0.78-hh, 70, hh, 6); ctx.fill();
-      ctx.save(); ctx.shadowBlur=8; ctx.shadowColor="#b6ff6a"; ctx.fillStyle="rgba(180,255,120,.5)"; for(let wy=J.gy*0.78-hh+8; wy<J.gy*0.78-6; wy+=12){ for(let wx=x+8; wx<x+62; wx+=14){ if(((wx+wy)%3)===0) ctx.fillRect(wx, wy, 4, 5); } } ctx.restore();
-    }
+  if(J.theme === "steppe"){
+    ctx.save(); ctx.globalAlpha=0.8; ctx.fillStyle="#ffd98a"; circle(JC.W*0.5, 70, 26); ctx.restore();
+    ctx.fillStyle="rgba(70,86,110,.5)"; ctx.beginPath(); ctx.moveTo(0, J.gy*0.5);
+    for(let mx=0; mx<=JC.W; mx+=200){ ctx.lineTo(mx, J.gy*0.5 - 40 - ((mx*7)%60)); ctx.lineTo(mx+100, J.gy*0.5); }
+    ctx.lineTo(JC.W, J.gy*0.5); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="rgba(100,120,150,.35)"; ctx.beginPath(); ctx.moveTo(0, J.gy*0.55);
+    for(let mx=80; mx<=JC.W; mx+=240){ ctx.lineTo(mx, J.gy*0.55 - 26 - ((mx*3)%40)); ctx.lineTo(mx+120, J.gy*0.55); }
+    ctx.lineTo(JC.W, J.gy*0.55); ctx.closePath(); ctx.fill();
+    for(let gx=140; gx<JC.W; gx+=360){ const gy=J.gy*0.56; ctx.fillStyle="rgba(220,210,185,.7)"; ctx.beginPath(); ctx.ellipse(gx, gy, 18, 11, 0, Math.PI, 0); ctx.fill(); ctx.fillRect(gx-18, gy, 36, 9); ctx.fillStyle="rgba(160,120,80,.7)"; ctx.fillRect(gx-3, gy-2, 6, 9); }
+    ctx.strokeStyle="rgba(120,140,70,.5)"; ctx.lineWidth=2; for(let sx=40; sx<JC.W; sx+=70){ const sy=J.gy-8; ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(sx-3,sy-8); ctx.moveTo(sx,sy); ctx.lineTo(sx,sy-10); ctx.moveTo(sx,sy); ctx.lineTo(sx+3,sy-8); ctx.stroke(); }
     return;
   }
   ctx.strokeStyle = digital ? "rgba(120,180,255,.10)" : "rgba(120,180,150,.10)"; ctx.lineWidth=18;
@@ -4765,7 +5062,7 @@ function drawJobHud(J){
     const bw = Math.min(360, viewW-120), bx = (viewW-bw)/2, by = 52;
     ctx.fillStyle="rgba(10,16,30,.85)"; rr(ctx, bx-8, by-6, bw+16, 24, 8); ctx.fill();
     ctx.fillStyle="rgba(255,255,255,.12)"; rr(ctx, bx, by, bw, 12, 6); ctx.fill();
-    ctx.fillStyle = J.theme === "digital" ? "#5fd0e0" : J.theme === "permits" ? "#ffcf5a" : J.theme === "backlog" ? "#46d08a" : J.theme === "arena" ? "#c9a24a" : J.theme === "cosmic" ? "#b6ff6a" : "#7bdc8a"; rr(ctx, bx, by, bw*(J.boss.hp/J.boss.maxHp), 12, 6); ctx.fill();
+    ctx.fillStyle = J.theme === "digital" ? "#5fd0e0" : J.theme === "permits" ? "#ffcf5a" : J.theme === "backlog" ? "#46d08a" : J.theme === "arena" ? "#c9a24a" : J.theme === "cosmic" ? "#b6ff6a" : J.theme === "steppe" ? "#d8b06a" : "#7bdc8a"; rr(ctx, bx, by, bw*(J.boss.hp/J.boss.maxHp), 12, 6); ctx.fill();
     drawText(J.bossName, viewW/2, by+30, "8px", J.theme === "digital" ? "#bff7ee" : J.theme === "permits" ? "#ffe08a" : J.theme === "backlog" ? "#bdf5d0" : J.theme === "arena" ? "#ffe0a0" : "#9be0a0", "center");
   }
   if(J.time < 4.5){
@@ -4797,8 +5094,8 @@ function drawJob(){
     ? {g0:"#1c1812",g1:"#120f0a",ground:"#2a2620",lip:"#3a352a",dot:"rgba(220,200,140,.07)",plat:"#3a342a",haz:"#ff8a3a",proj:"#46d08a"}
     : J.theme === "arena"
     ? {g0:"#2a2018",g1:"#160f0a",ground:"#c2a874",lip:"#a98f5e",dot:"rgba(90,70,45,.12)",plat:"#9a7d4a",haz:"#c0392b",proj:"#c9b079"}
-    : J.theme === "cosmic"
-    ? {g0:"#4a2a7a",g1:"#1a1038",ground:"#2f6f66",lip:"#3a8576",dot:"rgba(180,255,120,.10)",plat:"#52407a",haz:"#ff6bd0",proj:"#b66aff"}
+    : J.theme === "steppe"
+    ? {g0:"#3a4a5a",g1:"#1a2530",ground:"#5a6f3a",lip:"#6a8048",dot:"rgba(200,220,140,.10)",plat:"#6b5436",haz:"#c0392b",proj:"#d8b06a"}
     : {g0:"#10201c",g1:"#0a1512",ground:"#243a30",lip:"#2f4a3c",dot:"rgba(120,220,140,.08)",plat:"#34543f",haz:"#cf4b4b",proj:"#6fae6a"};
   ctx.setTransform(dpr,0,0,dpr,0,0);
   const g = ctx.createLinearGradient(0,0,0,viewH);
@@ -4983,6 +5280,7 @@ function wireEvents(){
   el("btnChap4").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(4); });
   el("btnChap5").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(5); });
   el("btnChap6").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(6); });
+  el("btnChap7").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(7); });
   el("btnGo").addEventListener("click", () => { sfxClick(); resetRun(); transitionTo("overworld"); toast("Move with the arrows or the pad. Press A near a door."); });
   el("btnReplay").addEventListener("click", () => { sfxClick(); resetRun(); transitionTo("overworld"); toast("Fresh recon. Follow the gold stars."); });
   el("btnTitle").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
@@ -5021,7 +5319,7 @@ function wireEvents(){
   el("btnOutroTitle").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
   el("btnCh2Title").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
   // stop click based buttons from keeping focus, so a later Space press cannot double fire
-  ["dlgNext","dlgLeave","btnCase","caseClose","btnMute","btnStart","btnHow","btnReset","btnIntroGo","btnChap1","btnChap2","btnChap3","btnChap4","btnChap5","btnChap6","btnGo","btnReplay","btnTitle","btnUniv","lessonLeave","pitchLeave","btnWinStart","btnWinTitle","btnFailRetry","btnFailTitle","btnJobStreet","btnJobTitle","btnJobRetry","btnJobTitle2","btnOutroNext","btnOutroReplay","btnOutroTitle","btnCh2Title"]
+  ["dlgNext","dlgLeave","btnCase","caseClose","btnMute","btnStart","btnHow","btnReset","btnIntroGo","btnChap1","btnChap2","btnChap3","btnChap4","btnChap5","btnChap6","btnChap7","btnGo","btnReplay","btnTitle","btnUniv","lessonLeave","pitchLeave","btnWinStart","btnWinTitle","btnFailRetry","btnFailTitle","btnJobStreet","btnJobTitle","btnJobRetry","btnJobTitle2","btnOutroNext","btnOutroReplay","btnOutroTitle","btnCh2Title"]
     .forEach(id => el(id).addEventListener("mousedown", e => e.preventDefault()));
   window.addEventListener("resize", () => { resize(); centerCam(); });
   window.addEventListener("orientationchange", () => { setTimeout(() => { resize(); centerCam(); }, 200); });
