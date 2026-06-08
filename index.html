@@ -2483,42 +2483,130 @@ function drawPrompt(x,y,label){
 }
 function drawUniversity(){
   const b = UNI, dcx = b.x + b.w/2, open = uniOpen();
+  const marble = open ? "#eef1f6" : "#aeb4bd";
+  const marbleHi = open ? "#ffffff" : "#c4c9d1";
+  const marbleSh = open ? "#d2d7e0" : "#969ca6";
+  const gold = open ? "#ffcb47" : "#8a8f98";
+  const goldHi = open ? "#ffe08a" : "#9aa0a8";
+  const verd = open ? "#2bbf9f" : "#67737e";
+  const verdHi = open ? "#49d3b2" : "#76828d";
+  const glass = open ? "#3f7fc0" : "#6b7782";
+  const glassHi = open ? "#9fd0f2" : "#8b97a2";
   // ground shadow
-  ctx.fillStyle = "rgba(0,0,0,.28)"; rr(ctx, b.x+10, b.y+b.h-2, b.w-8, 18, 9); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.3)"; rr(ctx, 560, 186, 380, 16, 9); ctx.fill();
+  // ===== DOME (Renaissance) drawn behind =====
+  ctx.fillStyle = marble; rr(ctx, 718, 50, 64, 14, 3); ctx.fill();
+  ctx.fillStyle = marbleSh; for(let i=-2;i<=2;i++){ ctx.fillRect(750+i*12-1.5, 52, 3, 12); }
+  ctx.fillStyle = verd; ctx.beginPath(); ctx.arc(750, 56, 28, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = verdHi; ctx.beginPath(); ctx.arc(750, 56, 28, Math.PI, Math.PI*1.5); ctx.fill();
+  ctx.strokeStyle = open ? "rgba(255,255,255,.28)" : "rgba(255,255,255,.12)"; ctx.lineWidth = 1; for(let r=1;r<5;r++){ const aa = Math.PI + r*Math.PI/5; ctx.beginPath(); ctx.moveTo(750, 56); ctx.lineTo(750+Math.cos(aa)*28, 56+Math.sin(aa)*28); ctx.stroke(); }
+  ctx.fillStyle = marble; rr(ctx, 743, 16, 14, 14, 2); ctx.fill();
+  ctx.fillStyle = open ? "#ffe08a" : "#8b97a2"; ctx.fillRect(746, 18, 8, 11);
+  ctx.fillStyle = verd; ctx.beginPath(); ctx.arc(750, 16, 7, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = gold; ctx.fillRect(749, 4, 2, 12); circle(750, 4, 2.5);
+  ctx.fillStyle = open ? "#34e0c4" : "#6b7782"; ctx.beginPath(); ctx.moveTo(751, 6); ctx.lineTo(763, 9); ctx.lineTo(751, 12); ctx.closePath(); ctx.fill();
+  // ===== LEFT WING (Gothic) =====
+  ctx.fillStyle = marbleSh; rr(ctx, 564, 70, 58, 116, 4); ctx.fill();
+  ctx.fillStyle = marble; rr(ctx, 564, 70, 50, 116, 4); ctx.fill();
+  ctx.fillStyle = marble; ctx.fillRect(580, 34, 14, 40);
+  ctx.fillStyle = verd; ctx.beginPath(); ctx.moveTo(576, 36); ctx.lineTo(587, 6); ctx.lineTo(598, 36); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = gold; circle(587, 6, 2);
+  ctx.fillStyle = gold; circle(589, 96, 9); ctx.fillStyle = open ? "#bfe3ff" : "#8b97a2"; circle(589, 96, 7);
+  ctx.strokeStyle = gold; ctx.lineWidth = 1; for(let r=0;r<6;r++){ const aa=r*Math.PI/3; ctx.beginPath(); ctx.moveTo(589, 96); ctx.lineTo(589+Math.cos(aa)*7, 96+Math.sin(aa)*7); ctx.stroke(); }
+  ctx.fillStyle = "#1c2740"; ctx.beginPath(); ctx.moveTo(576, 168); ctx.lineTo(576, 130); ctx.quadraticCurveTo(589, 112, 602, 130); ctx.lineTo(602, 168); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = open ? "#bfe3ff" : "#8b97a2"; ctx.beginPath(); ctx.moveTo(579, 166); ctx.lineTo(579, 131); ctx.quadraticCurveTo(589, 116, 599, 131); ctx.lineTo(599, 166); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = marbleSh; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(589, 118); ctx.lineTo(589, 166); ctx.stroke();
+  // ===== RIGHT WING (modern glass) =====
+  ctx.fillStyle = marbleSh; rr(ctx, 880, 74, 56, 112, 4); ctx.fill();
+  ctx.fillStyle = glass; rr(ctx, 886, 80, 44, 100, 3); ctx.fill();
+  ctx.fillStyle = glassHi; for(let gy=84; gy<176; gy+=14){ for(let gx=889; gx<926; gx+=13){ rr(ctx, gx, gy, 9, 10, 1); ctx.fill(); } }
+  ctx.strokeStyle = marble; ctx.lineWidth = 1; ctx.strokeRect(886, 80, 44, 100);
+  ctx.fillStyle = marble; ctx.fillRect(907, 62, 2, 12); ctx.fillStyle = gold; circle(908, 61, 2);
+  // ===== CENTRAL BODY + PORTICO (classical) =====
+  ctx.fillStyle = marble; rr(ctx, 612, 84, 276, 102, 5); ctx.fill();
+  ctx.fillStyle = marbleHi; rr(ctx, 612, 84, 138, 102, 5); ctx.fill();
+  ctx.fillStyle = marbleHi; rr(ctx, 606, 84, 288, 13, 2); ctx.fill();
+  ctx.fillStyle = marbleSh; for(let dx=616; dx<884; dx+=11){ ctx.fillRect(dx, 95, 5, 4); }
+  ctx.fillStyle = marble; ctx.beginPath(); ctx.moveTo(606, 86); ctx.lineTo(750, 52); ctx.lineTo(894, 86); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = marbleHi; ctx.beginPath(); ctx.moveTo(606, 86); ctx.lineTo(750, 52); ctx.lineTo(750, 86); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = gold; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(604, 87); ctx.lineTo(750, 51); ctx.lineTo(896, 87); ctx.stroke();
+  ctx.fillStyle = gold; ctx.beginPath(); ctx.moveTo(740, 74); ctx.lineTo(750, 70); ctx.lineTo(760, 74); ctx.lineTo(750, 78); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = goldHi; ctx.fillRect(746, 76, 8, 4);
+  ctx.strokeStyle = gold; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(758, 73); ctx.lineTo(762, 80); ctx.stroke(); ctx.fillStyle = gold; circle(762, 80, 1.5);
+  const cn = 6, c0 = 632, cspan = 236;
+  for(let i=0;i<cn;i++){
+    const px = c0 + i*(cspan/(cn-1));
+    if(px > 726 && px < 776) continue;
+    ctx.fillStyle = marbleHi; rr(ctx, px-5, 100, 10, 74, 2); ctx.fill();
+    ctx.fillStyle = marbleSh; ctx.fillRect(px+2, 100, 2, 74);
+    ctx.fillStyle = marble; rr(ctx, px-7, 96, 14, 5, 1); ctx.fill();
+    ctx.fillStyle = marbleSh; rr(ctx, px-7, 172, 14, 5, 1); ctx.fill();
+  }
+  // frieze sign
+  ctx.fillStyle = "rgba(10,40,34,.92)"; rr(ctx, 656, 84, 188, 13, 3); ctx.fill();
+  drawText("SALES UNIVERSITY", 750, 94, "8px", open ? "#7ff0dd" : "#aeb4bd", "center");
+  // banners
+  [-1,1].forEach(side => {
+    const bxp = 750 + side*70;
+    ctx.fillStyle = open ? "#c23a5a" : "#6b7782"; ctx.beginPath(); ctx.moveTo(bxp-9, 100); ctx.lineTo(bxp+9, 100); ctx.lineTo(bxp+9, 134); ctx.lineTo(bxp, 128); ctx.lineTo(bxp-9, 134); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = gold; ctx.beginPath(); ctx.moveTo(bxp-6, 112); ctx.lineTo(bxp, 109); ctx.lineTo(bxp+6, 112); ctx.lineTo(bxp, 115); ctx.closePath(); ctx.fill();
+  });
+  // grand arched door
+  ctx.fillStyle = marbleSh; ctx.beginPath(); ctx.moveTo(727, 178); ctx.lineTo(727, 144); ctx.quadraticCurveTo(750, 122, 773, 144); ctx.lineTo(773, 178); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = open ? "#2a1f14" : "#23282f"; ctx.beginPath(); ctx.moveTo(731, 178); ctx.lineTo(731, 146); ctx.quadraticCurveTo(750, 126, 769, 146); ctx.lineTo(769, 178); ctx.closePath(); ctx.fill();
+  if(open){ ctx.fillStyle = "rgba(255,205,90,.4)"; ctx.beginPath(); ctx.moveTo(734, 178); ctx.lineTo(734, 147); ctx.quadraticCurveTo(750, 129, 766, 147); ctx.lineTo(766, 178); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#3a2e22"; ctx.fillRect(749, 130, 2, 48); }
+  ctx.fillStyle = gold; ctx.beginPath(); ctx.moveTo(746, 122); ctx.lineTo(754, 122); ctx.lineTo(756, 130); ctx.lineTo(744, 130); ctx.closePath(); ctx.fill();
+  // lamps
+  [-1,1].forEach(side => {
+    const lx = 750 + side*34;
+    ctx.fillStyle = marbleSh; ctx.fillRect(lx-2, 152, 4, 24);
+    ctx.save(); if(open){ ctx.shadowColor = "rgba(255,205,90,.85)"; ctx.shadowBlur = 12; } ctx.fillStyle = open ? "#ffe08a" : "#8b97a2"; circle(lx, 150, 4); ctx.restore();
+  });
   // steps
-  ctx.fillStyle = "#9aa0a8"; rr(ctx, b.x-6, b.y+b.h-20, b.w+12, 26, 6); ctx.fill();
-  ctx.fillStyle = "#b3b9c1"; rr(ctx, b.x+10, b.y+b.h-26, b.w-20, 12, 5); ctx.fill();
-  // main body
-  ctx.fillStyle = open ? "#e9ecf2" : "#aeb4bd"; rr(ctx, b.x+18, b.y+44, b.w-36, b.h-58, 6); ctx.fill();
-  // columns
-  ctx.fillStyle = open ? "#f6f8fb" : "#c4c9d1";
-  const cols = 5, span = b.w - 70, cx0 = b.x + 35;
-  for(let i=0;i<cols;i++){
-    const px = cx0 + i*(span/(cols-1)) - 7;
-    rr(ctx, px, b.y+50, 14, b.h-70, 3); ctx.fill();
-  }
-  // entablature
-  ctx.fillStyle = "#dfe3ea"; rr(ctx, b.x+8, b.y+38, b.w-16, 16, 4); ctx.fill();
-  // pediment
-  ctx.fillStyle = open ? "#34e0c4" : "#6b7782";
-  ctx.beginPath(); ctx.moveTo(b.x+4, b.y+40); ctx.lineTo(dcx, b.y+2); ctx.lineTo(b.x+b.w-4, b.y+40); ctx.closePath(); ctx.fill();
-  // emblem
-  ctx.fillStyle = open ? "#ffcb47" : "#9aa0a8"; circle(dcx, b.y+26, 9);
-  drawText("$", dcx, b.y+27, "9px", open ? "#1a1205" : "#5a5f66", "center");
-  // banner
-  ctx.fillStyle = "rgba(10,40,34,.9)"; rr(ctx, dcx-92, b.y+b.h-34, 184, 22, 7); ctx.fill();
-  ctx.strokeStyle = open ? "#34e0c4" : "#6b7782"; ctx.lineWidth = 2; rr(ctx, dcx-92, b.y+b.h-34, 184, 22, 7); ctx.stroke();
-  drawText("SALES UNIVERSITY", dcx, b.y+b.h-23, "8px", open ? "#7ff0dd" : "#aeb4bd", "center");
-  // door
-  ctx.fillStyle = open ? "#3a2e22" : "#2a2f36"; rr(ctx, dcx-18, b.y+b.h-14, 36, 14, 4); ctx.fill();
-  if(open){ ctx.fillStyle = "#ffcb47"; ctx.fillRect(dcx-1, b.y+b.h-13, 2, 12); }
-  // closed state notice
+  ctx.fillStyle = marbleSh; rr(ctx, 690, 176, 120, 6, 2); ctx.fill();
+  ctx.fillStyle = marble; rr(ctx, 700, 182, 100, 6, 2); ctx.fill();
+  ctx.fillStyle = marbleHi; rr(ctx, 712, 188, 76, 6, 2); ctx.fill();
+  // closed veil + notice
   if(!open){
-    ctx.fillStyle = "rgba(8,12,22,.5)"; rr(ctx, b.x+18, b.y+44, b.w-36, b.h-58, 6); ctx.fill();
-    ctx.fillStyle = "rgba(10,16,30,.92)"; rr(ctx, dcx-72, b.y+b.h*0.5-12, 144, 24, 8); ctx.fill();
-    ctx.strokeStyle = "#ff6b6b"; ctx.lineWidth = 2; rr(ctx, dcx-72, b.y+b.h*0.5-12, 144, 24, 8); ctx.stroke();
-    drawText("FINISH RECON FIRST", dcx, b.y+b.h*0.5, "8px", "#ffd2d2", "center");
+    ctx.fillStyle = "rgba(8,12,22,.42)"; rr(ctx, 560, 6, 380, 184, 8); ctx.fill();
+    ctx.fillStyle = "rgba(10,16,30,.92)"; rr(ctx, 676, 108, 148, 24, 8); ctx.fill();
+    ctx.strokeStyle = "#ff6b6b"; ctx.lineWidth = 2; rr(ctx, 676, 108, 148, 24, 8); ctx.stroke();
+    drawText("FINISH RECON FIRST", 750, 124, "8px", "#ffd2d2", "center");
   }
+  drawUniArtifacts(open);
+}
+function drawUniArtifacts(open){
+  const a = open ? 1 : 0.55;
+  ctx.save(); ctx.globalAlpha = a;
+  const plinth = (px, py, w) => { ctx.fillStyle = "#cfc6af"; rr(ctx, px-w/2, py, w, 12, 2); ctx.fill(); ctx.fillStyle = "#b7ad95"; ctx.fillRect(px-w/2, py, w, 3); ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.beginPath(); ctx.ellipse(px, py+13, w*0.6, 3, 0, 0, Math.PI*2); ctx.fill(); };
+  let px, py;
+  // Ch1 plumbing: plunger
+  px=612; py=228; plinth(px,py,26);
+  ctx.strokeStyle="#8a5a3a"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py-20); ctx.stroke();
+  ctx.fillStyle="#b5462f"; ctx.beginPath(); ctx.ellipse(px, py-2, 7, 5, 0, Math.PI, 0); ctx.fill(); ctx.fillRect(px-7, py-3, 14, 3);
+  // Ch2 90s: boombox
+  px=672; py=228; plinth(px,py,30);
+  ctx.fillStyle="#15151a"; rr(ctx, px-12, py-16, 24, 16, 2); ctx.fill();
+  ctx.fillStyle="#23262c"; circle(px-5, py-8, 3.4); circle(px+5, py-8, 3.4); ctx.fillStyle="#6a7078"; circle(px-5, py-8, 1.4); circle(px+5, py-8, 1.4);
+  ctx.fillStyle="#34e0c4"; ctx.fillRect(px-3, py-15, 6, 2);
+  ctx.strokeStyle="#9aa0a6"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(px+10, py-16); ctx.lineTo(px+14, py-22); ctx.stroke();
+  // Ch3 Georgian: powdered wig on a stand
+  px=828; py=228; plinth(px,py,28);
+  ctx.fillStyle="#7a5a2a"; ctx.fillRect(px-1, py-7, 2, 7);
+  ctx.fillStyle="#eae6ee"; ctx.fillRect(px-6, py-13, 12, 8);
+  ctx.fillStyle="#f3f0f6"; circle(px, py-14, 7); circle(px-5, py-11, 4); circle(px+5, py-11, 4); circle(px-3, py-17, 4); circle(px+3, py-17, 4);
+  // Ch4 future: hologram emitter
+  px=888; py=228; plinth(px,py,26);
+  ctx.fillStyle="#2f3d52"; rr(ctx, px-6, py-6, 12, 6, 2); ctx.fill();
+  ctx.save(); ctx.globalAlpha = a*(0.5+Math.sin(t*8)*0.2); ctx.fillStyle="#7fe0ff"; ctx.beginPath(); ctx.moveTo(px-3, py-6); ctx.lineTo(px+3, py-6); ctx.lineTo(px+7, py-22); ctx.lineTo(px-7, py-22); ctx.closePath(); ctx.fill(); ctx.restore();
+  ctx.fillStyle="#bff7ee"; circle(px, py-16, 3.5); ctx.strokeStyle="#7fe0ff"; ctx.lineWidth=1; ctx.beginPath(); ctx.ellipse(px, py-16, 6, 2, Math.sin(t*2)*0.4, 0, Math.PI*2); ctx.stroke();
+  // Ch5 Roman: gladiator helmet (centerpiece)
+  px=750; py=268; plinth(px,py,34);
+  ctx.fillStyle="#c9a24a"; ctx.beginPath(); ctx.arc(px, py-4, 10, Math.PI, 0); ctx.fill(); ctx.fillRect(px-10, py-4, 20, 5);
+  ctx.fillStyle="#9a7d3a"; ctx.fillRect(px-10, py+1, 20, 3);
+  ctx.fillStyle="#1a140c"; ctx.fillRect(px-3, py-2, 6, 4);
+  ctx.fillStyle="#c23a2a"; ctx.beginPath(); ctx.moveTo(px-2, py-16); ctx.quadraticCurveTo(px+6, py-22, px+10, py-12); ctx.lineTo(px+4, py-10); ctx.closePath(); ctx.fill();
+  ctx.restore();
 }
 function starTargets(){
   if(count < 3) return BUILDINGS.filter(b => b.intelId && !collected[b.intelId]).map(b => ({x:b.x+b.w/2, y:b.y+b.h/2}));
