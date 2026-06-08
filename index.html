@@ -378,6 +378,7 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
         <button id="btnChap2" class="ghostbtn">Chapter 2</button>
         <button id="btnChap3" class="ghostbtn">Chapter 3</button>
         <button id="btnChap4" class="ghostbtn">Chapter 4</button>
+        <button id="btnChap5" class="ghostbtn">Chapter 5</button>
       </div>
       <div class="lvlpill" id="lvlPill">Level 1 &nbsp;&middot;&nbsp; The Backed Up Sink</div>
       <div id="lifeTitle" class="life">Lifetime points 0</div>
@@ -1094,6 +1095,128 @@ const PITCH4 = {
     ]}
   ]
 };
+/* ================= LEVEL 5: FAMILY BAKERY, THE COMMITTEE, BUYING INFLUENCES ================= */
+const INTEL5 = {
+  money:{ label:"The Bottom Line",
+    clue:"Marchetti's is busy but bleeding. The line backs up at the register, orders get rung wrong, and Sofia has no idea which pastries actually make money.",
+    why:"Sofia owns the place and signs the checks. She is the Economic buyer. Win her on the return and on protecting the family business." },
+  floor:{ label:"The Floor Boss",
+    clue:"Dom has run that counter fifteen years by memory, fast as anything. He is dead set against any system, terrified it will make him look slow in front of the young staff.",
+    why:"Dom lives with whatever you sell, every shift. He is the User buyer, and right now the saboteur. Do not bulldoze him. Make him the hero who runs it." },
+  books:{ label:"The Midnight Books",
+    clue:"Leo, the nephew, does the books by hand until midnight and dreads tax season. He worries any system will not match the bank or the receipts.",
+    why:"Leo vets whether it actually works. He is the Technical buyer. Win him with proof it is accurate and connects to what they already use." }
+};
+const TALK_CAFE5 = { id:"regular5", name:"Pearl", sub:"Buys a loaf every morning", interior:"cafe", intel:INTEL5.money, intelId:"money",
+  lines:[
+    "Best bakery on the block, but lord, the wait. The line wraps out the door most mornings.",
+    "I watched the kid at the register ring up a big wedding order three times, all wrong. Sofia was not happy.",
+    "She told me herself she cannot even tell which of those fancy pastries pay for themselves anymore."
+  ]};
+const TALK_HARDWARE5 = { id:"floor5", name:"Big Tony", sub:"Delivers their flour", interior:"hardware", intel:INTEL5.floor, intelId:"floor",
+  lines:[
+    "You here to sell them a register thing? Ha. Talk to Dom, if you dare.",
+    "Dom has run that counter fifteen years, all up here in his head, fast as lightning.",
+    "But he is scared stiff of a computer. Thinks it will show him up in front of the young staff. He will fight you tooth and nail."
+  ]};
+const TALK_LAUNDRY5 = { id:"booksinfo5", name:"Marina", sub:"Sofia's old friend", interior:"laundry", intel:INTEL5.books, intelId:"books",
+  lines:[
+    "Sweet family. Sofia's nephew Leo keeps the books, poor kid.",
+    "He is here till midnight some nights with a calculator and a shoebox of receipts. Tax time nearly breaks him.",
+    "He keeps fretting that one of those systems will not line up with the bank, and then it is all a mess."
+  ]};
+const TALK_BENCH5 = { id:"theo", name:"Sal Jr.", sub:"From the shop next door", interior:null, intel:null, intelId:null,
+  lines:[
+    "A register system? Just buy the cheapest tablet off the internet, who cares.",
+    "Honestly the bakery is fine, people love it. Why change anything at all.",
+    "Do not overthink this one. Slap any old app on the counter and call it done."
+  ]};
+const SOFIA_NPC = {id:"owner5", name:"Sofia Marchetti", sub:"Marchetti's Bakery", interior:"cafe"};
+const LESSON5 = [
+  {type:"teach", who:"Professor Bex", tag:"WELCOME", tagClass:"", title:"Not one buyer, but three", body:[
+    "You walked the block. This sale is not one person, it is a committee: Sofia who owns it, Dom who runs the floor, and Leo who keeps the books. All three have to say yes.",
+    "You win a committee by reading each person and winning them on their own terms. One of them is even working against you. Labels stay off."
+  ]},
+  {type:"teach", who:"Field Card", tag:"FIELD CARD", tagClass:"", title:"The Buying Influences", attr:"From Miller and Heiman, Strategic Selling", body:[
+    "Every committee has three roles. The Economic buyer controls the money and asks what is the return. The User lives with it daily and asks how this changes my day.",
+    "The Technical buyer vets the fit and asks does it actually work. Here, Sofia is Economic, Dom is User, Leo is Technical.",
+    "Pitch one message to all three and you lose two of them. Win each on what they actually care about."
+  ]},
+  {type:"teach", who:"Field Card", tag:"FIELD CARD", tagClass:"", title:"Tailor it, and turn the saboteur", attr:"Challenger selling, teach, tailor, take control", body:[
+    "Tailoring means saying the part each person needs to hear. Return for Sofia, an easier shift for Dom, clean and accurate books for Leo.",
+    "Watch for the saboteur. A User who feels threatened will quietly sink the whole deal. Dom is that person right now.",
+    "You do not beat a saboteur by bulldozing him. You make him the hero who runs the new thing, so he wants it to win."
+  ]},
+  {type:"teach", who:"Game Plan", tag:"GAME PLAN", tagClass:"plan", title:"How you win the room", body:[
+    "Open with Sofia on the bottom line, the return she gets and the family business she is protecting.",
+    "When Dom pushes back, do not argue. Hand him the win: faster shifts, less blame, the one who runs it best.",
+    "Answer Leo with proof: it matches the bank, it connects to what they use, tax season stops being a nightmare. No labels out there, read each person."
+  ]},
+  {type:"practice", tag:"PRACTICE 1", tagClass:"prac", setup:"Sofia, the owner: I do not care about bells and whistles. What does this actually do for my shop?", q:"Pick the move that wins the Economic buyer.", options:[
+    {label:"RETURN", text:"It shows you which items truly profit and clears the line, so you sell more with the same staff.", correct:true, fb:"That is the Economic buyer's language. Return and protecting the business, not features."},
+    {label:"FEATURES", text:"It has cloud sync, custom themes, and a loyalty app with push notifications.", correct:false, fb:"You listed features at the person who only cares about the money. You lost her."},
+    {label:"TECH", text:"It uses an encrypted interface with nightly database backups.", correct:false, fb:"That is the Technical pitch, aimed at the wrong buyer."}
+  ]},
+  {type:"practice", tag:"PRACTICE 2", tagClass:"prac", setup:"Dom, the floor manager, arms crossed: I have run this counter by hand for fifteen years. I do not need a machine.", q:"Pick the move that turns the saboteur.", options:[
+    {label:"HERO", text:"Fifteen years of instinct is exactly what makes this work. Set it up your way, and you are the one who runs it fastest.", correct:true, fb:"You made the User the hero. Now he wants it to succeed instead of fighting it."},
+    {label:"BULLDOZE", text:"Doing it by hand is why the line is so slow. The system fixes that.", correct:false, fb:"You told him he is the problem. A threatened User will sink the whole deal."},
+    {label:"IGNORE", text:"Do not worry, Sofia already likes it, so it is happening.", correct:false, fb:"You went over his head. Now he will quietly make sure it fails."}
+  ]},
+  {type:"pass"}
+];
+const PITCH5 = {
+  showLabels: false, startRapport: 30, edgeBonus: 6, closeAt: 75,
+  beats: [
+    { who:"Sofia", whoId:"owner5", line:"My granddaughter says we need this. I say we have sold bread here forty years just fine. So tell me, quickly, why should I change a thing?", options:[
+      {label:"OPEN",     good:true,  d:14, pts:120, text:"Forty years is the whole point, and you are protecting that. Can I ask, what is the busy morning rush actually costing you right now?", fb:"You honored the business and opened on the owner's real concern, the bottom line. She listens."},
+      {label:"FEATURES", good:false, d:-16, pts:0, text:"Let me walk you through the loyalty app and the seventeen report screens.", fb:"You buried the Economic buyer in features. She owns the place, she wants the number."},
+      {label:"SHAME",    good:false, d:-14, pts:0, text:"Everyone is digital now, you are honestly falling behind.", fb:"You shamed her about her own shop. The door closes."},
+      {label:"CHEAP",    good:false, d:-12, pts:0, text:"It is the cheapest one out there, that is the best reason.", fb:"Cheapest is not a return. You made it about price, not her business."}
+    ]},
+    { who:"Sofia", whoId:"owner5", line:"The rush? We lose people who will not wait. And honestly, I cannot tell which of these pastries pays for itself anymore.", options:[
+      {label:"VALUE",    good:true,  d:16, pts:140, text:"Then here is the return: a faster line so you stop losing those customers, and a clear read on which items make you money. More profit from the same ovens.", fb:"You tied it straight to her money and her business. That is the Economic win."},
+      {label:"FEATURES", good:false, d:-14, pts:0, text:"It also comes in fifteen color themes and a nice tablet stand.", fb:"You drifted back to features the moment she opened up. Stay on the return."},
+      {label:"SCOLD",    good:false, d:-14, pts:0, text:"You really should have fixed this years ago.", fb:"You scolded her again instead of solving it."},
+      {label:"VAGUE",    good:false, d:-12, pts:0, text:"Do not worry about the details, just trust me on it.", fb:"An owner signing the check does not run on trust me. Give her the return."}
+    ]},
+    { who:"Dom", whoId:"manager5", line:"Hold on. I run that counter. Fifteen years, all in my head, faster than any screen. This thing is just going to slow me down and make me look like a fool.", options:[
+      {label:"HERO",     good:true,  d:16, pts:150, text:"Fifteen years of instinct is exactly why this works in your hands. We set it up your way, and you become the fastest one on it, not the slowest.", fb:"You made the User the hero instead of the casualty. The saboteur starts to come around."},
+      {label:"BLAME",    good:false, d:-18, pts:0, text:"Doing it by hand is the reason the line is slow, Dom.", fb:"You told him he is the problem in front of the owner. A threatened User will tank the deal."},
+      {label:"OVERRIDE", good:false, d:-16, pts:0, text:"Sofia owns the place, so honestly it is her call, not yours.", fb:"You went over his head. Now he will quietly make sure it fails."},
+      {label:"BELITTLE", good:false, d:-12, pts:0, text:"It is so easy a child could use it, do not stress.", fb:"You waved off his fear and mildly insulted him. He digs in."}
+    ]},
+    { who:"Dom", whoId:"manager5", line:"Hm. My way. So I would not have to change how I take an order, the line just moves faster?", options:[
+      {label:"OWN",      good:true,  d:16, pts:150, text:"Exactly. Your shortcuts, your layout, your speed, with the slow parts taken off your plate. And you are the one who trains the young staff on it.", fb:"You handed him ownership and status. The saboteur is now a champion."},
+      {label:"FEAR",     good:false, d:-16, pts:0, text:"Well, you would have to relearn the whole thing from scratch, but it is worth it.", fb:"You confirmed his worst fear. You had him, and lost him."},
+      {label:"DODGE",    good:false, d:-14, pts:0, text:"Let us not get into the weeds, the point is Sofia wants it.", fb:"You dodged his question and leaned on the owner again. He shuts down."},
+      {label:"FLAT",     good:false, d:-12, pts:0, text:"You will figure it out eventually, everyone does.", fb:"Lukewarm and dismissive. Give him a real reason to want it."}
+    ]},
+    { who:"Leo", whoId:"books5", line:"Can I jump in? I do the books. I am up till midnight matching receipts by hand. My worry is simple: what if the numbers in this thing do not match the bank or the taxes?", options:[
+      {label:"PROOF",    good:true,  d:16, pts:160, text:"That is the right question. It reconciles to the bank on its own and exports clean at tax time, so the totals always match and your midnight sessions end.", fb:"You answered the Technical buyer with accuracy and proof, and spoke to his real pain."},
+      {label:"DISMISS",  good:false, d:-16, pts:0, text:"Honestly the books side is not really the selling point, do not worry about it.", fb:"You waved off the Technical buyer's only concern. He will quietly veto it."},
+      {label:"WRONG",    good:false, d:-14, pts:0, text:"It has loyalty points and an email blast for marketing.", fb:"You pitched marketing to the person who asked about reconciliation. Wrong buyer, wrong answer."},
+      {label:"BUZZWORD", good:false, d:-12, pts:0, text:"It is industry standard, that should be good enough for you.", fb:"You dodged with a buzzword. The Technical buyer wants the how."}
+    ]},
+    { who:"Leo", whoId:"books5", line:"It connects to the bank on its own? And the staff cannot accidentally break the totals?", options:[
+      {label:"CERTAIN",  good:true,  d:16, pts:160, text:"Right. The register only records sales, the reconciliation runs on its own, and you keep the final say. I can show you a shop your size whose books now close in an afternoon.", fb:"Proof plus a reference, exactly what the Technical buyer needs to sign off."},
+      {label:"MAYBE",    good:false, d:-16, pts:0, text:"I mean, probably. These things usually work out fine.", fb:"Probably does not win a Technical buyer. He needs certainty."},
+      {label:"DEFLECT",  good:false, d:-14, pts:0, text:"Do not overthink it, your aunt already loves it.", fb:"You leaned on the owner instead of answering. He stays skeptical."},
+      {label:"PASSIVE",  good:false, d:-12, pts:0, text:"You can read the manual later if you are curious.", fb:"You went passive on the one buyer who needed a real answer."}
+    ]},
+    { who:"Sofia", whoId:"owner5", line:"Well, Dom is nodding, which never happens. Leo, are you satisfied?", options:[
+      {label:"ALIGN",    good:true,  d:14, pts:170, text:"Here is the whole room, then: a faster line and clear profit for you Sofia, Dom running it his way as the fastest hand on the floor, and Leo's books matching the bank with no more midnight math.", fb:"You closed by naming each person's win out loud. The committee is aligned."},
+      {label:"DISMISS",  good:false, d:-16, pts:0, text:"They will get over any concerns once it is installed.", fb:"You dismissed the room at the finish line. Cold and risky."},
+      {label:"FAKEDEAL", good:false, d:-16, pts:0, text:"Sign today and I will knock off twenty percent, today only.", fb:"A fake deadline right at the turn. It undercuts the trust you built."},
+      {label:"RUSH",     good:false, d:-12, pts:0, text:"So, do we have a deal or not?", fb:"You rushed the close instead of letting the room feel aligned."}
+    ]},
+    { who:"Sofia", whoId:"owner5", line:"In forty years no one has ever pitched all three of us at once and gotten a yes from everybody. Alright. Let us do it.", options:[
+      {label:"CLOSE",    good:true,  d:14, pts:180, text:"Then we start small this week. I will set it up with Dom on the counter, walk Leo through the books side myself, and you will see the line move by the weekend.", fb:"A calm close that hands each buyer their win again. The whole room is in."},
+      {label:"UPSELL",   good:false, d:-18, pts:0, text:"Great, now let me add the premium tier and three more modules.", fb:"You got greedy the second they said yes. Honor the deal in front of you."},
+      {label:"INSULT",   good:false, d:-16, pts:0, text:"Perfect, sign here before Dom changes his mind.", fb:"You insulted your new champion at the finish. Backwards."},
+      {label:"WAFFLE",   good:false, d:-10, pts:0, text:"Cool, I will, um, email someone about it sometime.", fb:"You went limp at the close. Land it with confidence."}
+    ]}
+  ]
+};
 /* ---------- the level table ---------- */
 const LEVELS = {
   1: {
@@ -1250,7 +1373,46 @@ const LEVELS = {
       failH:"BURIED" },
     outro:{ cleared:"CHAPTER FOUR CLEARED", tag:"The Holdout",
       recap:"You cracked the toughest buyer yet. The pain funnel made Earl feel the real cost in his own words, you met every objection by exploring it instead of fighting it, and you sold him a fix he will actually use. Then you cleared the backlog and gave him his shop back. That is master level selling.",
-      nextK:"What is next", nextV:"You have run the full curriculum: discovery and labeling, mirroring, calibrated and SPIN questions, and now the pain funnel with objection handling. More chapters and tougher buyers are on the way. Your lifetime points and learned moves carry over." }
+      nextK:"Next chapter", nextV:"Chapter Five: The Committee. A family bakery, three people who all have to say yes, and one quietly working against you. You learn to read a buying committee, win each person on their own terms, and turn the saboteur into your champion." }
+  },
+  5: {
+    no:"WORK ORDER #005", chapterName:"CHAPTER FIVE", title:"The Committee", pill:"Level 5 &nbsp;&middot;&nbsp; The Committee",
+    style:"town", heroKind:"closer",
+    palette:[
+      {body:"#e9c79a", roof:"#9c5a2c", door:"#4a2e1a", accent:"#34e0c4", glow:"#ffe39a"},
+      {body:"#d9b783", roof:"#7a4a2a", door:"#3a2818", accent:"#ffcb47", glow:"#ffe39a"},
+      {body:"#e3c8a4", roof:"#8a5a3a", door:"#33271a", accent:"#ff9e5a", glow:"#ffd9b0"},
+      {body:"#edd2a8", roof:"#a05a30", door:"#3a2a1c", accent:"#ffd76a", glow:"#ffe6b0"}
+    ],
+    brief:{ client:"Marchetti's Bakery",
+      says:'"My granddaughter wants some computer system for the register. We have sold bread here forty years just fine. I do not see the point."',
+      move:"Do not pitch yet. Walk the block and learn who really decides here, because it is not one person. Find what each of them needs, then learn how to win a whole room at once.",
+      obj:"Visit every spot marked with a gold star and gather all 3 leads. One voice on the bench will steer you cheap and wrong." },
+    signs:{ cafe:"CORNER CAFE", hardware:"FLOUR CO", laundry:"WASH AND FOLD", client:"MARCHETTI'S" },
+    intel: INTEL5, intelOrder:["money","floor","books"],
+    saysCase:'"We have sold bread here forty years just fine. I do not see why we need a computer at the register."',
+    talks:{ cafe:TALK_CAFE5, hardware:TALK_HARDWARE5, laundry:TALK_LAUNDRY5, bench:TALK_BENCH5 },
+    client:{ npc:SOFIA_NPC, first:"the Marchettis", lockedMsg:"Sofia, Dom, and Leo are all in the back. Learn how to read a committee first, then go win the room." },
+    gap:{ said:"We have done fine for forty years, we do not need a system.", need:"A faster line and clear profit for the owner, an easier shift the floor manager is proud to run, and books that match the bank so the bookkeeper sleeps, all from one decision three people can agree on." },
+    completeNext:"That gap is the whole job. Next stop is Sales University, where you learn to read a buying committee: the Economic buyer, the User, and the Technical buyer, and how to turn the one working against you into the one who wants it most.",
+    lesson: LESSON5, techKey:"committee", techTitle:"Reading the Buying Committee",
+    techBlurb:"You carry this into the pitch. Win Sofia on the return, hand Dom the win so he champions it, and prove the books to Leo. One message per person.",
+    passToast:"Move equipped. Marchetti's is starred. Go win all three at once.",
+    pitch: PITCH5,
+    winLede1:"You did not pitch one buyer, you read a whole room. Sofia got her return, you turned Dom from saboteur to champion, and you proved the books to Leo. Three yeses, one deal.",
+    winLede2:"Now make it real. It is install day at the bakery, and the chaos has taken a shape of its own. Wade through it and topple the Committee so the new system goes live. Points from the job bank to your lifetime total.",
+    failLede:"You lost the room. Pitching features to the owner, bulldozing the manager, or brushing off the bookkeeper all lose with a committee. Win each person on what they care about, and turn the holdout into your champion.",
+    job:{ mode:"beatemup", theme:"install", bossName:"THE COMMITTEE", W:3200, speedPar:72,
+      enemyHp:2, enemySpeed:86, shotSpeed:620, shotCd:0.19, bossProjSpeed:400, bossAtk:0.95, bossSpread:6,
+      plats:[{x:540,dy:120,w:120},{x:860,dy:160,w:120},{x:1180,dy:120,w:120},{x:1520,dy:170,w:120},{x:1880,dy:120,w:120},{x:2240,dy:165,w:120},{x:2600,dy:120,w:120}],
+      enemies:[{x:500},{x:720},{x:940,platIdx:1},{x:1140},{x:1360,big:true,hp:8,speed:50},{x:1600,platIdx:3},{x:1820},{x:2060},{x:2120,platIdx:4},{x:2360,big:true,hp:9,speed:52},{x:2560},{x:2760}],
+      boss:{dx:300, w:150, h:150, hp:56}, hazards:[{x:1040,w:90},{x:1700,w:100},{x:2460,w:90}],
+      winLede:"The Committee is toppled and the new system is humming. The line flies, Dom is showing the staff his tricks on it, and Leo's books close themselves. Marchetti's just bought its next forty years.",
+      failLede:"Install day got away from you this round. The deal still stands, so clock back in and get the system live.",
+      failH:"NO CONSENSUS" },
+    outro:{ cleared:"CHAPTER FIVE CLEARED", tag:"The Committee",
+      recap:"You closed your first committee. You read three people with three different wins, gave each what they needed, and turned the one working against you into your strongest champion. Then you survived install day. That is how real deals get done.",
+      nextK:"What is next", nextV:"The committee is behind you. Tougher rooms are on the way, starting with a know it all who is sure he has nothing left to learn. Your lifetime points and learned moves carry over." }
   }
 };
 let currentLevel = 1;
@@ -2111,8 +2273,13 @@ function updateTitleInfo(){
   vis(el("chapterRow"), ch >= 2);
   vis(el("btnChap3"), ch >= 3);
   vis(el("btnChap4"), ch >= 4);
+  vis(el("btnChap5"), ch >= 5);
   let status = "New plumber", show = false;
-  if(save.level4Complete){ status = "Level 4 cleared  \u00b7  the Holdout"; show = true; }
+  if(save.level5Complete){ status = "Level 5 cleared  \u00b7  the Committee"; show = true; }
+  else if(save.level5PitchDone){ status = "Chapter 5  \u00b7  the job"; show = true; }
+  else if(save.level5LessonDone){ status = "Chapter 5  \u00b7  the pitch"; show = true; }
+  else if(save.level5ReconDone){ status = "Chapter 5  \u00b7  Sales University"; show = true; }
+  else if(save.level4Complete){ status = "Level 4 cleared  \u00b7  the Holdout"; show = true; }
   else if(save.level4PitchDone){ status = "Chapter 4  \u00b7  the job"; show = true; }
   else if(save.level4LessonDone){ status = "Chapter 4  \u00b7  the pitch"; show = true; }
   else if(save.level4ReconDone){ status = "Chapter 4  \u00b7  Sales University"; show = true; }
@@ -2184,6 +2351,13 @@ const SCENES = {
   hardware: "Images/hardware.jpg",
   laundry:  "Images/laundry.jpg",
   university: "Images/university.jpg",
+  // Level 5 scenes (upload these into Images to light them up; pixel art until then):
+  regular5:   "Images/regular5.jpg",
+  floor5:     "Images/floor5.jpg",
+  booksinfo5: "Images/booksinfo5.jpg",
+  owner5:     "Images/owner5.jpg",
+  manager5:   "Images/manager5.jpg",
+  books5:     "Images/books5.jpg",
   // Add later, same pattern:
   // Level 2: marcus, barista2, shopkeep2, resident2
   // Level 3: diane, sister3, contractor3, neighbor3
@@ -3495,6 +3669,7 @@ function wireEvents(){
   el("btnChap2").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(2); });
   el("btnChap3").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(3); });
   el("btnChap4").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(4); });
+  el("btnChap5").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(5); });
   el("btnGo").addEventListener("click", () => { sfxClick(); resetRun(); transitionTo("overworld"); toast("Move with the arrows or the pad. Press A near a door."); });
   el("btnReplay").addEventListener("click", () => { sfxClick(); resetRun(); transitionTo("overworld"); toast("Fresh recon. Follow the gold stars."); });
   el("btnTitle").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
@@ -3533,7 +3708,7 @@ function wireEvents(){
   el("btnOutroTitle").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
   el("btnCh2Title").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
   // stop click based buttons from keeping focus, so a later Space press cannot double fire
-  ["dlgNext","dlgLeave","btnCase","caseClose","btnMute","btnStart","btnHow","btnReset","btnIntroGo","btnChap1","btnChap2","btnChap3","btnChap4","btnGo","btnReplay","btnTitle","btnUniv","lessonLeave","pitchLeave","btnWinStart","btnWinTitle","btnFailRetry","btnFailTitle","btnJobStreet","btnJobTitle","btnJobRetry","btnJobTitle2","btnOutroNext","btnOutroReplay","btnOutroTitle","btnCh2Title"]
+  ["dlgNext","dlgLeave","btnCase","caseClose","btnMute","btnStart","btnHow","btnReset","btnIntroGo","btnChap1","btnChap2","btnChap3","btnChap4","btnChap5","btnGo","btnReplay","btnTitle","btnUniv","lessonLeave","pitchLeave","btnWinStart","btnWinTitle","btnFailRetry","btnFailTitle","btnJobStreet","btnJobTitle","btnJobRetry","btnJobTitle2","btnOutroNext","btnOutroReplay","btnOutroTitle","btnCh2Title"]
     .forEach(id => el(id).addEventListener("mousedown", e => e.preventDefault()));
   window.addEventListener("resize", () => { resize(); centerCam(); });
   window.addEventListener("orientationchange", () => { setTimeout(() => { resize(); centerCam(); }, 200); });
