@@ -1469,7 +1469,7 @@ const TALK_LAUNDRY8 = { id:"turtle8", name:"Old Tana", sub:"Eldest of the reef",
     "Years back, Oona kept a bright stall right out on the open current, the busiest water on the reef. She trusted a drifting partner to mind it with her.",
     "A storm came, the partner drifted off with the season, and it was all swept away. She pulled into her clamshell and has answered everything with maybe ever since. She is not careful. She is afraid."
   ]};
-const TALK_BENCH8 = { id:"theo", name:"Gil", sub:"Too puffed to budge", interior:null, intel:null, intelId:null,
+const TALK_BENCH8 = { id:"gil8", name:"Gil", sub:"Too puffed to budge", interior:null, intel:null, intelId:null,
   lines:[
     "Oona? Eh, she is fine. Just push her. Tell her the offer vanishes at high tide and she will cave.",
     "Or slash the price in half. Everybody folds for a discount. Skip the boring lessons and just hammer her on coin.",
@@ -3613,7 +3613,8 @@ function drawBust(id, cx, midY, s){
     oona8:     {skin:"#f3d9e0", top:"#9b6fae", collar:"#fbeaf0", hairStyle:"curls", acc:"none"},
     octo8:     {skin:"#7d5a9e", top:"#3a2a5a", collar:"#d9c9f0", hairStyle:"short", acc:"none"},
     crab8:     {skin:"#d9603a", top:"#7a2a1f", collar:"#ffd9b0", hairStyle:"short", acc:"none"},
-    turtle8:   {skin:"#7faf6a", top:"#3f5a3a", collar:"#dfe9c8", hairStyle:"curls", acc:"none"}
+    turtle8:   {skin:"#7faf6a", top:"#3f5a3a", collar:"#dfe9c8", hairStyle:"curls", acc:"none"},
+    gil8:      {skin:"#c4cf5a", top:"#5a6a2a", collar:"#e6efb0", hairStyle:"short", acc:"none"}
   }[id];
   if(!cfg) return;
   const f = s;
@@ -4009,6 +4010,7 @@ const SCENES = {
   octo8:     "Images/octo8.jpg",
   crab8:     "Images/crab8.jpg",
   turtle8:   "Images/turtle8.jpg",
+  gil8:      "Images/gil8.jpg",
   mechanic6: "Images/mechanic6.jpg",
   elder6:    "Images/elder6.jpg",
 };
