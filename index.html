@@ -1260,12 +1260,12 @@ const LEVELS = {
   },
   2: {
     no:"WORK ORDER #002", chapterName:"CHAPTER TWO", title:"The High Rise", pill:"Level 2 &nbsp;&middot;&nbsp; The High Rise",
-    style:"downtown", heroKind:"closer",
+    style:"nineties", heroKind:"closer",
     palette:[
-      {body:"#2f3e5e", roof:"#1b2740", door:"#0e1626", accent:"#34e0c4", glow:"#bfe3ff"},
-      {body:"#35415f", roof:"#202a4a", door:"#0e1626", accent:"#ffcb47", glow:"#ffe39a"},
-      {body:"#2c3a56", roof:"#1b2740", door:"#0e1626", accent:"#7fd0ff", glow:"#bfe3ff"},
-      {body:"#3a3550", roof:"#241f3a", door:"#120e1e", accent:"#ff9e5a", glow:"#ffd9b0"}
+      {body:"#4a4e58", roof:"#2a2d35", door:"#15171d", accent:"#34e0c4", glow:"#ffd98a"},
+      {body:"#5a4a42", roof:"#3a322c", door:"#15120e", accent:"#ffcb47", glow:"#ffe39a"},
+      {body:"#46505c", roof:"#2a3038", door:"#14181d", accent:"#7fd0ff", glow:"#ffe6a8"},
+      {body:"#544a5a", roof:"#322c3a", door:"#16121a", accent:"#ff9e5a", glow:"#ffd9b0"}
     ],
     brief:{ client:"Marcus Okonkwo",
       says:'"I run the Corner Booth. Best corner in the city, packed every weekend. I really do not need any of that marketing, my regulars and my location do the work."',
@@ -1431,6 +1431,7 @@ function loadLevel(n){
   INTERACTIVES[2].talk = LV.talks.laundry;
   INTERACTIVES[3].msg  = LV.client.lockedMsg;
   INTERACTIVES[5].talk = LV.talks.bench;
+  turtle = (LV.style === "nineties") ? makeTurtle() : null;
   resetCollected();
 }
 function fillBrief(){
@@ -1582,6 +1583,24 @@ function update(dt){
   centerCam(dt);
   state.near = null;
   for(const it of INTERACTIVES){ if(aabb(player, it.trigger)){ state.near = it; break; } }
+  if(turtle){
+    const tu = turtle; tu.t += dt;
+    if(tu.sayT > 0) tu.sayT -= dt;
+    if(tu.state === "flip"){
+      tu.flip += dt; if(tu.flip >= 0.7){ tu.state = "walk"; tu.flip = 0; }
+    } else {
+      tu.repathT -= dt;
+      if(tu.repathT <= 0){ tu.repathT = 1.2 + Math.random()*1.8; const ang = Math.random()*Math.PI*2; tu.vx = Math.cos(ang); tu.vy = Math.sin(ang); }
+      tu.x += tu.vx*60*dt; tu.y += tu.vy*60*dt;
+      if(tu.x < 500){ tu.x = 500; tu.vx = Math.abs(tu.vx); }
+      if(tu.x > 960){ tu.x = 960; tu.vx = -Math.abs(tu.vx); }
+      if(tu.y < 360){ tu.y = 360; tu.vy = Math.abs(tu.vy); }
+      if(tu.y > 640){ tu.y = 640; tu.vy = -Math.abs(tu.vy); }
+      if(Math.abs(tu.vx) > 0.12) tu.dir = tu.vx > 0 ? 1 : -1;
+    }
+    const pcx = player.x + player.w/2, pcy = player.y + player.h/2;
+    tu.near = Math.hypot(pcx - tu.x, pcy - tu.y) < 72;
+  }
 }
 
 /* ---------- render: overworld ---------- */
@@ -1676,6 +1695,7 @@ function drawBuilding(b){
   if(LV.style === "roman") return drawVilla(b);
   if(LV.style === "future") return drawFutureBuilding(b);
   if(LV.style === "georgian") return drawGeorgianHouse(b);
+  if(LV.style === "nineties") return drawNinetiesTower(b);
   const dcx = b.x + b.w/2;
   ctx.fillStyle = "rgba(0,0,0,.25)"; rr(ctx, b.x+8, b.y+b.h-4, b.w-4, 16, 8); ctx.fill();
   ctx.fillStyle = b.body; rr(ctx, b.x, b.y+28, b.w, b.h-28, 6); ctx.fill();
@@ -1809,6 +1829,136 @@ function drawGeorgianHouse(b){
   ctx.fillStyle = "rgba(255,255,255,.06)"; [0,1,2].forEach(r=>{ rr(ctx, dx2+4, dy+14+r*12, dw/2-7, 9, 1); ctx.fill(); rr(ctx, dcx+3, dy+14+r*12, dw/2-7, 9, 1); ctx.fill(); });
   ctx.fillStyle = b.accent; circle(dx2+dw-7, dy+30, 2);
   ctx.fillStyle = "#cfc6af"; ctx.fillRect(dx2-6, b.y+b.h-4, dw+12, 4); ctx.fillRect(dx2-2, b.y+b.h-8, dw+4, 4);
+}
+function drawHog(x, y){
+  ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); ctx.ellipse(x, y+15, 30, 5, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#15151a"; circle(x-20, y+8, 11); circle(x+20, y+8, 11);
+  ctx.fillStyle = "#3a3f48"; circle(x-20, y+8, 4.5); circle(x+20, y+8, 4.5);
+  ctx.strokeStyle="#9aa0a6"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x-20,y+8,8,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.arc(x+20,y+8,8,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle = "#6a7078"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x-20, y+8); ctx.lineTo(x-4, y-1); ctx.lineTo(x+12, y+1); ctx.lineTo(x+20, y+8); ctx.stroke();
+  ctx.fillStyle = "#b23a3a"; rr(ctx, x-9, y-7, 19, 10, 4); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.25)"; rr(ctx, x-6, y-6, 8, 3, 2); ctx.fill();
+  ctx.fillStyle = "#15151a"; rr(ctx, x+6, y-5, 13, 6, 2); ctx.fill();
+  ctx.strokeStyle = "#cfd3d8"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x-9, y-5); ctx.lineTo(x-15, y-15); ctx.stroke();
+  ctx.fillStyle="#15151a"; ctx.fillRect(x-19, y-17, 7, 3);
+  ctx.strokeStyle = "#d8dce0"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x-3, y+5); ctx.lineTo(x+23, y+11); ctx.stroke();
+  ctx.fillStyle = "#ffe6a8"; circle(x-13, y-6, 2.4);
+}
+function drawWarmGuy(x, feet, coat, face){
+  ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(x, feet+2, 8, 3, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#26344f"; ctx.fillRect(x-4, feet-10, 3, 10); ctx.fillRect(x+1, feet-10, 3, 10);
+  ctx.fillStyle = coat; rr(ctx, x-6, feet-24, 12, 16, 3); ctx.fill();
+  ctx.fillStyle = "#e8b48a"; ctx.fillRect(x-6, feet-14, 3, 5); ctx.fillRect(x+3, feet-14, 3, 5);
+  ctx.fillStyle = "#e8b48a"; circle(x, feet-27, 4);
+  ctx.fillStyle = "#2a2a33"; dome(x, feet-28, 4.2);
+  ctx.fillStyle = "#23304a"; circle(x + face, feet-27, 1);
+}
+function drawBarrelFire(x, y){
+  drawWarmGuy(x-22, y+4, "#3a4a6a", 1);
+  drawWarmGuy(x+22, y+6, "#5a3a3a", -1);
+  drawWarmGuy(x-2, y-6, "#3a5a3a", 1);
+  ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); ctx.ellipse(x, y+18, 16, 4, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#5a4632"; rr(ctx, x-12, y-6, 24, 24, 2); ctx.fill();
+  ctx.fillStyle = "#6e5640"; ctx.fillRect(x-12, y-2, 24, 2); ctx.fillRect(x-12, y+8, 24, 2);
+  ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.fillRect(x-12, y-6, 24, 2);
+  const f = Math.sin(t*12)*2;
+  ctx.fillStyle = "#ff6b2a"; ctx.beginPath(); ctx.moveTo(x-9, y-6); ctx.quadraticCurveTo(x-4, y-20-f, x, y-10); ctx.quadraticCurveTo(x+4, y-22+f, x+9, y-6); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#ffc24a"; ctx.beginPath(); ctx.moveTo(x-5, y-6); ctx.quadraticCurveTo(x-1, y-16-f, x+1, y-9); ctx.quadraticCurveTo(x+3, y-17+f, x+5, y-6); ctx.closePath(); ctx.fill();
+  ctx.save(); ctx.shadowColor = "rgba(255,140,40,.6)"; ctx.shadowBlur = 18; ctx.fillStyle = "rgba(255,170,70,.5)"; circle(x, y-8, 6); ctx.restore();
+  ctx.fillStyle = "rgba(255,200,90,.8)"; circle(x + Math.sin(t*7)*5, y-22-((t*30)%8), 1.3);
+}
+function drawNinetiesTower(b){
+  const rise = 96, topY = b.y - rise, totalH = b.h + rise, dcx = b.x + b.w/2;
+  ctx.fillStyle = "rgba(0,0,0,.3)"; rr(ctx, b.x+8, b.y+b.h-4, b.w-8, 16, 8); ctx.fill();
+  ctx.fillStyle = b.body; rr(ctx, b.x, topY, b.w, totalH, 4); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.04)"; rr(ctx, b.x, topY, b.w*0.5, totalH, 4); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.16)"; ctx.fillRect(b.x, topY, b.w, 4);
+  ctx.fillStyle = "rgba(0,0,0,.10)"; for(let gx=b.x+18; gx<b.x+b.w-10; gx+=46){ ctx.fillRect(gx, topY+10, 3, totalH-30); }
+  const winW=18, winH=13, gapX=12, gapY=11, padTop=18;
+  const cols = Math.max(2, Math.floor((b.w - 20 + gapX)/(winW+gapX)));
+  const startX = b.x + (b.w - (cols*winW + (cols-1)*gapX))/2;
+  const top0 = topY + padTop, bottomLimit = b.y + b.h - 84;
+  const rows = Math.max(2, Math.floor((bottomLimit - top0 + gapY)/(winH+gapY)));
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const wx = startX + c*(winW+gapX), wy = top0 + r*(winH+gapY);
+      const lit = ((r*7 + c*3 + (b.x|0)) % 4) === 0;
+      ctx.fillStyle = "#11151f"; rr(ctx, wx-1, wy-1, winW+2, winH+2, 2); ctx.fill();
+      ctx.fillStyle = lit ? b.glow : "#243044"; rr(ctx, wx, wy, winW, winH, 1); ctx.fill();
+      if(lit){ ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(wx, wy, winW, 3); }
+    }
+  }
+  const feX = b.x + 14, feW = 44, feTop = b.y - 30;
+  ctx.fillStyle = "rgba(20,20,26,.8)"; ctx.strokeStyle = "rgba(12,12,16,.85)"; ctx.lineWidth = 2;
+  for(let fy=feTop; fy < b.y + b.h - 30; fy += 40){
+    ctx.fillRect(feX, fy, feW, 4);
+    ctx.strokeRect(feX, fy-14, feW, 14);
+    const goRight = (((fy/40)|0)%2)===0;
+    ctx.beginPath(); ctx.moveTo(feX + (goRight?4:feW-8), fy+4); ctx.lineTo(feX + (goRight?feW-8:4), fy+36); ctx.stroke();
+  }
+  ctx.beginPath(); ctx.moveTo(feX, feTop); ctx.lineTo(feX, b.y+b.h-30); ctx.moveTo(feX+feW, feTop); ctx.lineTo(feX+feW, b.y+b.h-30); ctx.stroke();
+  const wtX = b.x + b.w - 54, wtBase = topY - 2;
+  ctx.fillStyle = "#3a3f48"; ctx.fillRect(wtX-2, wtBase-6, 40, 8);
+  ctx.fillStyle = "#6e4a2e"; rr(ctx, wtX, wtBase-34, 34, 30, 3); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.18)"; for(let wl=wtBase-30; wl<wtBase-6; wl+=6){ ctx.fillRect(wtX, wl, 34, 1.5); }
+  ctx.fillStyle = "#5a3a22"; ctx.beginPath(); ctx.moveTo(wtX-2, wtBase-34); ctx.lineTo(wtX+17, wtBase-46); ctx.lineTo(wtX+36, wtBase-34); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#2a2e35"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(wtX+3, wtBase-4); ctx.lineTo(wtX+5, wtBase-2); ctx.moveTo(wtX+31, wtBase-4); ctx.lineTo(wtX+29, wtBase-2); ctx.stroke();
+  ctx.fillStyle = "#9aa0a6"; ctx.fillRect(b.x+b.w-30, b.y+40, 16, 10); ctx.fillRect(b.x+8, b.y+90, 14, 9);
+  ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.fillRect(b.x+b.w-30, b.y+48, 16, 2);
+  if(b.id === "cafe" || b.id === "hardware"){
+    const gqy = b.y + b.h - 30;
+    ctx.save(); ctx.translate(dcx-30, gqy); ctx.rotate(-0.12);
+    ctx.font = "bold 16px monospace"; ctx.textAlign = "left";
+    ctx.fillStyle = "#ff3da6"; ctx.fillText("YO!", 0, 0);
+    ctx.fillStyle = "#34e0c4"; ctx.fillText("'94", 34, 6);
+    ctx.restore();
+    ctx.strokeStyle = "rgba(255,210,60,.8)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(dcx-34, gqy+10); ctx.quadraticCurveTo(dcx, gqy+18, dcx+34, gqy+8); ctx.stroke();
+    ctx.textAlign = "center";
+  }
+  ctx.fillStyle = "rgba(0,0,0,.5)"; rr(ctx, dcx-58, b.y+b.h-80, 116, 24, 6); ctx.fill();
+  ctx.strokeStyle = b.accent; ctx.lineWidth = 2; rr(ctx, dcx-58, b.y+b.h-80, 116, 24, 6); ctx.stroke();
+  drawText(b.name, dcx, b.y+b.h-68, "9px", b.accent, "center");
+  ctx.fillStyle = b.door; rr(ctx, dcx-22, b.y+b.h-46, 44, 46, 4); ctx.fill();
+  ctx.fillStyle = "rgba(255,220,140,.18)"; rr(ctx, dcx-16, b.y+b.h-40, 32, 30, 3); ctx.fill();
+  ctx.fillStyle = b.accent; circle(dcx+13, b.y+b.h-22, 2.2);
+}
+let turtle = null;
+function makeTurtle(){ return {x:700, y:560, vx:1, vy:0, dir:1, t:0, state:"walk", flip:0, sayT:0, repathT:0, near:false}; }
+function drawTurtle(){
+  if(!turtle) return;
+  const tu = turtle, x = tu.x, y = tu.y;
+  ctx.fillStyle = "rgba(0,0,0,.28)"; ctx.beginPath(); ctx.ellipse(x, y+15, 13, 4, 0, 0, Math.PI*2); ctx.fill();
+  ctx.save(); ctx.translate(x, y);
+  if(tu.state === "flip"){ const fp = tu.flip/0.7; ctx.translate(0, -Math.sin(fp*Math.PI)*34); ctx.rotate(tu.dir * fp * Math.PI*2); }
+  else { ctx.translate(0, Math.abs(Math.sin(tu.t*8))*1.5); }
+  ctx.scale(tu.dir, 1);
+  const lp = Math.sin(tu.t*10);
+  ctx.fillStyle = "#3a8a3f";
+  ctx.fillRect(-7, 8, 5, 7 + (tu.state==="walk" && lp>0?2:0));
+  ctx.fillRect(2, 8, 5, 7 + (tu.state==="walk" && lp<0?2:0));
+  ctx.fillRect(-11, -2, 4, 8); ctx.fillRect(7, -2, 4, 8);
+  ctx.fillStyle = "#7a4a24"; ctx.beginPath(); ctx.ellipse(0, 2, 11, 12, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#9a6a34"; ctx.beginPath(); ctx.ellipse(0, 0, 8, 9, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#6e3f1e"; ctx.fillRect(-7, 0, 14, 1.5); ctx.fillRect(-1, -8, 2, 18);
+  ctx.fillStyle = "#cdd17a"; ctx.beginPath(); ctx.ellipse(0, 4, 6, 8, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#3fae54"; circle(0, -10, 6);
+  ctx.fillStyle = "#d83b3b"; ctx.fillRect(-6, -12, 12, 4); ctx.fillRect(-10, -11, 4, 2);
+  ctx.fillStyle = "#fff"; circle(-2.5, -11, 1.8); circle(2.5, -11, 1.8);
+  ctx.fillStyle = "#10201c"; circle(-2.5, -11, 0.9); circle(2.5, -11, 0.9);
+  ctx.strokeStyle = "#16401c"; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, -7, 2.5, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
+  ctx.restore();
+}
+function drawTurtleBubble(x, y, msg){
+  ctx.save();
+  ctx.font = "11px 'Hanken Grotesk', sans-serif"; ctx.textAlign = "left";
+  const tw = ctx.measureText(msg).width, w = tw + 20, h = 26, bx = x - w/2, by = Math.max(8, y - h);
+  ctx.shadowColor = "rgba(0,0,0,.5)"; ctx.shadowBlur = 8;
+  ctx.fillStyle = "#fff"; rr(ctx, bx, by, w, h, 8); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(x-6, by+h-1); ctx.lineTo(x+6, by+h-1); ctx.lineTo(x, by+h+8); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#15151a"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(msg, x, by + h/2);
+  ctx.textBaseline = "alphabetic";
+  ctx.restore();
 }
 function drawStar(cx, cyBase, phase){
   const y = cyBase + Math.sin(t*3 + phase*0.01)*6 - 2;
@@ -1952,6 +2102,21 @@ function drawDecor(){
     ctx.fillStyle = "#e9e1cf"; ctx.fillRect(cxp-9, byc-30, 18, 5);
     ctx.fillStyle = "#2f6b3f"; circle(cxp, byc-34, 7); circle(cxp-5, byc-32, 4); circle(cxp+5, byc-32, 4);
     ctx.fillStyle = "#c2477e"; circle(cxp-4, byc-36, 1.6); circle(cxp+3, byc-37, 1.6);
+  } else if(LV.style === "nineties"){
+    TREES.forEach((tr, i) => {
+      const x = tr.x+22, baseY = tr.y+38;
+      if(i % 2 === 0){
+        ctx.fillStyle = "#2a2e35"; ctx.fillRect(x-2, baseY-44, 4, 44);
+        ctx.fillStyle = "#3a3f48"; ctx.fillRect(x-2, baseY-44, 22, 4);
+        ctx.save(); ctx.shadowColor = "rgba(255,170,70,.7)"; ctx.shadowBlur = 14; ctx.fillStyle = "#ffb24a"; rr(ctx, x+14, baseY-44, 10, 6, 2); ctx.fill(); ctx.restore();
+      } else {
+        ctx.fillStyle = "#3a4048"; rr(ctx, x-9, baseY-18, 18, 20, 3); ctx.fill();
+        ctx.fillStyle = "#4a505a"; ctx.fillRect(x-10, baseY-20, 20, 4);
+        ctx.fillStyle = "#ff3da6"; ctx.fillRect(x-6, baseY-12, 8, 3); ctx.fillStyle = "#34e0c4"; ctx.fillRect(x-2, baseY-7, 7, 3);
+      }
+    });
+    drawHog(330, 360); drawHog(384, 366);
+    drawBarrelFire(560, 648);
   } else {
     TREES.forEach(tr => {
       const x = tr.x+22, y = tr.y+22;
@@ -1972,8 +2137,8 @@ function drawDecor(){
 function drawTheo(){
   const x = 730, feet = 720;
   const st = LV.style;
-  const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : st === "roman" ? "#b5462f" : st === "future" ? "#27406a" : st === "georgian" ? "#6e5a3e" : "#2f8f7e";
-  const hair = st === "downtown" ? "#6b5440" : st === "suburb" ? "#d8c08a" : st === "industrial" ? "#3a2a1c" : st === "roman" ? "#2a2018" : st === "georgian" ? "#e0dccb" : "#2a2a33";
+  const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : st === "roman" ? "#b5462f" : st === "future" ? "#27406a" : st === "georgian" ? "#6e5a3e" : st === "nineties" ? "#3a4a6a" : "#2f8f7e";
+  const hair = st === "downtown" ? "#6b5440" : st === "suburb" ? "#d8c08a" : st === "industrial" ? "#3a2a1c" : st === "roman" ? "#2a2018" : st === "georgian" ? "#e0dccb" : st === "nineties" ? "#1f1f26" : "#2a2a33";
   ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(x, feet, 12, 4, 0, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = coat; rr(ctx, x-8, feet-22, 16, 16, 4); ctx.fill();          // coat / hoodie
   ctx.fillStyle = "#e8b48a"; circle(x, feet-26, 6);                          // head
@@ -1990,7 +2155,25 @@ function drawPlayer(){
   ctx.fillRect(cx-7, top+22, 5, 8 + (player.moving && lp>0 ? 2 : 0));
   ctx.fillRect(cx+2, top+22, 5, 8 + (player.moving && lp<0 ? 2 : 0));
   ctx.fillStyle = "#16161b"; ctx.fillRect(cx-8, top+30, 7, 3); ctx.fillRect(cx+1, top+30, 7, 3);
-  if((LV.style) === "georgian"){
+  if((LV.style) === "nineties"){
+    ctx.fillStyle = "#e8b48a"; ctx.fillRect(cx-11, top+12, 3, 9); ctx.fillRect(cx+8, top+12, 3, 9);
+    ctx.fillStyle = "#1b1b20"; rr(ctx, cx-9, top+9, 18, 17, 3); ctx.fill();
+    ctx.fillStyle = "#2a2a30"; ctx.fillRect(cx-1, top+9, 2, 17);
+    ctx.fillStyle = "#c9ccd2"; circle(cx-5, top+13, 0.9); circle(cx+4, top+13, 0.9); circle(cx-5, top+18, 0.9); circle(cx+4, top+18, 0.9);
+    ctx.fillStyle = "#d83b8a"; ctx.fillRect(cx-6, top+10, 4, 4);
+    ctx.fillStyle = "#e8b48a"; circle(cx, top+2, 6.5);
+    ctx.fillStyle = "#3a2a2a"; ctx.fillRect(cx-6, top-2, 12, 4);
+    ctx.fillStyle = "#ff3da6"; for(let i=-4;i<=4;i+=2){ ctx.beginPath(); ctx.moveTo(cx+i, top-2); ctx.lineTo(cx+i*0.6, top-12); ctx.lineTo(cx+i+2, top-2); ctx.closePath(); ctx.fill(); }
+    ctx.fillStyle = "#ff6bbf"; ctx.beginPath(); ctx.moveTo(cx-1, top-3); ctx.lineTo(cx, top-13); ctx.lineTo(cx+1, top-3); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#23304a"; circle(cx-2 + fx, top+2, 1.3); circle(cx+2 + fx, top+2, 1.3);
+    const bbx = cx + (fx>0 ? -20 : 12), bby = top+14;
+    ctx.fillStyle = "#15151a"; rr(ctx, bbx, bby, 16, 11, 2); ctx.fill();
+    ctx.fillStyle = "#3a3f48"; ctx.fillRect(bbx+1, bby+1, 14, 2);
+    ctx.fillStyle = "#23262c"; circle(bbx+4, bby+6, 2.6); circle(bbx+12, bby+6, 2.6);
+    ctx.fillStyle = "#6a7078"; circle(bbx+4, bby+6, 1); circle(bbx+12, bby+6, 1);
+    ctx.fillStyle = "#34e0c4"; for(let i=0;i<3;i++){ const bh = 2 + Math.abs(Math.sin(t*8 + i))*3; ctx.fillRect(bbx+7+i*1.6, bby+8-bh, 1, bh); }
+    ctx.strokeStyle = "#9aa0a6"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(bbx+14, bby); ctx.lineTo(bbx+18, bby-6); ctx.stroke();
+  } else if((LV.style) === "georgian"){
     const gown = "#7a9ec9", trim = "#e9e1cf";
     ctx.fillStyle = gown; ctx.beginPath(); ctx.moveTo(cx-6, top+17); ctx.lineTo(cx+6, top+17); ctx.lineTo(cx+13, top+34); ctx.lineTo(cx-13, top+34); ctx.closePath(); ctx.fill();
     ctx.fillStyle = "rgba(255,255,255,.10)"; ctx.beginPath(); ctx.moveTo(cx-6, top+17); ctx.lineTo(cx-1, top+17); ctx.lineTo(cx-5, top+34); ctx.lineTo(cx-13, top+34); ctx.closePath(); ctx.fill();
@@ -2136,7 +2319,7 @@ function starTargets(){
 }
 function drawTown(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : (LV.style === "future") ? "#070b18" : (LV.style === "georgian") ? "#15131f" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : (LV.style === "future") ? "#070b18" : (LV.style === "georgian") ? "#15131f" : (LV.style === "nineties") ? "#0a0d16" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
   ctx.save(); ctx.translate(-camX, -camY);
   // ground tiles: grass for town, pavement for downtown
   const ts = 48;
@@ -2148,6 +2331,7 @@ function drawTown(){
   const roman = LV.style === "roman";
   const future = LV.style === "future";
   const georgian = LV.style === "georgian";
+  const nineties = LV.style === "nineties";
   for(let x=gx0; x<gx1; x+=ts){
     for(let y=gy0; y<gy1; y+=ts){
       const even = (x/ts + y/ts) % 2 === 0;
@@ -2157,6 +2341,7 @@ function drawTown(){
         : roman ? (even ? "#5f4d34" : "#665338")
         : future ? (even ? "#0e1730" : "#101b38")
         : georgian ? (even ? "#33523a" : "#39593f")
+        : nineties ? (even ? "#1c1f26" : "#202329")
         : (even ? "#1c3b30" : "#1f4234");
       ctx.fillRect(x, y, ts, ts);
     }
@@ -2166,7 +2351,7 @@ function drawTown(){
     for(let gxl=gx0; gxl<gx1; gxl+=ts){ ctx.beginPath(); ctx.moveTo(gxl, gy0); ctx.lineTo(gxl, gy1); ctx.stroke(); }
     for(let gyl=gy0; gyl<gy1; gyl+=ts){ ctx.beginPath(); ctx.moveTo(gx0, gyl); ctx.lineTo(gx1, gyl); ctx.stroke(); }
   }
-  if(downtown) drawSkyline();
+  if(downtown || nineties) drawSkyline();
   // roads
   if(downtown){
     ROADS.forEach(r => { ctx.fillStyle = "#2a2d35"; rr(ctx, r.x, r.y, r.w, r.h, 4); ctx.fill(); });
@@ -2219,19 +2404,29 @@ function drawTown(){
       for(let yy=r.y+8; yy<r.y+r.h-4; yy+=26){ ctx.fillRect(r.x+2, yy, r.w-4, 1.5); }
       ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.fillRect(r.x, r.y, r.w, 2);
     });
+  } else if(nineties){
+    ROADS.forEach(r => { ctx.fillStyle = "#26282e"; rr(ctx, r.x, r.y, r.w, r.h, 4); ctx.fill(); });
+    ROADS.forEach(r => {
+      ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.fillRect(r.x, r.y, r.w, 2);
+      ctx.fillStyle = "rgba(230,200,90,.55)";
+      if(r.w >= r.h){ const yy = r.y + r.h/2 - 1.5; for(let dx=r.x+10; dx<r.x+r.w-10; dx+=40) ctx.fillRect(dx, yy, 16, 3); }
+      else { const xx = r.x + r.w/2 - 1.5; for(let dy=r.y+10; dy<r.y+r.h-10; dy+=40) ctx.fillRect(xx, dy, 3, 16); }
+      ctx.strokeStyle = "rgba(0,0,0,.25)"; ctx.lineWidth = 1;
+      for(let cz=r.x+20; cz<r.x+r.w-10; cz+=90){ ctx.beginPath(); ctx.moveTo(cz, r.y+6); ctx.lineTo(cz+8, r.y+r.h-8); ctx.stroke(); }
+    });
   } else {
     ROADS.forEach(r => { ctx.fillStyle = "#6d5436"; rr(ctx, r.x, r.y, r.w, r.h, 6); ctx.fill(); });
     ROADS.forEach(r => { ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(r.x, r.y, r.w, 3); });
   }
   // plaza
-  ctx.fillStyle = downtown ? "#3a3f48" : suburb ? "#9a948a" : industrial ? "#3a3d44" : roman ? "#9a8260" : future ? "#12203a" : georgian ? "#b3aa98" : "#8a8475"; ctx.beginPath(); ctx.ellipse(755, 520, 188, 152, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = downtown ? "#3a3f48" : suburb ? "#9a948a" : industrial ? "#3a3d44" : roman ? "#9a8260" : future ? "#12203a" : georgian ? "#b3aa98" : nineties ? "#2a2d33" : "#8a8475"; ctx.beginPath(); ctx.ellipse(755, 520, 188, 152, 0, 0, Math.PI*2); ctx.fill();
   ctx.strokeStyle = "rgba(0,0,0,.18)"; ctx.lineWidth = 3; ctx.stroke();
   // decor and structures
   drawDecor();
   BUILDINGS.forEach(drawBuilding);
   drawUniversity();
   // objective markers
-  const markLift = LV.style === "downtown" ? 116 : LV.style === "suburb" ? 56 : 24;
+  const markLift = (LV.style === "downtown" || LV.style === "nineties") ? 116 : LV.style === "suburb" ? 56 : 24;
   BUILDINGS.forEach(b => {
     if(!b.intelId) return;
     const cx = b.x + b.w/2, cy = b.y - markLift;
@@ -2243,6 +2438,7 @@ function drawTown(){
   }
   if(lessonDoneRun) drawStar(BUILDINGS[3].x + BUILDINGS[3].w/2, BUILDINGS[3].y - markLift, BUILDINGS[3].x);
   drawTheo();
+  drawTurtle();
   drawPlayer();
   ctx.restore();
   // screen space helpers
@@ -2261,6 +2457,10 @@ function drawTown(){
       if(state.near.type === "uni") lab = uniOpen() ? "STUDY" : "LOCKED";
       if(state.near.type === "locked") lab = lessonDoneRun ? "PITCH" : "KNOCK";
       drawPrompt(p.x - camX, p.y - camY, lab);
+    }
+    if(turtle){
+      if(turtle.sayT > 0) drawTurtleBubble(turtle.x - camX, turtle.y - camY - 34, "Cowabunga, dude! \ud83d\udc22 \ud83c\udf55!!!");
+      else if(turtle.near && turtle.state !== "flip") drawPrompt(turtle.x - camX, turtle.y - camY - 26, "HIGH FIVE");
     }
   }
 }
@@ -3983,7 +4183,10 @@ function resetRun(){
 }
 function actionA(){
   if(state.scene === "dialogue") dlgNext();
-  else if(state.scene === "overworld") tryInteract();
+  else if(state.scene === "overworld"){
+    if(turtle && turtle.near && turtle.state !== "flip"){ turtle.state = "flip"; turtle.flip = 0; turtle.sayT = 1.6; sfxDone(); return; }
+    tryInteract();
+  }
 }
 function tryInteract(){
   if(!state.near) return;
