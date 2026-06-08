@@ -1550,15 +1550,12 @@ const LEVELS = {
     passToast:"Move equipped. Zorg's Dome is starred. Go teach him something new.",
     pitch: PITCH6,
     winLede1:"You did not out argue a know it all, you taught him something true. One insight connected three problems he could not see, and the proudest being on Zorbon leaned in and listened.",
-    winLede2:"Now for the fun part. With the deal closed, you seal your helmet and head out across the colony to relight the grid yourself. Blast through whatever has fouled the dark lines, because THE VOID GLORG is squatting on the core. Points from the job bank to your lifetime total.",
+    winLede2:"Now for the fun part. With the deal closed, you seal your helmet and drop straight down the dark beacon shaft, blaster up and eyes forward. Something has settled over the grid core and drunk the whole colony dark, THE BLIND SPOT, the one thing even Zorg could not see. Go light it up. Points from the job bank to your lifetime total.",
     failLede:"You lost him. Flattery, fear, feature dumps, and arguing all tell a know it all you have nothing real. Win him by teaching one true thing he has not seen, then hand him the fix.",
-    job:{ mode:"platformer", theme:"cosmic", bossName:"THE VOID GLORG", W:3500, speedPar:78,
-      enemyHp:3, enemySpeed:80, shotSpeed:660, shotCd:0.19, bossProjSpeed:400, bossAtk:0.95, bossSpread:6,
-      plats:[{x:580,dy:120,w:150},{x:1020,dy:155,w:140},{x:1460,dy:115,w:150},{x:1900,dy:160,w:140},{x:2340,dy:120,w:150},{x:2800,dy:158,w:150}],
-      enemies:[{x:540},{x:780},{x:1040,platIdx:1},{x:1280},{x:1500,big:true,hp:9,speed:58},{x:1760,platIdx:3},{x:2000},{x:2240},{x:2360,platIdx:4},{x:2560,big:true,hp:10,speed:60},{x:2780},{x:2980,big:true,hp:11,speed:60},{x:3180}],
-      boss:{dx:300, w:160, h:160, hp:66}, hazards:[{x:940,w:80},{x:1700,w:90},{x:2500,w:90}],
-      winLede:"THE VOID GLORG pops in a splash of color and the colony surges back to life. The market blazes, the goo flows, the beacon calls the ships home. Zorbon is glowing again, and it is glowing because of you.",
-      failLede:"The dark blobs got the better of you this round. The deal still stands, so seal the helmet and head back out to relight the grid.",
+    job:{ mode:"fps", theme:"cosmic", bossName:"THE BLIND SPOT", speedPar:60,
+      boss:{ hp:78 },
+      winLede:"THE BLIND SPOT cracks open in a flood of light and the colony blazes awake. The market glows, the goo flows, the welcome beacon sweeps the sky, and the ships are already turning for home. Zorbon can see again, and it can see because of you.",
+      failLede:"The dark closed back in around you this round. The deal still stands, so seal your helmet and drop back down the beacon shaft.",
       failH:"LOST IN THE DARK" },
     outro:{ cleared:"CHAPTER SIX CLEARED", tag:"The Know It All",
       recap:"You closed the one buyer who was sure he had nothing left to learn. You did not flatter him and you did not fight him. You taught him one true thing about his own world, handed him the fix, then relit the whole colony with your own two hands.",
@@ -4149,7 +4146,7 @@ function updateFps(dt){
     J.fireCd = 0.22; J.muzzle = 0.08; sfxShot();
     if(aim){
       aim.hp -= 5; aim.hurt = 0.1;
-      if(aim.hp <= 0){ aim.alive = false; J.score += aim.big ? 500 : 80; addCombo(); burst(viewW/2, fpsScreenY(aim.p), aim.big ? "#ffcb47" : "#46d08a", aim.big ? 26 : 14); sfxBoom(); }
+      if(aim.hp <= 0){ aim.alive = false; J.score += aim.big ? 500 : 80; addCombo(); burst(viewW/2, fpsScreenY(aim.p), aim.big ? (J.theme==="cosmic"?"#dfffb0":"#ffcb47") : (J.theme==="cosmic"?"#b6ff6a":"#46d08a"), aim.big ? 26 : 14); sfxBoom(); }
       else { J.score += 20; addCombo(); }
     }
   }
@@ -4180,8 +4177,37 @@ function updateFps(dt){
   if(J.hp <= 0 && !J.ended){ J.ended = true; J.win = false; setTimeout(showJobFail, 350); }
   if(!b.alive && !J.ended){ J.ended = true; J.win = true; J.flash = 0.6; setTimeout(showJobWin, 750); }
 }
+function drawBlindSpot(x, fy, sz, e, J){
+  const r = sz*0.95, cy = fy - r*0.85;
+  const open = 1 - (e.hp / e.maxHp);
+  const hurt = e.hurt > 0;
+  ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = "#150a28"; circle(x, cy, r*1.35); ctx.restore();
+  ctx.save(); ctx.shadowBlur = 10;
+  for(let i=0;i<12;i++){ const a = J.time*0.6 + i*(Math.PI/6); const rx = x + Math.cos(a)*r*1.2, ry = cy + Math.sin(a)*r*1.2; const col = (i%3===0)?"#b6ff6a":(i%3===1)?"#7fd0ff":"#ff9ee6"; ctx.shadowColor = col; ctx.fillStyle = col; circle(rx, ry, Math.max(1.5, sz*0.05)); }
+  ctx.restore();
+  ctx.fillStyle = hurt ? "#efe2ff" : "#241040"; circle(x, cy, r);
+  ctx.fillStyle = hurt ? "#ffffff" : "#180b30"; circle(x, cy, r*0.9);
+  const ir = r*(0.24 + open*0.42);
+  ctx.save(); ctx.shadowBlur = 26; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "#8ee65a"; circle(x, cy, ir); ctx.restore();
+  ctx.save(); ctx.shadowBlur = 16; ctx.shadowColor = "#dfffb0"; ctx.fillStyle = "#dfffb0"; circle(x, cy, ir*0.55); ctx.restore();
+  ctx.fillStyle = "#150a28"; ctx.beginPath(); ctx.ellipse(x, cy, Math.max(1.2, ir*0.22*(1-open)), Math.max(2, ir*0.7), 0, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = hurt ? "#cdbff0" : "#1c0e36"; ctx.lineWidth = Math.max(2, sz*0.05); ctx.lineCap = "round";
+  for(let i=-4;i<=4;i++){ const a = -Math.PI/2 + i*0.34; const x1 = x + Math.cos(a)*r, y1 = cy + Math.sin(a)*r; const x2 = x + Math.cos(a)*r*1.26, y2 = cy + Math.sin(a)*r*1.26; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  ctx.lineCap = "butt";
+}
+function drawVoidMote(x, fy, sz, e, J){
+  const cy = fy - sz*0.5, r = sz*0.42, hurt = e.hurt > 0;
+  const wob = Math.sin(J.time*6 + e.lane*4)*sz*0.06;
+  ctx.save(); ctx.globalAlpha = 0.4; ctx.fillStyle = "#150a28"; circle(x, cy, r*1.3); ctx.restore();
+  ctx.fillStyle = hurt ? "#efe2ff" : "#2a1450"; ctx.beginPath(); ctx.ellipse(x, cy + wob, r, r*1.05, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = hurt ? "#fff" : "#1a0c34"; ctx.beginPath(); ctx.ellipse(x, cy + wob - r*0.1, r*0.8, r*0.8, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = hurt ? "#cdbff0" : "#1a0c34"; for(let i=-2;i<=2;i++){ const a = -Math.PI/2 + i*0.5; ctx.beginPath(); ctx.moveTo(x + Math.cos(a)*r*0.9, cy + wob + Math.sin(a)*r*0.9); ctx.lineTo(x + Math.cos(a)*r*1.3, cy + wob + Math.sin(a)*r*1.3 - r*0.1); ctx.lineTo(x + Math.cos(a+0.2)*r*0.9, cy + wob + Math.sin(a+0.2)*r*0.9); ctx.closePath(); ctx.fill(); }
+  ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "#dfffb0"; circle(x, cy + wob, r*0.42); ctx.restore();
+  ctx.fillStyle = "#150a28"; circle(x + clamp(J.s*-2, -2, 2), cy + wob, r*0.2);
+}
 function drawFpsFoe(e, J){
   const x = fpsScreenX(e.lane, J.s, e.p), fy = fpsScreenY(e.p), sz = fpsScale(e.p) * (e.big ? 1.7 : 1);
+  if(J.theme === "cosmic"){ if(e.big) drawBlindSpot(x, fy, sz, e, J); else drawVoidMote(x, fy, sz, e, J); return; }
   ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); ctx.ellipse(x, fy, sz*0.5, sz*0.12, 0,0,Math.PI*2); ctx.fill();
   if(e.big){
     // THE BACKLOG: a towering, teetering avalanche of invoices
@@ -4225,11 +4251,21 @@ function drawFpsFoe(e, J){
 function drawFpsGun(J){
   const bob = Math.sin(J.time*4)*4 + J.s*10;
   ctx.save(); ctx.translate(viewW/2 + bob*0.4, viewH);
-  ctx.fillStyle = "#2f9e8a"; rr(ctx, -54, -40, 40, 50, 8); ctx.fill(); rr(ctx, 14, -40, 40, 50, 8); ctx.fill();
-  ctx.fillStyle = "#3a3f48"; rr(ctx, -22, -64, 44, 50, 8); ctx.fill();
-  ctx.fillStyle = "#2a2e35"; rr(ctx, -10, -92, 20, 34, 6); ctx.fill();
-  ctx.fillStyle = "#46d08a"; rr(ctx, -7, -96, 14, 8, 3); ctx.fill();
-  if(J.muzzle > 0){ ctx.globalAlpha = 0.9; ctx.fillStyle = "rgba(120,230,170,.9)"; circle(0, -100, 10 + Math.random()*6); ctx.fillStyle = "rgba(255,255,255,.85)"; circle(0, -100, 5); ctx.globalAlpha = 1; }
+  if(J.theme === "cosmic"){
+    ctx.fillStyle = "#eef2f7"; rr(ctx, -54, -40, 40, 50, 10); ctx.fill(); rr(ctx, 14, -40, 40, 50, 10); ctx.fill();
+    ctx.fillStyle = "#cfd8e6"; rr(ctx, -54, -40, 40, 8, 6); ctx.fill(); rr(ctx, 14, -40, 40, 8, 6); ctx.fill();
+    ctx.fillStyle = "#3a3550"; rr(ctx, -24, -66, 48, 52, 10); ctx.fill();
+    ctx.fillStyle = "#7fd0ff"; rr(ctx, -20, -58, 40, 4, 2); ctx.fill();
+    ctx.fillStyle = "#52407a"; rr(ctx, -10, -96, 20, 38, 8); ctx.fill();
+    ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "#dfffb0"; rr(ctx, -8, -100, 16, 9, 4); ctx.fill(); ctx.restore();
+    if(J.muzzle > 0){ ctx.save(); ctx.globalAlpha = 0.9; ctx.shadowBlur = 16; ctx.shadowColor = "#b6ff6a"; ctx.fillStyle = "rgba(180,255,120,.9)"; circle(0, -104, 11 + Math.random()*6); ctx.fillStyle = "rgba(255,255,255,.9)"; circle(0, -104, 5); ctx.restore(); }
+  } else {
+    ctx.fillStyle = "#2f9e8a"; rr(ctx, -54, -40, 40, 50, 8); ctx.fill(); rr(ctx, 14, -40, 40, 50, 8); ctx.fill();
+    ctx.fillStyle = "#3a3f48"; rr(ctx, -22, -64, 44, 50, 8); ctx.fill();
+    ctx.fillStyle = "#2a2e35"; rr(ctx, -10, -92, 20, 34, 6); ctx.fill();
+    ctx.fillStyle = "#46d08a"; rr(ctx, -7, -96, 14, 8, 3); ctx.fill();
+    if(J.muzzle > 0){ ctx.globalAlpha = 0.9; ctx.fillStyle = "rgba(120,230,170,.9)"; circle(0, -100, 10 + Math.random()*6); ctx.fillStyle = "rgba(255,255,255,.85)"; circle(0, -100, 5); ctx.globalAlpha = 1; }
+  }
   ctx.restore();
 }
 function drawFps(){
@@ -4239,6 +4275,23 @@ function drawFps(){
   const shy = J.shake > 0 ? (Math.random()*2 - 1)*4*(J.shake/0.3) : 0;
   ctx.save(); ctx.translate(shx, shy);
   const horizon = viewH*0.42;
+  if(J.theme === "cosmic"){
+    let g = ctx.createLinearGradient(0,0,0,horizon); g.addColorStop(0,"#1a1038"); g.addColorStop(1,"#3a2060"); ctx.fillStyle = g; ctx.fillRect(-8,-8,viewW+16,horizon+8);
+    for(let i=0;i<48;i++){ const sx=(i*131)%viewW, sy=(i*71)%horizon; ctx.globalAlpha=0.4+((i*7)%5)*0.1; ctx.fillStyle=(i%3===0)?"#b6ff6a":(i%3===1)?"#7fd0ff":"#ff9ee6"; circle(sx, sy, (i%5===0)?1.6:1); }
+    ctx.globalAlpha=1;
+    g = ctx.createLinearGradient(0,horizon,0,viewH); g.addColorStop(0,"#2a1850"); g.addColorStop(1,"#0a0618"); ctx.fillStyle = g; ctx.fillRect(-8,horizon,viewW+16,viewH-horizon+8);
+    const vp = viewW/2 - J.s*60;
+    ctx.strokeStyle = "rgba(150,110,255,.20)"; ctx.lineWidth = 2;
+    for(let i=-3;i<=3;i++){ const fx = viewW/2 + i*(viewW*0.5); ctx.beginPath(); ctx.moveTo(fx, viewH); ctx.lineTo(vp, horizon); ctx.stroke(); ctx.beginPath(); ctx.moveTo(fx, 0); ctx.lineTo(vp, horizon); ctx.stroke(); }
+    ctx.strokeStyle = "rgba(120,255,200,.14)";
+    for(let k=1;k<=8;k++){ const pp = k/9, y = horizon + pp*(viewH - horizon); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(viewW, y); ctx.stroke(); }
+    for(let i=0;i<8;i++){
+      const px = ((i*viewW/8) + J.time*30*(0.5 + (i%3)*0.3)) % (viewW+60) - 30;
+      const py = horizon + (((i*53) + J.time*60*(0.4 + (i%2)*0.4)) % (viewH - horizon));
+      const ps = 3 + (py - horizon)/(viewH - horizon)*7;
+      ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = (i%3===0)?"#b6ff6a":(i%3===1)?"#7fd0ff":"#ff9ee6"; ctx.fillStyle = (i%3===0)?"#dfffb0":(i%3===1)?"#cdeeff":"#ffd0f0"; circle(px, py, ps); ctx.restore();
+    }
+  } else {
   let g = ctx.createLinearGradient(0,0,0,horizon); g.addColorStop(0,"#1a1206"); g.addColorStop(1,"#2a2010"); ctx.fillStyle = g; ctx.fillRect(-8,-8,viewW+16,horizon+8);
   g = ctx.createLinearGradient(0,horizon,0,viewH); g.addColorStop(0,"#2a2418"); g.addColorStop(1,"#0f0c06"); ctx.fillStyle = g; ctx.fillRect(-8,horizon,viewW+16,viewH-horizon+8);
   const vp = viewW/2 - J.s*60;
@@ -4255,11 +4308,12 @@ function drawFps(){
     ctx.fillStyle = "rgba(90,74,40,.25)"; ctx.fillRect(-ps*0.3, -ps*0.05, ps*0.6, Math.max(1, ps*0.08));
     ctx.restore();
   }
+  }
   const arr = J.foes.filter(e => e.alive).slice();
   if(J.boss.alive) arr.push(J.boss);
   arr.sort((a,b) => a.p - b.p);
   for(const e of arr) drawFpsFoe(e, J);
-  for(const q of J.proj){ const x = fpsScreenX(q.lane, J.s, q.p), y = fpsScreenY(q.p), r = 4 + q.p*16; ctx.fillStyle = "#ff7a3a"; circle(x, y, r); ctx.fillStyle = "rgba(255,230,160,.5)"; circle(x - r*0.3, y - r*0.3, r*0.4); }
+  for(const q of J.proj){ const x = fpsScreenX(q.lane, J.s, q.p), y = fpsScreenY(q.p), r = 4 + q.p*16; const pc = J.theme === "cosmic" ? "#7a3abf" : "#ff7a3a"; const ph = J.theme === "cosmic" ? "rgba(200,150,255,.6)" : "rgba(255,230,160,.5)"; ctx.fillStyle = pc; circle(x, y, r); ctx.fillStyle = ph; circle(x - r*0.3, y - r*0.3, r*0.4); }
   J.parts.forEach(p => { ctx.globalAlpha = Math.max(0, Math.min(1, p.life*2)); ctx.fillStyle = p.color; circle(p.x, p.y, p.r); ctx.globalAlpha = 1; });
   ctx.restore();
   const chx = viewW/2, chy = horizon + (viewH - horizon)*0.36;
