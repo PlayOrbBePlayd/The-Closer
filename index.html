@@ -3784,6 +3784,9 @@ function drawPlunger(x,y,vx){
 function drawGunk(x,y,w,h){
   const cx=x+w/2, cy=y+h/2;
   if(job && job.theme === "arena"){
+    const faceLeft = job.px < cx;
+    ctx.save();
+    if(faceLeft){ ctx.translate(cx*2, 0); ctx.scale(-1, 1); }
     if(w >= 40){
       ctx.fillStyle="#8a8f96"; ctx.beginPath(); ctx.ellipse(cx, cy+3, w*0.46, h*0.34, 0, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle="#9aa0a6"; ctx.beginPath(); ctx.ellipse(cx-w*0.08, cy-3, w*0.4, h*0.24, 0, 0, Math.PI*2); ctx.fill();
@@ -3804,6 +3807,7 @@ function drawGunk(x,y,w,h){
       ctx.strokeStyle="#8a5e2a"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx-w*0.4, cy); ctx.quadraticCurveTo(cx-w*0.5, cy-8, cx-w*0.42, cy-11); ctx.stroke();
       ctx.fillStyle="#5e3f1c"; circle(cx-w*0.42, cy-11, 2);
     }
+    ctx.restore();
     return;
   }
   if(job && job.theme === "backlog"){
