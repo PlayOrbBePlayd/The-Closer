@@ -4642,6 +4642,23 @@ function openIntro(from){
   el("btnIntroGo").textContent = from === "brief" ? "Start Level 1" : "Back to title";
   transitionTo("intro");
 }
+const FINALE_CREDITS = [
+  {k:"head", t:"THE PLAYBOOK"},
+  {k:"sub", t:"the books behind the moves"},
+  {k:"gap"},
+  {k:"title", t:"Never Split the Difference"}, {k:"author", t:"Chris Voss"},
+  {k:"title", t:"SPIN Selling"}, {k:"author", t:"Neil Rackham"},
+  {k:"title", t:"The Sandler Selling System"}, {k:"author", t:"David Sandler"},
+  {k:"title", t:"Strategic Selling"}, {k:"author", t:"Miller and Heiman"},
+  {k:"title", t:"The Challenger Sale"}, {k:"author", t:"Dixon and Adamson"},
+  {k:"title", t:"Fanatical Prospecting"}, {k:"author", t:"Jeb Blount"},
+  {k:"title", t:"Secrets of Closing the Sale"}, {k:"author", t:"Zig Ziglar"},
+  {k:"title", t:"The Psychology of Selling"}, {k:"author", t:"Brian Tracy"},
+  {k:"title", t:"Getting to Yes"}, {k:"author", t:"Fisher and Ury"},
+  {k:"title", t:"The Sales Bible"}, {k:"author", t:"Jeffrey Gitomer"},
+  {k:"gap"},
+  {k:"foot", t:"Every move, learned ethically, through play."}
+];
 let fin = null;
 function openFinale(){
   const W = viewW, H = viewH;
@@ -4654,12 +4671,13 @@ function openFinale(){
     vy: (Math.random()<0.5?-1:1)*(45+Math.random()*55),
     t: Math.random()*6, pop:0
   }));
-  fin = { prof:{ x:W*0.5, y:H*0.62, faceX:1, moving:false, t:0 }, icons, t:0, kellyShake:0, kellyNear:false };
+  fin = { prof:{ x:W*0.5, y:H*0.62, faceX:1, moving:false, t:0 }, icons, t:0, kellyShake:0, kellyNear:false, crawl:0 };
   transitionTo("finale");
 }
 function updateFinale(dt){
   const F = fin; if(!F) return;
   F.t += dt;
+  F.crawl += dt*22;
   const W = viewW, H = viewH;
   let dx=0, dy=0;
   if(hold.left) dx-=1; if(hold.right) dx+=1; if(hold.up) dy-=1; if(hold.down) dy+=1;
@@ -4764,6 +4782,31 @@ function drawProfessor(pf){
   ctx.fillStyle="#15121f"; ctx.fillRect(-9,y-19,18,3);
   ctx.strokeStyle="#ffd24a"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(8,y-19); ctx.lineTo(10,y-12); ctx.stroke(); ctx.fillStyle="#ffd24a"; circle(10,y-12,1.4);
 }
+function drawFinaleCredits(F){
+  const W=viewW, H=viewH, colX=10, colW=Math.min(196, W*0.46), colTop=86, colBot=H-64;
+  if(colBot - colTop < 70) return;
+  ctx.save();
+  ctx.fillStyle="rgba(8,6,16,.5)"; rr(ctx, colX-2, colTop-4, colW+6, colBot-colTop+8, 8); ctx.fill();
+  ctx.beginPath(); rr(ctx, colX-2, colTop-4, colW+6, colBot-colTop+8, 8); ctx.clip();
+  const cxp = colX + colW/2, lineH=13, listH=FINALE_CREDITS.length*lineH, cycle=listH+(colBot-colTop);
+  const base = colBot - (F.crawl % cycle);
+  for(let rep=-1; rep<=1; rep++){
+    for(let i=0;i<FINALE_CREDITS.length;i++){
+      const cy = base + i*lineH - rep*cycle;
+      if(cy < colTop-2 || cy > colBot+2) continue;
+      const it = FINALE_CREDITS[i];
+      if(it.k==="gap") continue;
+      else if(it.k==="head") drawText(it.t, cxp, cy, "11px", "#ffe08a", "center");
+      else if(it.k==="sub") drawText(it.t, cxp, cy, "8px", "#7fd0ff", "center");
+      else if(it.k==="title") drawText(it.t, cxp, cy, "9px", "#e8e2f0", "center");
+      else if(it.k==="author") drawText(it.t, cxp, cy, "8px", "#9a8fc0", "center");
+      else drawText(it.t, cxp, cy, "8px", "#7fd0ff", "center");
+    }
+  }
+  const gt=ctx.createLinearGradient(0,colTop-4,0,colTop+16); gt.addColorStop(0,"rgba(10,8,20,.85)"); gt.addColorStop(1,"rgba(10,8,20,0)"); ctx.fillStyle=gt; ctx.fillRect(colX-2,colTop-4,colW+6,20);
+  const gb=ctx.createLinearGradient(0,colBot-16,0,colBot+4); gb.addColorStop(0,"rgba(10,8,20,0)"); gb.addColorStop(1,"rgba(10,8,20,.85)"); ctx.fillStyle=gb; ctx.fillRect(colX-2,colBot-16,colW+6,20);
+  ctx.restore();
+}
 function drawFinale(){
   const F = fin; if(!F) return;
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -4776,6 +4819,7 @@ function drawFinale(){
     rad.addColorStop(0,"hsla("+hue+",90%,60%,0.18)"); rad.addColorStop(1,"hsla("+hue+",90%,60%,0)");
     ctx.fillStyle=rad; ctx.fillRect(0,0,W,H);
   }
+  drawFinaleCredits(F);
   const bn=Math.max(6, Math.floor(W/28));
   for(let i=0;i<bn;i++){ const on=(Math.floor(T*6)+i)%2===0, bx=14+i*((W-28)/(bn-1)); ctx.save(); if(on){ctx.shadowBlur=10; ctx.shadowColor="#ffd24a";} ctx.fillStyle=on?"#ffe08a":"#5a4a2a"; circle(bx,16,4); ctx.restore(); }
   drawText("YOU CLOSED THEM ALL", W/2, 46, "20px", "#ffe08a", "center");
