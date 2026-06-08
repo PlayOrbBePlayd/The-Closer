@@ -382,6 +382,7 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
         <button id="btnChap6" class="ghostbtn">Chapter 6</button>
         <button id="btnChap7" class="ghostbtn">Chapter 7</button>
         <button id="btnChap8" class="ghostbtn">Chapter 8</button>
+        <button id="btnChap9" class="ghostbtn">Chapter 9</button>
       </div>
       <div class="lvlpill" id="lvlPill">Level 1 &nbsp;&middot;&nbsp; The Backed Up Sink</div>
       <div id="lifeTitle" class="life">Lifetime points 0</div>
@@ -1550,6 +1551,116 @@ const PITCH8 = {
   ]
 };
 
+const INTEL9 = {
+  gold:{ label:"The Bottomless Treasury",
+    clue:"Athena lays it out plainly. Olympus is rich beyond counting, and Zeus could pay your full price ten times over without feeling it. The coin he is squeezing you on is nothing to him.",
+    why:"So the haggling is not about gold at all. When a buyer this rich fights you tooth and nail over price, the price is never the real fight. Something else is driving him." },
+  test:{ label:"The Test of Nerve",
+    clue:"Apollo has watched the king do this a thousand times. The brutal lowball is a test. The builders who cave he never respects again, and the ones who grovel he waves away like flies.",
+    why:"So you must not drop your price and you must not beg. Caving tells him you were overcharging, and groveling tells him you are beneath him. Hold your ground and he begins to listen." },
+  glory:{ label:"The Shadow of Poseidon",
+    clue:"Aphrodite knows what truly gnaws at the king. Poseidon raised a gleaming new temple of pearl and coral by the sea, and the mortals have turned their offerings to the shore. Zeus lies awake aching to be the greatest of the gods again.",
+    why:"Here is the real interest under the price. Zeus does not want a cheap monument. He wants the one that towers over his brother's and pulls all of Greece back to him. He is buying glory, not stone, and glory is worth full price." }
+};
+const TALK_CAFE9 = { id:"athena9", name:"Athena", sub:"Goddess of wisdom", interior:"cafe", intel:INTEL9.gold, intelId:"gold",
+  lines:[
+    "You climb Olympus to pitch the king himself. Brave, or foolish. Sit, and let a little wisdom spare you some grief.",
+    "Hear this first. Olympus is rich past all counting. Zeus could pay your full price ten times and never notice the loss.",
+    "So when he fights you over coin, the coin is a mask. A king this wealthy haggles for some other reason entirely. Find it, and you will have him."
+  ]};
+const TALK_HARDWARE9 = { id:"apollo9", name:"Apollo", sub:"God of truth and the sun", interior:"hardware", intel:INTEL9.test, intelId:"test",
+  lines:[
+    "I see all that the sun touches, builder, and I have watched this dance many times before.",
+    "The crushing lowball is a test. Cave to it and Zeus never respects you again. Grovel and he flicks you aside like a fly.",
+    "Do not drop your price and do not beg. Hold the line on what your work is worth, and the king will lean in to listen."
+  ]};
+const TALK_LAUNDRY9 = { id:"aphro9", name:"Aphrodite", sub:"Goddess of love", interior:"laundry", intel:INTEL9.glory, intelId:"glory",
+  lines:[
+    "Come closer, builder. I know what every heart truly longs for, even the heart of a king.",
+    "Poseidon raised a shining new temple by the sea, and all of Greece has turned to worship there. It eats at Zeus night and day.",
+    "He does not want a cheap little monument. He wants the one that towers over his brother's and draws the whole world back to Olympus. He is buying glory, not stone."
+  ]};
+const TALK_BENCH9 = { id:"ares9", name:"Ares", sub:"God of war", interior:null, intel:null, intelId:null,
+  lines:[
+    "A pitch? Bah. You do not negotiate with a king, you overpower him. Show no weakness, builder.",
+    "Threaten to take your monument to Poseidon. Or just slash your price to nothing and grovel until he agrees. Make him fear you.",
+    "Forget the dull lessons. Storm in, make demands, crush anyone who says no. That is how wars are won."
+  ]};
+const ZEUS_NPC = {id:"zeus9", name:"Zeus", sub:"King of Olympus", interior:"cafe"};
+const LESSON9 = [
+  {type:"teach", who:"Professor Bex", tag:"WELCOME", tagClass:"", title:"Hold the line, then find the real fight", body:[
+    "Zeus will hit you with a brutal lowball and dare you to flinch. Most builders do one of two things, and both lose. They cave and slash the price, or they puff up and threaten to walk. The king of the gods eats both alive.",
+    "The move is to hold your value calmly and get curious about why he is really squeezing you. Your recon already found it. The gold means nothing to a king this rich, the lowball is a test, and what truly drives him is Poseidon's new temple stealing his worship. Labels stay off in the throne room."
+  ]},
+  {type:"teach", who:"Field Card", tag:"FIELD CARD", tagClass:"", title:"Do not split the difference", attr:"Chris Voss, Never Split the Difference", body:[
+    "When a hard bargainer hammers your price, the worst move is to meet them halfway. Splitting the difference just teaches them that your number was never real, and they will push again, and again.",
+    "Instead, hold your anchor and turn the pressure back into a question. A calm how am I supposed to do that makes them justify the lowball out loud, and that is exactly where the real reason slips out.",
+    "You are not being stubborn. You are protecting the value of your work, because the moment you discount it for no reason, the buyer decides it was never worth the asking price to begin with."
+  ]},
+  {type:"teach", who:"Field Card", tag:"FIELD CARD", tagClass:"", title:"Sell the interest, not the position", attr:"Fisher and Ury, Getting to Yes, with Jeffrey Gitomer", body:[
+    "A position is what someone demands. An interest is why they want it. Zeus's position is one tenth of your price. His interest is to be the greatest god again. Those are not the same thing at all.",
+    "You almost never win by fighting the position head on. You win by uncovering the interest beneath it and trading on that. Give the king the glory he is starving for, and the price quietly stops being the argument.",
+    "Lead with value, the way Gitomer teaches. People do not buy on price, they buy on what the thing does for them. Show Zeus a monument that buries Poseidon's, and full price becomes a bargain."
+  ]},
+  {type:"teach", who:"Game Plan", tag:"GAME PLAN", tagClass:"plan", title:"How you hold the king", body:[
+    "Hold your price. When he says one tenth, do not counter low and do not storm out. Calmly stand on what the work is worth, and ask how he expects it done for that.",
+    "Find the interest. Steer past the coin toward what is really at stake, until the shadow of Poseidon comes out. Let him feel that you understand the true stakes.",
+    "Close on glory. Offer the monument that towers over the sea temple and pulls Greece back to Olympus, at full price, because glory is what he is actually buying. No labels in there."
+  ]},
+  {type:"practice", tag:"PRACTICE 1", tagClass:"prac", setup:"Zeus, from his throne, thunder rumbling: One tenth of your price, builder. Take it now, or I will find someone cheaper.", q:"Pick the move that holds a standoff.", options:[
+    {label:"HOLD", text:"One tenth would not cover the marble, great Zeus, and I will not pretend otherwise. May I ask, how am I meant to raise the grandest monument on Olympus for a tenth of its worth?", correct:true, fb:"You held your value and turned the lowball into a question. The king narrows his eyes, intrigued, and starts to explain himself."},
+    {label:"CAVE", text:"Of course, my king. One tenth it is. Whatever pleases you.", correct:false, fb:"You folded instantly. Now Zeus is certain you were overcharging, and he respects you not at all."},
+    {label:"THREATEN", text:"Fine. Then I will take my monument to Poseidon instead.", correct:false, fb:"You threatened the king of the gods with his own brother. The thunder cracks. A terrible move."}
+  ]},
+  {type:"practice", tag:"PRACTICE 2", tagClass:"prac", setup:"Zeus, grudgingly: ...Poseidon's wretched temple. Every mortal in Greece bows to the sea now instead of to me. Why am I even telling a builder this.", q:"Pick the move that closes on the real interest.", options:[
+    {label:"GLORY", text:"Because that is the true commission, my king. Not a cheap monument, but the one that towers over Poseidon's and turns all of Greece back to Olympus. That is worth full price, and I can build it.", correct:true, fb:"You named what he truly wants and tied your value straight to it. The king leans forward. Now you are speaking his language."},
+    {label:"PRICE", text:"Well, regardless of all that, my price is my price. Pay it.", correct:false, fb:"He just opened his heart and you slammed it shut with a number. You lost the thread."},
+    {label:"DISCOUNT", text:"I understand. To help with that, I will take half off.", correct:false, fb:"He told you glory is the point and you answered with a discount. He does not want cheap, he wants greatest."}
+  ]},
+  {type:"pass"}
+];
+const PITCH9 = {
+  showLabels: false, startRapport: 30, edgeBonus: 6, closeAt: 75,
+  beats: [
+    { who:"Zeus", whoId:"zeus9", line:"So. A builder dares climb Olympus to sell me stone. I will pay one tenth of your asking price, builder, and you will be grateful for it. Speak, but do not waste a god's time.", options:[
+      {label:"HOLD",     good:true,  d:14, pts:120, text:"One tenth would not pay for the marble, great Zeus, and I will not insult you by pretending it would. May I ask plainly, how am I meant to raise the grandest monument on Olympus for a tenth of its worth?", fb:"You held your price without flinching and made the king explain his own lowball. He is intrigued despite himself."},
+      {label:"CAVE",     good:false, d:-16, pts:0, text:"Of course, my king. One tenth. Whatever you wish, I am honored.", fb:"You folded the instant he pushed. Now he is sure you were overcharging, and his respect is gone."},
+      {label:"THREATEN", good:false, d:-16, pts:0, text:"A tenth? Then I will build it for Poseidon instead, and let the sea have the glory.", fb:"You threatened the king of the gods with his own rival. Thunder shakes the hall. Disastrous."},
+      {label:"GROVEL",   good:false, d:-12, pts:0, text:"Please, mighty Zeus, I beg you, name any price and I will weep with gratitude.", fb:"You groveled before a king who despises groveling. He waves you toward the door."}
+    ]},
+    { who:"Zeus", whoId:"zeus9", line:"Bold, for a mortal. But bold does not lay a single stone. The price is the price I name. Why should the king of the gods pay one copper more than he must?", options:[
+      {label:"VALUE", good:true,  d:16, pts:140, text:"Because you are not paying for stone, my king. You are paying for what the stone does. A lesser monument is a waste of your name. The greatest one is an investment in it.", fb:"You moved him off the price and onto value. He stops haggling and starts thinking about what he is really buying."},
+      {label:"SPLIT", good:false, d:-14, pts:0, text:"Let us meet in the middle then. Half my price, and we call it fair.", fb:"You split the difference and proved your number was soft. He smells blood and pushes harder."},
+      {label:"BOAST", good:false, d:-14, pts:0, text:"Because I am the finest builder in all of Greece, that is why.", fb:"You bragged at a god whose ego dwarfs yours. He is unimpressed."},
+      {label:"CAVE",  good:false, d:-12, pts:0, text:"You are right, my king. Let me lower it further for you.", fb:"You caved again. Every cut convinces him your work was never worth the asking."}
+    ]},
+    { who:"Zeus", whoId:"zeus9", line:"An investment in my name. Hm. And what would a builder know of my name that I do not?", options:[
+      {label:"PROBE",  good:true,  d:16, pts:150, text:"Only what all of Greece is whispering, my king. That a certain new temple by the sea has been catching the eyes that once turned to Olympus. May I ask, is it truly the cost that troubles you here, or is it something else?", fb:"You asked the calibrated question and touched the real nerve. The thunder quiets. He is deciding whether to tell you."},
+      {label:"ASSUME", good:false, d:-16, pts:0, text:"I know you want this cheap, my king, so let me simply cut the price.", fb:"You assumed the price was the point and missed the whole game. He closes off."},
+      {label:"FLATTER",good:false, d:-14, pts:0, text:"I know your name is the mightiest in all the heavens, of course.", fb:"Empty flattery to the king of flattery. He sees straight through it."},
+      {label:"DODGE",  good:false, d:-12, pts:0, text:"Your name is your own business, my king. Let us talk numbers.", fb:"He cracked the door to the real issue and you slammed it shut. Back to the standoff."}
+    ]},
+    { who:"Zeus", whoId:"zeus9", line:"...Poseidon. My own brother raised a temple of pearl and coral by the sea, and now every mortal in Greece carries their offerings to the shore instead of the mountain. They are forgetting the king of the gods. Why do I tell you this.", options:[
+      {label:"GLORY", good:true,  d:16, pts:160, text:"Because that is the true commission, my king. Not a cheap monument, but the one that towers over the sea temple and turns all of Greece back to Olympus. That is not an expense. That is how you become the greatest again.", fb:"You named the real interest and tied your value straight to it. The king rises from his throne. Now you are building the same thing."},
+      {label:"PITY",  good:false, d:-16, pts:0, text:"Oh, my king, how sad to be forgotten. Do not despair.", fb:"You pitied the king of the gods. His pride flares and the moment curdles."},
+      {label:"PRICE", good:false, d:-14, pts:0, text:"I see. Well, regardless of all that, here is my price again.", fb:"He bared the real wound and you answered with a number. You lost him."},
+      {label:"UPSELL",good:false, d:-12, pts:0, text:"Then let me add three more temples and a grand fountain to the order.", fb:"You got greedy the instant he opened up. He recoils."}
+    ]},
+    { who:"Zeus", whoId:"zeus9", line:"Towers over Poseidon's. Turns Greece back to the mountain. If you can truly raise such a thing, builder, the gold is nothing to me. Tell me plainly what it costs and what I get.", options:[
+      {label:"TERMS", good:true,  d:14, pts:170, text:"My full price, my king, not one copper less, because anything cheaper would only shame your name beside the sea. For it you get the tallest, brightest monument in all of Greece, your name carved at its peak, finished before the next festival so the mortals climb the mountain first.", fb:"You held full price and backed every coin with glory and timing. The king nods slowly. The standoff is yours."},
+      {label:"CAVE",  good:false, d:-16, pts:0, text:"For you, my king, I will still happily take that one tenth.", fb:"He was ready to pay in full and you handed the discount back. He frowns at the weakness."},
+      {label:"VAGUE", good:false, d:-16, pts:0, text:"The cost is, well, we can sort all the details out later, my king.", fb:"Vague terms unsettle a king who is finally ready to commit. Give him the plan."},
+      {label:"RUSH",  good:false, d:-12, pts:0, text:"So, do we have a deal, great Zeus?", fb:"You rushed the king at the very edge of yes. Let him arrive on his own."}
+    ]},
+    { who:"Zeus", whoId:"zeus9", line:"Full price. My name at the peak. Finished before the festival, and Poseidon left in my shadow. You did not flinch, builder, and you did not flatter. I respect that more than the gold. Build it.", options:[
+      {label:"CLOSE",  good:true,  d:14, pts:180, text:"Then it is done, my king. I begin at first light. Your name will crown the highest stone on Olympus, and before the festival all of Greece will be climbing the mountain again. Full price, and worth every coin of it.", fb:"A confident close that hands the king his glory. The deal is struck, and Olympus is about to outshine the sea."},
+      {label:"GLOAT",  good:false, d:-18, pts:0, text:"Knew you would pay full price all along, did you not?", fb:"You gloated at the king of the gods at the finish. The thunder returns. Foolish."},
+      {label:"UPSELL", good:false, d:-16, pts:0, text:"Splendid. Now let me add a second monument and double the bill.", fb:"Greedy the instant he agreed. Honor the deal in front of you."},
+      {label:"WAFFLE", good:false, d:-10, pts:0, text:"Great, I will, uh, get started on it sometime soon.", fb:"You went limp at the close. Land it with the confidence a king expects."}
+    ]}
+  ]
+};
+
 /* ---------- the level table ---------- */
 const LEVELS = {
   1: {
@@ -1860,6 +1971,42 @@ const LEVELS = {
     outro:{ cleared:"CHAPTER EIGHT CLEARED", tag:"The Long Maybe",
       recap:"You closed a buyer who loved everything and committed to nothing. You did not pressure her, discount to her, or argue with her maybe. You found the storm under it, named it kindly, and made the yes safe enough to say. Oona left her shell on her own terms.",
       nextK:"What is next", nextV:"Oona is back in the open water. Next comes the standoff, a buyer who will not budge on price, where you learn to hold your value and find the hidden interest underneath. Your lifetime points and learned moves carry over." }
+  },
+  9:{
+    no:"WORK ORDER #009", chapterName:"CHAPTER NINE", title:"The Standoff", pill:"Level 9 &nbsp;&middot;&nbsp; The Standoff",
+    style:"greek", heroKind:"greek",
+    palette:[
+      {body:"#eae4d6", roof:"#d8c98a", door:"#3a6ea5", accent:"#c9a24a", glow:"#ffe08a"},
+      {body:"#e6dfcd", roof:"#cdbf82", door:"#356296", accent:"#b8923f", glow:"#ffd76a"},
+      {body:"#efe9dc", roof:"#dccf95", door:"#3f78b0", accent:"#c9a24a", glow:"#ffe7a0"},
+      {body:"#e2dccb", roof:"#d2c488", door:"#33608f", accent:"#bfa04a", glow:"#ffe08a"}
+    ],
+    brief:{ client:"Zeus, King of Olympus",
+      says:'"You. Builder. I will pay one tenth of your asking price for this monument, and you will thank me for it. Take it, or be gone from my sight."',
+      move:"Do not cave to a king's lowball and do not try to bully him. Walk Olympus and learn why he is really squeezing you, because the price is a mask for something else. Then learn how to hold your value and win a standoff.",
+      obj:"Visit every spot marked with a gold star and gather all 3 leads. A war god by the steps will steer you wrong." },
+    signs:{ cafe:"TEMPLE OF WISDOM", hardware:"HALL OF THE SUN", laundry:"ROSE TEMPLE", client:"THRONE OF ZEUS" },
+    intel: INTEL9, intelOrder:["gold","test","glory"],
+    saysCase:'"One tenth, builder. The king of the gods does not haggle twice."',
+    talks:{ cafe:TALK_CAFE9, hardware:TALK_HARDWARE9, laundry:TALK_LAUNDRY9, bench:TALK_BENCH9 },
+    client:{ npc:ZEUS_NPC, first:"Zeus", lockedMsg:"Zeus glares from his throne, certain you will crumble like every builder before you. Learn how to hold a standoff first, then go face the king of the gods." },
+    gap:{ said:"One tenth of your price, builder, or nothing. The coin is all that matters here.", need:"The coin is the one thing that does not matter. Olympus is bottomlessly rich, and the lowball is a test of nerve. What truly drives Zeus is Poseidon's gleaming new temple stealing the worship of Greece. He is not buying cheap stone, he is buying the glory that makes him the greatest god again. Hold your value and close on that." },
+    completeNext:"One price, one mask, one hidden hunger. Next stop is Sales University, where you learn The Standoff: how to hold your value against a hard lowball without caving or bullying, and how to find the real interest hiding underneath the price.",
+    lesson: LESSON9, techKey:"standoff", techTitle:"Holding the Standoff",
+    techBlurb:"You carry this into the throne room. Do not drop your price and do not threaten the king. Hold your value, ask what is really at stake, and close on the glory he is truly buying.",
+    passToast:"Move equipped. The Throne of Zeus is starred. Go hold your ground before the king.",
+    pitch: PITCH9,
+    winLede1:"You did not cave and you did not bully. You held your price like it was worth every coin, then found the hunger underneath it, and the king of the gods paid in full for the one thing he truly wanted.",
+    winLede2:"Now for the fun part. To raise the monument you must first clear the cursed temple on the build site, room by room, of the petrified guards and serpents that infest it, and face what waits in the inner sanctum. Points from the job bank to your lifetime total.",
+    failLede:"You lost the king. Caving to his lowball, groveling, and threatening to walk all leave the standoff lost. Hold your value, find what he is truly hungry for, and close on that.",
+    job:{ mode:"rooms", theme:"greek", bossName:"MEDUSA", speedPar:70,
+      boss:{ hp:90 },
+      winLede:"The monument rises over Olympus, taller and brighter than anything by the sea, and the mortals turn their eyes back to the mountain. Zeus stands in its shadow and, for once, is satisfied.",
+      failLede:"Medusa's gaze caught you this round. The deal still stands, so raise your shield and step back into the temple.",
+      failH:"TURNED TO STONE" },
+    outro:{ cleared:"CHAPTER NINE CLEARED", tag:"The Standoff",
+      recap:"You faced down the king of the gods and did not blink. You refused the lowball, refused to grovel, and refused to threaten. You held your value, found the glory he was truly hungry for beneath the price, and closed at full worth on the thing he actually wanted.",
+      nextK:"What is next", nextV:"Olympus outshines the sea once more, and you have closed the king of the gods himself. Your lifetime points and learned moves carry over, ready for whatever comes next." }
   }
 };
 let currentLevel = 1;
@@ -1887,6 +2034,7 @@ function loadLevel(n){
   else if(LV.style === "alien"){ critters.push(makeCritter("blob", 620, 500)); critters.push(makeCritter("ufo", 880, 600)); }
   else if(LV.style === "steppe"){ critters.push(makeCritter("horse", 640, 520)); critters.push(makeCritter("goat", 880, 600)); }
   else if(LV.style === "reef"){ critters.push(makeCritter("clownfish", 640, 480)); critters.push(makeCritter("seahorse", 900, 560)); }
+  else if(LV.style === "greek"){ critters.push(makeCritter("satyr", 660, 520)); critters.push(makeCritter("echo", 920, 560)); }
   resetCollected();
 }
 function fillBrief(){
@@ -2021,7 +2169,7 @@ function moveAxis(axis, amt){
 
 function update(dt){
   t += dt;
-  if(state.scene === "job"){ (jobMode === "topdown" ? updateTopdown : jobMode === "beatemup" ? updateBeat : jobMode === "fps" ? updateFps : jobMode === "spin" ? updateSpin : updateJob)(dt); return; }
+  if(state.scene === "job"){ (jobMode === "topdown" ? updateTopdown : jobMode === "beatemup" ? updateBeat : jobMode === "fps" ? updateFps : jobMode === "rooms" ? updateRooms : jobMode === "spin" ? updateSpin : updateJob)(dt); return; }
   if(state.scene !== "overworld" || notebookOpen){ player.moving = false; return; }
   let dx=0, dy=0;
   if(hold.left) dx -= 1; if(hold.right) dx += 1; if(hold.up) dy -= 1; if(hold.down) dy += 1;
@@ -2257,6 +2405,57 @@ function drawReefBuilding(b){
   ctx.save(); ctx.shadowBlur = 6; ctx.shadowColor = b.glow; ctx.strokeStyle = b.glow; ctx.lineWidth = 2; rr(ctx, dcx-58, b.y+b.h-74, 116, 22, 7); ctx.stroke(); ctx.restore();
   drawText(b.name, dcx, b.y+b.h-63, "9px", b.glow, "center");
 }
+function drawGreekBuilding(b){
+  const dcx = b.x + b.w/2, nm = b.name || "";
+  ctx.fillStyle = "rgba(0,0,0,.28)"; ctx.beginPath(); ctx.ellipse(dcx, b.y+b.h+4, b.w*0.56, 14, 0, 0, Math.PI*2); ctx.fill();
+  const colTop = b.y+48, colBot = b.y+b.h-14, colH = colBot-colTop;
+  ctx.fillStyle = b.body; rr(ctx, b.x+4, colTop-2, b.w-8, colH+4, 3); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.34)"; ctx.fillRect(b.x+12, colTop, b.w-24, colH-2);
+  const dw = 38, dx2 = dcx-dw/2, dyTop = colBot-46;
+  ctx.fillStyle = "#15120d"; rr(ctx, dx2, dyTop, dw, 46, 2); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.5)"; ctx.fillRect(dx2, dyTop, dw, 4);
+  ctx.save(); ctx.globalAlpha = .4; ctx.fillStyle = b.glow; rr(ctx, dcx-9, dyTop+10, 18, 16, 2); ctx.fill(); ctx.restore();
+  const nCol = 6, span = b.w-20, gap = span/(nCol-1);
+  for(let i=0;i<nCol;i++){
+    const cxp = b.x+10 + i*gap;
+    ctx.fillStyle = "#f1ead6"; ctx.fillRect(cxp-5, colTop+4, 10, colH-8);
+    ctx.fillStyle = "rgba(0,0,0,.08)"; ctx.fillRect(cxp+1, colTop+4, 1.6, colH-8);
+    ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(cxp-4, colTop+4, 1.4, colH-8);
+    ctx.fillStyle = "#fbf6e6"; ctx.fillRect(cxp-7, colTop, 14, 5);
+    ctx.fillStyle = "#dcd3bd"; ctx.fillRect(cxp-7, colBot-4, 14, 5);
+  }
+  ctx.fillStyle = "#efe7d2"; ctx.fillRect(b.x-2, b.y+24, b.w+4, 22);
+  ctx.fillStyle = "rgba(0,0,0,.10)"; ctx.fillRect(b.x-2, b.y+44, b.w+4, 2);
+  ctx.fillStyle = b.roof; ctx.beginPath(); ctx.moveTo(b.x-10, b.y+24); ctx.lineTo(dcx, b.y-10); ctx.lineTo(b.x+b.w+10, b.y+24); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.beginPath(); ctx.moveTo(dcx, b.y-10); ctx.lineTo(b.x+b.w+10, b.y+24); ctx.lineTo(b.x+b.w-8, b.y+24); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.14)"; ctx.fillRect(b.x-10, b.y+23, b.w+20, 3);
+  const ey = b.y+8;
+  ctx.save();
+  if(nm.indexOf("WISDOM") >= 0){
+    ctx.fillStyle = "#caa44a"; ctx.beginPath(); ctx.ellipse(dcx, ey, 10, 12, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#1b1712"; circle(dcx-4, ey-2, 3); circle(dcx+4, ey-2, 3);
+    ctx.fillStyle = "#ffe08a"; circle(dcx-4, ey-2, 1.3); circle(dcx+4, ey-2, 1.3);
+    ctx.fillStyle = "#caa44a"; ctx.beginPath(); ctx.moveTo(dcx-2, ey+1); ctx.lineTo(dcx+2, ey+1); ctx.lineTo(dcx, ey+4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#b8923f"; ctx.beginPath(); ctx.moveTo(dcx-9, ey-8); ctx.lineTo(dcx-5, ey-12); ctx.lineTo(dcx-4, ey-6); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(dcx+9, ey-8); ctx.lineTo(dcx+5, ey-12); ctx.lineTo(dcx+4, ey-6); ctx.closePath(); ctx.fill();
+  } else if(nm.indexOf("SUN") >= 0){
+    ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = b.glow;
+    ctx.strokeStyle = "#ffd24a"; ctx.lineWidth = 2.2; for(let a=0;a<12;a++){ const an=a*Math.PI/6; ctx.beginPath(); ctx.moveTo(dcx+Math.cos(an)*9, ey+Math.sin(an)*9); ctx.lineTo(dcx+Math.cos(an)*15, ey+Math.sin(an)*15); ctx.stroke(); }
+    ctx.fillStyle = "#ffd24a"; circle(dcx, ey, 7); ctx.restore();
+    ctx.fillStyle = "#fff0b0"; circle(dcx-2, ey-2, 2.6);
+  } else if(nm.indexOf("ROSE") >= 0){
+    ctx.fillStyle = "#d96f93"; for(let a=0;a<5;a++){ const an=a*Math.PI*2/5 - Math.PI/2; ctx.beginPath(); ctx.ellipse(dcx+Math.cos(an)*4, ey+Math.sin(an)*4, 4.5, 6, an, 0, Math.PI*2); ctx.fill(); }
+    ctx.fillStyle = "#e88aa8"; circle(dcx, ey, 5);
+    ctx.fillStyle = "#ffd0e0"; circle(dcx, ey, 2.4);
+    ctx.strokeStyle = "#6fae6f"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(dcx, ey+7); ctx.lineTo(dcx, ey+14); ctx.stroke();
+  } else {
+    ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = b.glow; ctx.fillStyle = "#ffe08a";
+    ctx.beginPath(); ctx.moveTo(dcx+5, ey-12); ctx.lineTo(dcx-6, ey+1); ctx.lineTo(dcx-1, ey+1); ctx.lineTo(dcx-6, ey+12); ctx.lineTo(dcx+7, ey-3); ctx.lineTo(dcx+1, ey-3); ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  ctx.restore();
+  ctx.fillStyle = b.accent; circle(dcx, b.y-12, 3);
+  drawText(b.name, dcx, b.y+39, "9px", "#6a5a32", "center");
+}
 function drawBuilding(b){
   if(LV.style === "downtown") return drawTower(b);
   if(LV.style === "suburb") return drawMansion(b);
@@ -2268,6 +2467,7 @@ function drawBuilding(b){
   if(LV.style === "alien") return drawAlienBuilding(b);
   if(LV.style === "steppe") return drawGerBuilding(b);
   if(LV.style === "reef") return drawReefBuilding(b);
+  if(LV.style === "greek") return drawGreekBuilding(b);
   const dcx = b.x + b.w/2;
   ctx.fillStyle = "rgba(0,0,0,.25)"; rr(ctx, b.x+8, b.y+b.h-4, b.w-4, 16, 8); ctx.fill();
   ctx.fillStyle = b.body; rr(ctx, b.x, b.y+28, b.w, b.h-28, 6); ctx.fill();
@@ -2515,6 +2715,39 @@ function drawSeahorseAt(cx, feetY, s){
   ctx.fillStyle = "#ffd27a"; ctx.beginPath(); ctx.moveTo(cx-1*s, y-16*s); ctx.lineTo(cx+1*s, y-20*s); ctx.lineTo(cx+3*s, y-16*s); ctx.closePath(); ctx.fill();
   ctx.fillStyle = "#fff"; circle(cx+3*s, y-13*s, 2*s); ctx.fillStyle = "#15151a"; circle(cx+3.6*s, y-13*s, 1*s);
 }
+function drawSatyrAt(cx, feetY, s){
+  const y = feetY;
+  ctx.fillStyle = "#6b4a2a"; ctx.fillRect(cx-6*s, y-8*s, 5*s, 10*s); ctx.fillRect(cx+1*s, y-8*s, 5*s, 10*s);
+  ctx.fillStyle = "#2a1c10"; ctx.fillRect(cx-6*s, y+1*s, 5*s, 3*s); ctx.fillRect(cx+1*s, y+1*s, 5*s, 3*s);
+  ctx.fillStyle = "#7a5632"; ctx.beginPath(); ctx.ellipse(cx, y-8*s, 8*s, 7*s, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#caa06a"; rr(ctx, cx-7*s, y-22*s, 14*s, 14*s, 4*s); ctx.fill();
+  ctx.fillStyle = "#b8895a"; ctx.fillRect(cx-7*s, y-15*s, 14*s, 2*s);
+  ctx.fillStyle = "#caa06a"; ctx.fillRect(cx-10*s, y-20*s, 3*s, 9*s); ctx.fillRect(cx+7*s, y-20*s, 3*s, 9*s);
+  ctx.fillStyle = "#cdbf8a"; for(let pi=0; pi<4; pi++){ ctx.fillRect(cx+8*s+pi*1.6*s, y-13*s, 1.2*s, 6*s - pi*1*s); }
+  ctx.fillStyle = "#d8b482"; circle(cx, y-26*s, 6*s);
+  ctx.fillStyle = "#9a6a34"; ctx.beginPath(); ctx.moveTo(cx-4*s, y-23*s); ctx.lineTo(cx+4*s, y-23*s); ctx.lineTo(cx, y-17*s); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#e8dcc0"; ctx.lineWidth = 2*s; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(cx-3*s, y-30*s); ctx.quadraticCurveTo(cx-7*s, y-34*s, cx-4*s, y-37*s); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+3*s, y-30*s); ctx.quadraticCurveTo(cx+7*s, y-34*s, cx+4*s, y-37*s); ctx.stroke();
+  ctx.lineCap = "butt";
+  ctx.fillStyle = "#d8b482"; ctx.beginPath(); ctx.moveTo(cx+5*s, y-27*s); ctx.lineTo(cx+10*s, y-29*s); ctx.lineTo(cx+6*s, y-24*s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#15151a"; circle(cx-2*s, y-26*s, 1.2*s); circle(cx+2*s, y-26*s, 1.2*s);
+  ctx.fillStyle = "#fff"; circle(cx-2.4*s, y-26.4*s, 0.5*s); circle(cx+1.6*s, y-26.4*s, 0.5*s);
+}
+function drawEchoAt(cx, feetY, s){
+  const y = feetY;
+  ctx.fillStyle = "#6fae9a"; ctx.beginPath(); ctx.moveTo(cx-9*s, y+4*s); ctx.quadraticCurveTo(cx-6*s, y-16*s, cx, y-18*s); ctx.quadraticCurveTo(cx+6*s, y-16*s, cx+9*s, y+4*s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#7fc0aa"; ctx.beginPath(); ctx.moveTo(cx-5*s, y+2*s); ctx.quadraticCurveTo(cx-3*s, y-12*s, cx, y-14*s); ctx.quadraticCurveTo(cx+3*s, y-12*s, cx+5*s, y+2*s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.beginPath(); ctx.ellipse(cx, y+4*s, 9*s, 2.5*s, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#f0d2b8"; ctx.fillRect(cx-9*s, y-14*s, 2.4*s, 8*s); ctx.fillRect(cx+7*s, y-14*s, 2.4*s, 8*s);
+  ctx.fillStyle = "#f3d8bf"; circle(cx, y-22*s, 5.5*s);
+  ctx.fillStyle = "#caa24a"; ctx.beginPath(); ctx.moveTo(cx-5*s, y-24*s); ctx.quadraticCurveTo(cx-11*s, y-16*s, cx-7*s, y-6*s); ctx.lineTo(cx-3*s, y-8*s); ctx.quadraticCurveTo(cx-5*s, y-16*s, cx-2*s, y-22*s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#d8b25a"; dome(cx, y-24*s, 6*s);
+  ctx.fillStyle = "#ff9ec0"; circle(cx+4*s, y-26*s, 1.8*s); ctx.fillStyle = "#ffd24a"; circle(cx+4*s, y-26*s, 0.7*s);
+  ctx.fillStyle = "#15151a"; circle(cx-2*s, y-22*s, 1*s); circle(cx+2*s, y-22*s, 1*s);
+  ctx.strokeStyle = "#b56b6b"; ctx.lineWidth = 1*s; ctx.beginPath(); ctx.arc(cx, y-20*s, 2*s, 0.1, Math.PI-0.1); ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,.7)"; circle(cx+8*s, y-26*s, 1.2*s); circle(cx+11*s, y-29*s, 0.9*s);
+}
 function makeCritter(kind, x, y){ return {kind:kind, x:(x===undefined?700:x), y:(y===undefined?560:y), vx:1, vy:0, dir:1, t:Math.random()*6, state:"walk", flip:0, sayT:0, repathT:Math.random()*1.5, near:false, ballT:0, ballX:0, ballY:0}; }
 function drawCritter(tu){
   const x = tu.x, y = tu.y;
@@ -2538,6 +2771,8 @@ function drawCritter(tu){
   else if(tu.kind === "goat"){ drawGoatAt(0, 12, 1); }
   else if(tu.kind === "clownfish"){ drawClownfishAt(0, 0, 1); }
   else if(tu.kind === "seahorse"){ drawSeahorseAt(0, 0, 1); }
+  else if(tu.kind === "satyr"){ drawSatyrAt(0, 14, 1); }
+  else if(tu.kind === "echo"){ drawEchoAt(0, 10, 1); }
   else {
   const lp = Math.sin(tu.t*10);
   ctx.fillStyle = "#3a8a3f";
@@ -2648,6 +2883,8 @@ function critterLine(k){
     : k === "goat" ? "Maaa! \ud83d\udc10"
     : k === "clownfish" ? "Blub blub! \ud83d\udc20"
     : k === "seahorse" ? "Bloop bloop! \ud83c\udf0a"
+    : k === "satyr" ? "Toot toot! \ud83c\udfb6"
+    : k === "echo" ? "Chatter chatter! \u2728"
     : "Cowabunga, dude! \ud83d\udc22 \ud83c\udf55!!!";
 }
 function critterPrompt(k){
@@ -2661,6 +2898,8 @@ function critterPrompt(k){
     : k === "goat" ? "FEED"
     : k === "clownfish" ? "POKE"
     : k === "seahorse" ? "BOOP"
+    : k === "satyr" ? "DANCE"
+    : k === "echo" ? "CHAT"
     : "HIGH FIVE";
 }
 function drawBlobSprite(tu){
@@ -2859,7 +3098,25 @@ function drawDecor(){
     ctx.strokeStyle = "#ffcb47"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(kx-7, ky-12); ctx.lineTo(kx-7, ky-19); ctx.stroke();
     ctx.fillStyle = "#f0c9a8"; ctx.beginPath(); ctx.moveTo(kx+6, ky+1); ctx.lineTo(kx+12, ky-1); ctx.lineTo(kx+11, ky+5); ctx.lineTo(kx+6, ky+5); ctx.closePath(); ctx.fill();
     ctx.fillStyle = "rgba(190,235,255,.6)"; for(let bi=0;bi<3;bi++){ circle(772+bi*6, 520 - ((t*30 + bi*16)%44), 2); }
+  } else if(LV.style === "greek"){
+    ctx.fillStyle = "#cfc6ad"; rr(ctx, FOUNTAIN.x, FOUNTAIN.y, FOUNTAIN.w, FOUNTAIN.h, 18); ctx.fill();
+    ctx.fillStyle = "#e2dac3"; rr(ctx, FOUNTAIN.x+8, FOUNTAIN.y+8, FOUNTAIN.w-16, FOUNTAIN.h-16, 14); ctx.fill();
+    ctx.fillStyle = "#3f86b0"; ctx.beginPath(); ctx.ellipse(755, 535, 48, 30, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#4f9ac4"; ctx.beginPath(); ctx.ellipse(755, 533, 40, 24, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.2)"; ctx.beginPath(); ctx.ellipse(755 - Math.sin(t*2)*4, 528, 16, 6, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#e6dec8"; ctx.fillRect(751, 500, 8, 34);
+    ctx.fillStyle = "rgba(0,0,0,.10)"; ctx.fillRect(756, 500, 3, 34);
+    ctx.fillStyle = "#f1ead6"; ctx.fillRect(747, 496, 16, 6);
+    ctx.fillStyle = "#dcd3bd"; ctx.fillRect(747, 532, 16, 5);
+    ctx.fillStyle = "#e6dec8"; ctx.beginPath(); ctx.ellipse(755, 496, 16, 6, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#4f9ac4"; ctx.beginPath(); ctx.ellipse(755, 495, 12, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = "rgba(150,210,235,.8)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(755, 492); ctx.quadraticCurveTo(742, 500, 740, 520); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(755, 492); ctx.quadraticCurveTo(768, 500, 770, 520); ctx.stroke();
+    ctx.fillStyle = "rgba(190,230,245,.9)"; circle(740 + Math.sin(t*5)*1.5, 522, 2.2); circle(770 - Math.sin(t*5)*1.5, 522, 2.2);
+    ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = "#ffe08a"; ctx.fillStyle = "#ffd24a"; circle(755, 490, 3); ctx.restore();
   } else {
+
     ctx.fillStyle = "#5a5650"; rr(ctx, FOUNTAIN.x, FOUNTAIN.y, FOUNTAIN.w, FOUNTAIN.h, 18); ctx.fill();
     ctx.fillStyle = "#6e6a62"; rr(ctx, FOUNTAIN.x+10, FOUNTAIN.y+10, FOUNTAIN.w-20, FOUNTAIN.h-20, 14); ctx.fill();
     ctx.fillStyle = "#2f7fae"; ctx.beginPath(); ctx.ellipse(755,535,46,30,0,0,Math.PI*2); ctx.fill();
@@ -3048,6 +3305,37 @@ function drawDecor(){
     ctx.fillStyle = "#d9603a"; circle(cbx-9, cby-5, 3); circle(cbx+9, cby-5, 3);
     ctx.fillStyle = "#1a1208"; circle(cbx-3, cby-3, 1.2); circle(cbx+3, cby-3, 1.2);
     ctx.fillStyle = "rgba(190,235,255,.4)"; for(let bi=0; bi<5; bi++){ circle(330 + bi*7, 654 - ((t*40+bi*20)%80), 2 + (bi%2)); }
+  } else if(LV.style === "greek"){
+    const egx = ((t*22) % (WORLD_W+200)) - 100, egy = 110 + Math.sin(t*0.8)*10, wf = Math.sin(t*6)*8;
+    ctx.fillStyle = "#6a5230";
+    ctx.beginPath(); ctx.ellipse(egx, egy, 7, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(egx, egy); ctx.quadraticCurveTo(egx-14, egy-6-wf, egx-22, egy+2); ctx.quadraticCurveTo(egx-12, egy+2, egx, egy); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(egx, egy); ctx.quadraticCurveTo(egx+14, egy-6-wf, egx+22, egy+2); ctx.quadraticCurveTo(egx+12, egy+2, egx, egy); ctx.fill();
+    ctx.fillStyle = "#efe7d2"; circle(egx-1, egy-3, 2.4);
+    TREES.forEach((tr, i) => {
+      const x = tr.x+22, baseY = tr.y+38;
+      if(i % 2 === 0){
+        ctx.fillStyle = "#6b5436"; ctx.fillRect(x-3, baseY-16, 6, 16);
+        ctx.fillStyle = "#6f8f4a"; circle(x, baseY-22, 13);
+        ctx.fillStyle = "#7da356"; circle(x-6, baseY-26, 7); circle(x+7, baseY-22, 6);
+        ctx.fillStyle = "#cfe0a0"; circle(x-3, baseY-28, 3);
+        ctx.fillStyle = "#3a5a2a"; circle(x+2, baseY-20, 2); circle(x-5, baseY-22, 1.6);
+      } else {
+        ctx.fillStyle = "#5b3d22"; ctx.fillRect(x-2, baseY-6, 4, 8);
+        ctx.fillStyle = "#2f6b3f"; ctx.beginPath(); ctx.ellipse(x, baseY-26, 8, 24, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#367a48"; ctx.beginPath(); ctx.ellipse(x-2, baseY-30, 3.5, 14, 0, 0, Math.PI*2); ctx.fill();
+      }
+    });
+    const cxp = 500, byc = 344;
+    ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.beginPath(); ctx.ellipse(cxp, byc+4, 16, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#cfc6af"; ctx.fillRect(cxp-12, byc-8, 24, 12);
+    ctx.fillStyle = "#bdb499"; ctx.fillRect(cxp-12, byc+2, 24, 2);
+    ctx.fillStyle = "#e6dec8"; ctx.beginPath(); ctx.ellipse(cxp, byc-44, 5, 6, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillRect(cxp-6, byc-38, 12, 22);
+    ctx.beginPath(); ctx.moveTo(cxp-6, byc-16); ctx.lineTo(cxp+6, byc-16); ctx.lineTo(cxp+8, byc-8); ctx.lineTo(cxp-8, byc-8); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(0,0,0,.08)"; ctx.fillRect(cxp+1, byc-38, 3, 22);
+    ctx.strokeStyle = "#e6dec8"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cxp+4, byc-34); ctx.lineTo(cxp+11, byc-44); ctx.stroke();
+    ctx.strokeStyle = "#cdbf8a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cxp+11, byc-52); ctx.lineTo(cxp+11, byc-30); ctx.stroke();
   } else {
     TREES.forEach(tr => {
       const x = tr.x+22, y = tr.y+22;
@@ -3238,6 +3526,19 @@ function drawPlayer(){
     ctx.strokeStyle = "rgba(255,255,255,.4)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx-6, top-1); ctx.lineTo(cx-6, top+2); ctx.moveTo(cx-4, top-2); ctx.lineTo(cx-4, top+1); ctx.stroke();
     ctx.fillStyle = "#ffffff"; circle(cx-3 + fx, top, 2.2); circle(cx+3 + fx, top, 2.2);
     ctx.fillStyle = "#23304a"; circle(cx-3 + fx, top, 1.2); circle(cx+3 + fx, top, 1.2);
+  } else if((LV.heroKind) === "greek"){
+    ctx.fillStyle = "#e8b48a"; ctx.fillRect(cx-11, top+12, 3, 9); ctx.fillRect(cx+8, top+12, 3, 9);
+    ctx.fillStyle = "#f3ecdb"; rr(ctx, cx-9, top+9, 18, 17, 4); ctx.fill();
+    ctx.fillStyle = "#e2d9c2"; ctx.beginPath(); ctx.moveTo(cx-9, top+9); ctx.lineTo(cx+3, top+9); ctx.lineTo(cx-3, top+26); ctx.lineTo(cx-9, top+26); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#c9a24a"; ctx.fillRect(cx-9, top+22, 18, 2);
+    ctx.fillStyle = "#bf8f5a"; ctx.beginPath(); ctx.moveTo(cx-9, top+9); ctx.lineTo(cx+9, top+9); ctx.lineTo(cx+5, top+13); ctx.lineTo(cx-5, top+13); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#e8b48a"; circle(cx, top+2, 7);
+    ctx.fillStyle = "#6b4a2a"; dome(cx, top+0, 8);
+    ctx.strokeStyle = "#3f7a3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, top+1, 8, Math.PI*1.05, Math.PI*1.95); ctx.stroke();
+    ctx.fillStyle = "#4f9a48"; for(let li=-2; li<=2; li++){ const la = -Math.PI/2 + li*0.42; circle(cx+Math.cos(la)*8, top+1+Math.sin(la)*8, 1.8); }
+    ctx.fillStyle = "#efe7d2"; ctx.fillRect(cx + (fx>0? 8 : -11), top+15, 5, 8);
+    ctx.fillStyle = "#d8cdb0"; ctx.fillRect(cx + (fx>0? 8 : -11), top+15, 5, 2);
+    ctx.fillStyle = "#23304a"; circle(cx-3 + fx, top+2, 1.4); circle(cx+3 + fx, top+2, 1.4);
   } else {
     // chapter one: the worker
     ctx.fillStyle = "#3fc7b4"; rr(ctx, cx-9, top+8, 18, 6, 3); ctx.fill();
@@ -3405,7 +3706,7 @@ function starTargets(){
 }
 function drawTown(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : (LV.style === "future") ? "#070b18" : (LV.style === "georgian") ? "#15131f" : (LV.style === "nineties") ? "#0a0d16" : (LV.style === "alien") ? "#241844" : (LV.style === "steppe") ? "#16202e" : (LV.style === "reef") ? "#07344a" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = (LV.style === "roman") ? "#1a1320" : (LV.style === "future") ? "#070b18" : (LV.style === "georgian") ? "#15131f" : (LV.style === "nineties") ? "#0a0d16" : (LV.style === "alien") ? "#241844" : (LV.style === "steppe") ? "#16202e" : (LV.style === "reef") ? "#07344a" : (LV.style === "greek") ? "#16273f" : "#0b1226"; ctx.fillRect(0,0,viewW,viewH);
   ctx.save(); ctx.translate(-camX, -camY);
   // ground tiles: grass for town, pavement for downtown
   const ts = 48;
@@ -3421,6 +3722,7 @@ function drawTown(){
   const alien = LV.style === "alien";
   const steppe = LV.style === "steppe";
   const reef = LV.style === "reef";
+  const greek = LV.style === "greek";
   for(let x=gx0; x<gx1; x+=ts){
     for(let y=gy0; y<gy1; y+=ts){
       const even = (x/ts + y/ts) % 2 === 0;
@@ -3434,6 +3736,7 @@ function drawTown(){
         : alien ? (even ? "#3a8a7a" : "#42977f")
         : steppe ? (even ? "#4a5a32" : "#54663a")
         : reef ? (even ? "#0f5266" : "#125b70")
+        : greek ? (even ? "#9a927c" : "#a39a83")
         : (even ? "#1c3b30" : "#1f4234");
       ctx.fillRect(x, y, ts, ts);
     }
@@ -3449,6 +3752,11 @@ function drawTown(){
   if(steppe){
     ctx.strokeStyle="rgba(150,170,90,.5)"; ctx.lineWidth=1.5;
     for(let sx=gx0; sx<gx1; sx+=ts){ for(let sy=gy0; sy<gy1; sy+=ts){ if(((sx*5+sy*3)/ts|0)%3===0){ const gx=sx+12+((sx+sy)%18), gy=sy+36; ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx-2,gy-6); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy-7); ctx.moveTo(gx,gy); ctx.lineTo(gx+2,gy-6); ctx.stroke(); } } }
+  }
+  if(greek){
+    ctx.strokeStyle = "rgba(255,250,235,.10)"; ctx.lineWidth = 1;
+    for(let gxl=gx0; gxl<gx1; gxl+=ts){ ctx.beginPath(); ctx.moveTo(gxl, gy0); ctx.lineTo(gxl, gy1); ctx.stroke(); }
+    for(let gyl=gy0; gyl<gy1; gyl+=ts){ ctx.beginPath(); ctx.moveTo(gx0, gyl); ctx.lineTo(gx1, gyl); ctx.stroke(); }
   }
   if(downtown || nineties) drawSkyline();
   // roads
@@ -3614,7 +3922,12 @@ function drawBust(id, cx, midY, s){
     octo8:     {skin:"#7d5a9e", top:"#3a2a5a", collar:"#d9c9f0", hairStyle:"short", acc:"none"},
     crab8:     {skin:"#d9603a", top:"#7a2a1f", collar:"#ffd9b0", hairStyle:"short", acc:"none"},
     turtle8:   {skin:"#7faf6a", top:"#3f5a3a", collar:"#dfe9c8", hairStyle:"curls", acc:"none"},
-    gil8:      {skin:"#c4cf5a", top:"#5a6a2a", collar:"#e6efb0", hairStyle:"short", acc:"none"}
+    gil8:      {skin:"#c4cf5a", top:"#5a6a2a", collar:"#e6efb0", hairStyle:"short", acc:"none"},
+    zeus9:     {skin:"#e8c49a", top:"#d8c27a", collar:"#fff4d0", hairStyle:"curls", acc:"beard"},
+    athena9:   {skin:"#e6c8a0", top:"#9aa6c0", collar:"#e8eefb", hairStyle:"short", acc:"none"},
+    apollo9:   {skin:"#f0c79a", top:"#ffd24a", collar:"#fff0c0", hairStyle:"curls", acc:"none"},
+    aphro9:    {skin:"#f3d2c0", top:"#e88aa8", collar:"#ffe6ef", hairStyle:"curls", acc:"none"},
+    ares9:     {skin:"#d8a884", top:"#8a2f2f", collar:"#e0b0b0", hairStyle:"short", acc:"beard"}
   }[id];
   if(!cfg) return;
   const f = s;
@@ -3827,7 +4140,7 @@ function drawRoom(talk){
 }
 
 function draw(){
-  if(state.scene === "job" || state.scene === "jobwin" || state.scene === "jobfail"){ (jobMode === "topdown" ? drawTopdown : jobMode === "beatemup" ? drawBeat : jobMode === "fps" ? drawFps : jobMode === "spin" ? drawSpin : drawJob)(); return; }
+  if(state.scene === "job" || state.scene === "jobwin" || state.scene === "jobfail"){ (jobMode === "topdown" ? drawTopdown : jobMode === "beatemup" ? drawBeat : jobMode === "fps" ? drawFps : jobMode === "rooms" ? drawRooms : jobMode === "spin" ? drawSpin : drawJob)(); return; }
   if(state.scene === "lesson"){ drawRoom(PROF); }
   else if(state.scene === "pitch" || state.scene === "win" || state.scene === "fail"){ drawRoom(LV.client.npc); }
   else if(state.scene === "dialogue" && currentTalk && currentTalk.interior){ drawRoom(currentTalk); }
@@ -3895,6 +4208,7 @@ function updateTitleInfo(){
   vis(el("btnChap6"), ch >= 6);
   vis(el("btnChap7"), ch >= 7);
   vis(el("btnChap8"), ch >= 8);
+  vis(el("btnChap9"), ch >= 9);
   let status = "New plumber", show = false;
   if(save.level7Complete){ status = "Level 7 cleared  \u00b7  the Empty Pipeline"; show = true; }
   else if(save.level6Complete){ status = "Level 6 cleared  \u00b7  the Know It All"; show = true; }
@@ -4011,6 +4325,11 @@ const SCENES = {
   crab8:     "Images/crab8.jpg",
   turtle8:   "Images/turtle8.jpg",
   gil8:      "Images/gil8.jpg",
+  zeus9:     "Images/zeus9.jpg",
+  athena9:   "Images/athena9.jpg",
+  apollo9:   "Images/apollo9.jpg",
+  aphro9:    "Images/aphro9.jpg",
+  ares9:     "Images/ares9.jpg",
   mechanic6: "Images/mechanic6.jpg",
   elder6:    "Images/elder6.jpg",
 };
@@ -4331,7 +4650,7 @@ function newJob(){
 function startJob(){
   ensureAudio(); JC = Object.assign({}, JOB, LV.job);
   jobMode = (LV.job && LV.job.mode) || "platformer";
-  job = (jobMode === "topdown") ? newTopdown() : (jobMode === "beatemup") ? newBeat() : (jobMode === "fps") ? newFps() : (jobMode === "spin") ? newSpin() : newJob();
+  job = (jobMode === "topdown") ? newTopdown() : (jobMode === "beatemup") ? newBeat() : (jobMode === "fps") ? newFps() : (jobMode === "rooms") ? newRooms() : (jobMode === "spin") ? newSpin() : newJob();
   jobHold.left=jobHold.right=jobHold.up=jobHold.down=jobHold.fire=jobHold.jumpHeld=false; jobJumpQueued=false; jobSwingQueued=false;
   configJobControls();
   setScene("job"); sfxBlip();
@@ -4339,9 +4658,10 @@ function startJob(){
 function configJobControls(){
   const m = jobMode;
   const spin = (m === "spin");
-  const dpad = (m === "topdown" || m === "beatemup" || spin);
+  const rooms = (m === "rooms");
+  const dpad = (m === "topdown" || m === "beatemup" || spin || rooms);
   el("jobPad").classList.toggle("dpad", dpad);
-  vis(el("jbUp"), dpad && !spin); vis(el("jbDown"), dpad);
+  vis(el("jbUp"), dpad && !spin); vis(el("jbDown"), dpad && !rooms);
   vis(el("jbJump"), m === "platformer" || m === "beatemup" || spin);
   el("jbJump").textContent = m === "beatemup" ? "SWAP" : spin ? "SPIN" : "JUMP";
   vis(el("jbFire"), !spin);
@@ -4885,6 +5205,235 @@ function drawFps(){
   drawFpsGun(J);
   drawVignette();
   drawJobHud(J);
+}
+/* ===================== CHAPTER NINE BONUS: ROOM BY ROOM TEMPLE CLEAR ===================== */
+function roomsSpawnFoe(kind, i, n){
+  const lane = (n<=1)?0 : (-0.7 + (i/(n-1))*1.4);
+  return { kind:kind, lane:lane + (Math.random()-0.5)*0.12, p:0.10 + Math.random()*0.12, hp:(kind==="guard"?6:4), alive:true, hurt:0, atkCd:1.3 + Math.random()*1.4, wob:Math.random()*6.28 };
+}
+const medusaImg = new Image(); medusaImg.src = "Images/medusa9.jpg";
+function loadRoom(J, idx){
+  J.foes=[]; J.proj=[];
+  if(idx >= J.totalRooms){ J.bossEngaged=true; J.roomState="boss"; J.banner=2.4; J.bannerText="THE INNER SANCTUM"; J.reveal=2.6; sfxBoss(); return; }
+  const r = J.plan[idx];
+  for(let i=0;i<r.n;i++) J.foes.push(roomsSpawnFoe(r.kind, i, r.n));
+  J.roomState="fight"; J.banner=2.0; J.bannerText="ROOM " + (idx+1) + " OF " + J.totalRooms;
+}
+function newRooms(){
+  const bd = JC.boss || {hp:90};
+  const plan = [ {kind:"guard", n:3}, {kind:"serpent", n:4}, {kind:"harpy", n:4} ];
+  const boss = { lane:0, p:0.34, hp:bd.hp, maxHp:bd.hp, alive:true, hurt:0, atk:3.0, spit:1.6, gaze:0, gazeState:"idle", gazeHit:false, big:true, w:140, h:150 };
+  const J = {
+    mode:"rooms", s:0, sTarget:0,
+    hp:JOB.playerHp, maxHp:JOB.playerHp, invuln:0, px:0, pvx:0, pvy:0,
+    foes:[], proj:[], boss, parts:[],
+    fireCd:0, muzzle:0, shake:0, crossHot:0, petrify:0,
+    theme:"greek", bossName:JC.bossName || "MEDUSA",
+    time:0, combo:0, comboTimer:0, hitsTaken:0, score:0,
+    ended:false, win:false, bossEngaged:false, flash:0,
+    plan, roomIndex:0, totalRooms:plan.length, roomState:"fight",
+    advanceCd:0, banner:0, bannerText:"", reveal:0
+  };
+  loadRoom(J, 0);
+  return J;
+}
+function updateRooms(dt){
+  const J = job; if(!J) return;
+  if(J.ended){ updateParts(dt); if(J.flash>0) J.flash-=dt; if(J.shake>0) J.shake-=dt; return; }
+  J.time += dt;
+  if(J.reveal<=0){ const mx = (jobHold.right?1:0) - (jobHold.left?1:0); J.sTarget = clamp(J.sTarget + mx*2.0*dt, -1, 1); }
+  J.s += (J.sTarget - J.s) * Math.min(1, dt*10);
+  J.fireCd -= dt; if(J.muzzle>0) J.muzzle-=dt; if(J.shake>0) J.shake-=dt; if(J.crossHot>0) J.crossHot-=dt;
+  if(J.petrify>0) J.petrify-=dt; if(J.banner>0) J.banner-=dt; if(J.advanceCd>0) J.advanceCd-=dt; if(J.reveal>0) J.reveal-=dt;
+  const b = J.boss;
+  let aim=null, bestd=0.22;
+  for(const e of J.foes){ if(!e.alive) continue; const off=Math.abs(e.lane - J.s); if(off<bestd && e.p>0.12){ bestd=off; aim=e; } }
+  if(J.bossEngaged && b.alive){ const off=Math.abs(b.lane - J.s); if(off<0.34 && (aim===null || off<bestd)){ aim=b; } }
+  if(aim) J.crossHot=0.12;
+  if(jobHold.fire && J.fireCd<=0 && J.petrify<=0 && J.reveal<=0){
+    J.fireCd=0.22; J.muzzle=0.08; sfxShot();
+    if(aim===b && b){ b.hp-=5; b.hurt=0.12; J.score+=Math.round(36*comboMult()); addCombo(); if(b.hp<=0){ b.alive=false; J.score+=500; burst(viewW/2, fpsScreenY(b.p)-fpsScale(b.p)*0.6, "#bfe07a", 30); sfxBoom(); } }
+    else if(aim){ aim.hp-=5; aim.hurt=0.1; if(aim.hp<=0){ aim.alive=false; J.score+=80; addCombo(); burst(fpsScreenX(aim.lane,J.s,aim.p), fpsScreenY(aim.p)-fpsScale(aim.p)*0.4, "#bfe07a", 16); sfxBoom(); } else { J.score+=20; addCombo(); } }
+  }
+  for(const e of J.foes){
+    if(!e.alive) continue;
+    if(e.hurt>0) e.hurt-=dt;
+    if(e.p < 0.8) e.p += 0.11*dt;
+    e.atkCd -= dt;
+    if(e.atkCd<=0 && e.p>0.42){ e.atkCd=1.5+Math.random()*1.1; J.proj.push({ lane:e.lane, p:e.p, vp:0.55 }); sfxBoss(); }
+  }
+  J.foes = J.foes.filter(e=>e.alive);
+  if(J.roomState==="fight" && J.foes.length===0){ J.roomState="cleared"; J.banner=2.4; J.bannerText="THE DOORWAY OPENS, PRESS FORWARD"; sfxBlip(); }
+  if(J.roomState==="cleared" && jobHold.up && J.petrify<=0 && J.advanceCd<=0){ J.roomIndex++; loadRoom(J, J.roomIndex); J.advanceCd=0.6; J.flash=0.25; sfxBlip(); }
+  if(J.bossEngaged && b.alive && J.reveal<=0){
+    if(b.hurt>0) b.hurt-=dt;
+    b.lane = Math.sin(J.time*0.6)*0.45;
+    if(b.gazeState==="idle"){
+      b.atk -= dt;
+      if(b.atk<=0){ b.gazeState="warn"; b.gaze=1.1; b.gazeHit=false; J.banner=1.1; J.bannerText="MEDUSA'S GAZE, TURN AWAY"; sfxBoss(); }
+      else { b.spit-=dt; if(b.spit<=0){ b.spit=1.5+Math.random(); J.proj.push({ lane:b.lane, p:b.p, vp:0.6, snake:true }); sfxBoss(); } }
+    } else if(b.gazeState==="warn"){
+      b.gaze-=dt; if(b.gaze<=0){ b.gazeState="fire"; b.gaze=0.45; }
+    } else if(b.gazeState==="fire"){
+      b.gaze-=dt;
+      if(!b.gazeHit){ b.gazeHit=true; if(Math.abs(J.s - b.lane)<0.34 && J.petrify<=0){ hurtPlayer(22, viewW/2); J.petrify=0.85; J.shake=0.4; } }
+      if(b.gaze<=0){ b.gazeState="idle"; b.atk=3.2; }
+    }
+  }
+  for(const q of J.proj){ q.p += q.vp*dt; if(q.p>=1){ if(Math.abs(q.lane - J.s)<0.3 && J.petrify<=0){ hurtPlayer(q.snake?14:10, viewW/2); J.shake=0.22; } q.dead=true; } }
+  J.proj = J.proj.filter(q=>!q.dead);
+  updateParts(dt);
+  if(J.invuln>0) J.invuln-=dt;
+  if(J.combo>0){ J.comboTimer-=dt; if(J.comboTimer<=0) J.combo=0; }
+  if(J.hp<=0 && !J.ended){ J.ended=true; J.win=false; setTimeout(showJobFail,350); }
+  if(J.bossEngaged && !b.alive && !J.ended){ J.ended=true; J.win=true; J.flash=0.6; setTimeout(showJobWin,750); }
+}
+function drawRoomFoe(e, J){
+  const x = fpsScreenX(e.lane, J.s, e.p), fy = fpsScreenY(e.p), s = fpsScale(e.p);
+  ctx.fillStyle="rgba(0,0,0,.32)"; ctx.beginPath(); ctx.ellipse(x, fy, s*0.32, s*0.10, 0,0,Math.PI*2); ctx.fill();
+  if(e.kind==="guard"){
+    const base = e.hurt>0?"#ffffff":"#8d8f93", dark = e.hurt>0?"#dfe2e8":"#6e7176";
+    ctx.fillStyle=dark; ctx.fillRect(x-s*0.16, fy-s*0.34, s*0.12, s*0.34); ctx.fillRect(x+s*0.04, fy-s*0.34, s*0.12, s*0.34);
+    ctx.fillStyle=base; rr(ctx, x-s*0.22, fy-s*0.74, s*0.44, s*0.44, s*0.05); ctx.fill();
+    ctx.fillStyle=dark; circle(x-s*0.30, fy-s*0.5, s*0.16); ctx.fillStyle=base; circle(x-s*0.30, fy-s*0.5, s*0.11);
+    ctx.strokeStyle="#9a9ca0"; ctx.lineWidth=Math.max(2,s*0.04); ctx.beginPath(); ctx.moveTo(x+s*0.28, fy-s*0.92); ctx.lineTo(x+s*0.28, fy-s*0.1); ctx.stroke();
+    ctx.fillStyle="#9a9ca0"; ctx.beginPath(); ctx.moveTo(x+s*0.28, fy-s*0.98); ctx.lineTo(x+s*0.24, fy-s*0.9); ctx.lineTo(x+s*0.32, fy-s*0.9); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=base; circle(x, fy-s*0.84, s*0.13);
+    ctx.fillStyle=dark; dome(x, fy-s*0.86, s*0.15);
+    ctx.fillStyle = e.hurt>0?"#fff":"#777"; rr(ctx, x-s*0.02, fy-s*1.06, s*0.05, s*0.16, 1); ctx.fill();
+    ctx.fillStyle="#2a2c30"; circle(x-s*0.045, fy-s*0.84, s*0.022); circle(x+s*0.045, fy-s*0.84, s*0.022);
+    ctx.strokeStyle="rgba(40,42,46,.5)"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x-s*0.1, fy-s*0.66); ctx.lineTo(x-s*0.02, fy-s*0.52); ctx.lineTo(x-s*0.08, fy-s*0.4); ctx.stroke();
+  } else if(e.kind==="serpent"){
+    const body = e.hurt>0?"#eafff0":"#4f9a5a", wob = Math.sin(J.time*4 + e.wob)*s*0.09;
+    ctx.strokeStyle=body; ctx.lineWidth=Math.max(3,s*0.16); ctx.lineCap="round";
+    ctx.beginPath(); ctx.moveTo(x, fy); ctx.quadraticCurveTo(x - s*0.22 + wob, fy - s*0.4, x + wob, fy - s*0.6); ctx.quadraticCurveTo(x + s*0.2 + wob, fy - s*0.8, x + wob, fy - s*0.95); ctx.stroke();
+    ctx.lineCap="butt";
+    const hx = x + wob, hy = fy - s*0.98;
+    ctx.fillStyle=body; ctx.beginPath(); ctx.ellipse(hx, hy, s*0.14, s*0.10, 0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = e.hurt>0?"#c00":"#ffd24a"; circle(hx-s*0.045, hy-s*0.02, s*0.026); circle(hx+s*0.045, hy-s*0.02, s*0.026);
+    ctx.strokeStyle="#d0405a"; ctx.lineWidth=Math.max(1,s*0.02); ctx.beginPath(); ctx.moveTo(hx, hy+s*0.07); ctx.lineTo(hx, hy+s*0.15); ctx.stroke();
+  } else {
+    const flap = Math.sin(J.time*8 + e.wob)*s*0.18, feather = e.hurt>0?"#fff":"#7a5a3a", body2 = e.hurt>0?"#fff":"#caa06a";
+    ctx.fillStyle=feather;
+    ctx.beginPath(); ctx.moveTo(x, fy-s*0.6); ctx.quadraticCurveTo(x-s*0.5, fy-s*0.7-flap, x-s*0.55, fy-s*0.3-flap); ctx.quadraticCurveTo(x-s*0.3, fy-s*0.4, x, fy-s*0.45); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x, fy-s*0.6); ctx.quadraticCurveTo(x+s*0.5, fy-s*0.7-flap, x+s*0.55, fy-s*0.3-flap); ctx.quadraticCurveTo(x+s*0.3, fy-s*0.4, x, fy-s*0.45); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=body2; rr(ctx, x-s*0.12, fy-s*0.62, s*0.24, s*0.38, s*0.06); ctx.fill();
+    ctx.fillStyle="#e8c49a"; circle(x, fy-s*0.72, s*0.10);
+    ctx.fillStyle="#3a2a1a"; dome(x, fy-s*0.76, s*0.11);
+    ctx.fillStyle = e.hurt>0?"#c00":"#1b1712"; circle(x-s*0.035, fy-s*0.72, s*0.02); circle(x+s*0.035, fy-s*0.72, s*0.02);
+    ctx.strokeStyle="#caa86a"; ctx.lineWidth=Math.max(1,s*0.03); ctx.beginPath(); ctx.moveTo(x-s*0.06, fy-s*0.24); ctx.lineTo(x-s*0.08, fy-s*0.04); ctx.moveTo(x+s*0.06, fy-s*0.24); ctx.lineTo(x+s*0.08, fy-s*0.04); ctx.stroke();
+  }
+}
+function drawMedusa(b, J){
+  const x = fpsScreenX(b.lane, J.s, b.p), fy = fpsScreenY(b.p), s = fpsScale(b.p)*1.7;
+  const hurt = b.hurt>0, gazing = (b.gazeState==="fire"), warning = (b.gazeState==="warn");
+  ctx.fillStyle="rgba(0,0,0,.34)"; ctx.beginPath(); ctx.ellipse(x, fy, s*0.5, s*0.14, 0,0,Math.PI*2); ctx.fill();
+  const body = hurt?"#eafff0":"#3f8a52", bodyD = hurt?"#cfe8d6":"#2e6b3e";
+  ctx.fillStyle=body;
+  ctx.beginPath(); ctx.moveTo(x - s*0.5, fy); ctx.quadraticCurveTo(x - s*0.62, fy - s*0.5, x - s*0.2, fy - s*0.55); ctx.lineTo(x + s*0.2, fy - s*0.55); ctx.quadraticCurveTo(x + s*0.62, fy - s*0.5, x + s*0.5, fy); ctx.closePath(); ctx.fill();
+  ctx.fillStyle=bodyD; for(let i=0;i<5;i++){ circle(x - s*0.3 + i*s*0.15, fy - s*0.2, s*0.05); }
+  ctx.fillStyle = hurt?"#f0fff4":"#5aa86a"; rr(ctx, x - s*0.28, fy - s*1.02, s*0.56, s*0.52, s*0.06); ctx.fill();
+  ctx.strokeStyle = body; ctx.lineWidth = Math.max(3, s*0.07);
+  ctx.beginPath(); ctx.moveTo(x - s*0.2, fy - s*0.86); ctx.lineTo(x - s*0.46, fy - s*0.7); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x + s*0.2, fy - s*0.86); ctx.lineTo(x + s*0.46, fy - s*0.7); ctx.stroke();
+  const faceY = fy - s*1.14;
+  const hairN = 11;
+  for(let i=0;i<hairN;i++){
+    const a = -Math.PI*0.5 + (i - (hairN-1)/2) * 0.32;
+    const wob = Math.sin(J.time*5 + i)*0.2;
+    const bx = x + Math.cos(a)*s*0.2, by = faceY + Math.sin(a)*s*0.2;
+    const tx = x + Math.cos(a+wob)*s*0.44, ty = faceY + Math.sin(a+wob)*s*0.44;
+    ctx.strokeStyle = (i%2? "#4f9a5a":"#3f7a4a"); ctx.lineWidth=Math.max(2,s*0.045); ctx.lineCap="round";
+    ctx.beginPath(); ctx.moveTo(bx, by); ctx.quadraticCurveTo(x + Math.cos(a)*s*0.36, faceY + Math.sin(a)*s*0.36, tx, ty); ctx.stroke();
+    ctx.fillStyle = (i%2? "#5fb06a":"#4f8a5a"); circle(tx, ty, s*0.036);
+  }
+  ctx.lineCap="butt";
+  ctx.fillStyle = hurt?"#f0fff4":"#6fb87a"; circle(x, faceY, s*0.2);
+  const eyeCol = gazing ? "#fff4a0" : warning ? "#ffd24a" : (hurt? "#c00":"#ffcf5a");
+  if(gazing || warning){ ctx.save(); ctx.shadowBlur = gazing?26:12; ctx.shadowColor = "#ffe08a"; }
+  ctx.fillStyle = eyeCol; circle(x - s*0.07, faceY - s*0.02, s*0.05); circle(x + s*0.07, faceY - s*0.02, s*0.05);
+  if(gazing || warning){ ctx.restore(); }
+  ctx.strokeStyle = "#3a2a2a"; ctx.lineWidth=Math.max(1,s*0.02); ctx.beginPath(); ctx.arc(x, faceY + s*0.09, s*0.06, 0.1, Math.PI-0.1); ctx.stroke();
+  if(gazing){
+    ctx.save(); ctx.globalAlpha = 0.5; ctx.strokeStyle = "#fff4c0"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(x - s*0.07, faceY); ctx.lineTo(viewW/2 - 28, fpsScreenY(0.98)); ctx.moveTo(x + s*0.07, faceY); ctx.lineTo(viewW/2 + 28, fpsScreenY(0.98)); ctx.stroke(); ctx.restore();
+  }
+}
+function drawRoomsGun(J){
+  const bob = Math.sin(J.time*4)*4 + J.s*10;
+  ctx.save(); ctx.translate(viewW/2 + bob*0.4, viewH);
+  ctx.fillStyle="#b5793a"; rr(ctx,-50,-40,38,48,8); ctx.fill(); rr(ctx,12,-40,38,48,8); ctx.fill();
+  ctx.fillStyle="#caa86a"; rr(ctx,-50,-40,38,7,4); ctx.fill(); rr(ctx,12,-40,38,7,4); ctx.fill();
+  ctx.fillStyle="#7a5a2a"; rr(ctx,-22,-66,44,48,8); ctx.fill();
+  ctx.fillStyle="#caa24a"; rr(ctx,-20,-60,40,5,2); ctx.fill();
+  ctx.fillStyle="#9a6a2a"; rr(ctx,-9,-92,18,34,6); ctx.fill();
+  ctx.fillStyle="#caa86a"; rr(ctx,-9,-92,18,5,2); ctx.fill();
+  ctx.save(); ctx.shadowBlur=12; ctx.shadowColor="#ffe08a"; ctx.fillStyle="#ffe7a0"; rr(ctx,-7,-96,14,9,4); ctx.fill(); ctx.restore();
+  if(J.muzzle>0){ ctx.save(); ctx.globalAlpha=0.9; ctx.shadowBlur=16; ctx.shadowColor="#ffe08a"; ctx.fillStyle="rgba(255,225,140,.95)"; circle(0,-100,11+Math.random()*6); ctx.fillStyle="#fff"; circle(0,-100,5); ctx.restore(); }
+  ctx.restore();
+}
+function drawRooms(){
+  const J = job; if(!J) return;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const shx = J.shake>0 ? (Math.random()*2-1)*6*(J.shake/0.4):0;
+  const shy = J.shake>0 ? (Math.random()*2-1)*4*(J.shake/0.4):0;
+  ctx.save(); ctx.translate(shx, shy);
+  const horizon = viewH*0.42, vp = viewW/2 - J.s*70;
+  let g = ctx.createLinearGradient(0,0,0,horizon); g.addColorStop(0,"#241c12"); g.addColorStop(1,"#3a2f1e"); ctx.fillStyle=g; ctx.fillRect(-8,-8,viewW+16,horizon+8);
+  g = ctx.createLinearGradient(0,horizon,0,viewH); g.addColorStop(0,"#4a4636"); g.addColorStop(1,"#15130d"); ctx.fillStyle=g; ctx.fillRect(-8,horizon,viewW+16,viewH-horizon+8);
+  ctx.strokeStyle="rgba(20,16,8,.5)"; ctx.lineWidth=2;
+  for(let i=-4;i<=4;i++){ const fx = viewW/2 + i*(viewW*0.5); ctx.beginPath(); ctx.moveTo(fx, viewH); ctx.lineTo(vp, horizon); ctx.stroke(); }
+  for(let k=1;k<=7;k++){ const pp=k/8, y=horizon + pp*(viewH-horizon); ctx.strokeStyle="rgba(20,16,8,"+(0.16+pp*0.22)+")"; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(viewW,y); ctx.stroke(); }
+  const bwW = viewW*0.5, bwH = (viewH-horizon)*0.52, bwx = vp - bwW/2, bwy = horizon;
+  ctx.fillStyle = "#5a5340"; ctx.fillRect(bwx, bwy, bwW, bwH);
+  ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.fillRect(bwx, bwy, bwW, 5);
+  ctx.fillStyle = "rgba(0,0,0,.22)"; ctx.fillRect(bwx, bwy+bwH-4, bwW, 4);
+  const dW = bwW*0.36, dH = bwH*0.82, dx = vp - dW/2, dyp = bwy + bwH - dH;
+  ctx.fillStyle = "#0c0a06"; ctx.fillRect(dx, dyp, dW, dH); ctx.beginPath(); ctx.arc(vp, dyp, dW/2, Math.PI, 0); ctx.fill();
+  if(J.roomState==="cleared"){
+    ctx.save(); ctx.globalAlpha = 0.35 + 0.3*Math.sin(J.time*4); ctx.shadowBlur=22; ctx.shadowColor="#ffe08a"; ctx.fillStyle="#ffe7a0";
+    ctx.fillRect(dx, dyp, dW, dH); ctx.beginPath(); ctx.arc(vp, dyp, dW/2, Math.PI, 0); ctx.fill(); ctx.restore();
+  }
+  for(const tside of [-1,1]){ const txp = vp + tside*(bwW*0.36); const typ = bwy + bwH*0.34; ctx.fillStyle="#5a4326"; ctx.fillRect(txp-2, typ, 4, bwH*0.34); const fl = 4+Math.sin(J.time*9+tside)*1.6; ctx.save(); ctx.shadowBlur=12; ctx.shadowColor="#ff9a3a"; ctx.fillStyle="#ffb24a"; circle(txp, typ-2, fl); ctx.fillStyle="#ffe08a"; circle(txp, typ-3, fl*0.5); ctx.restore(); }
+  for(const pc of [0.18,0.4,0.7]){
+    for(const side of [-1.05, 1.05]){
+      const cx = fpsScreenX(side, J.s, pc), sc = fpsScale(pc), colW = sc*0.34, colH = sc*2.0, baseY = fpsScreenY(pc);
+      ctx.fillStyle = "#cfc6ad"; ctx.fillRect(cx - colW/2, baseY - colH, colW, colH);
+      ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.fillRect(cx - colW/2, baseY - colH, colW*0.3, colH);
+      ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(cx + colW*0.22, baseY - colH, colW*0.16, colH);
+      ctx.fillStyle = "#e6dcbe"; ctx.fillRect(cx - colW*0.7, baseY - colH, colW*1.4, sc*0.16);
+      ctx.fillStyle = "#b8ad8e"; ctx.fillRect(cx - colW*0.7, baseY - sc*0.16, colW*1.4, sc*0.16);
+    }
+  }
+  const arr = J.foes.filter(e=>e.alive).slice();
+  arr.sort((a,b)=>a.p - b.p);
+  for(const e of arr) drawRoomFoe(e, J);
+  if(J.bossEngaged && J.boss.alive) drawMedusa(J.boss, J);
+  for(const q of J.proj){ const x=fpsScreenX(q.lane,J.s,q.p), y=fpsScreenY(q.p), r=4+q.p*16; if(q.snake){ ctx.fillStyle="#4f9a5a"; circle(x,y,r); ctx.fillStyle="#bfe07a"; circle(x-r*0.3,y-r*0.3,r*0.4); } else { ctx.fillStyle="#caa24a"; circle(x,y,r); ctx.fillStyle="rgba(255,230,160,.6)"; circle(x-r*0.3,y-r*0.3,r*0.4); } }
+  J.parts.forEach(p => { ctx.globalAlpha = Math.max(0, Math.min(1, p.life*2)); ctx.fillStyle = p.color; circle(p.x, p.y, p.r); ctx.globalAlpha = 1; });
+  ctx.restore();
+  const chx = viewW/2, chy = horizon + (viewH-horizon)*0.36;
+  ctx.strokeStyle = J.crossHot>0 ? "#ff6b6b" : "rgba(255,255,255,.7)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(chx-12, chy); ctx.lineTo(chx-4, chy); ctx.moveTo(chx+4, chy); ctx.lineTo(chx+12, chy); ctx.moveTo(chx, chy-12); ctx.lineTo(chx, chy-4); ctx.moveTo(chx, chy+4); ctx.lineTo(chx, chy+12); ctx.stroke();
+  ctx.beginPath(); ctx.arc(chx, chy, 3, 0, Math.PI*2); ctx.stroke();
+  drawRoomsGun(J);
+  if(J.petrify>0){ ctx.save(); ctx.globalAlpha = Math.min(0.6, J.petrify*0.7); ctx.fillStyle="#9a958a"; ctx.fillRect(0,0,viewW,viewH); ctx.globalAlpha=Math.min(0.5,J.petrify); ctx.strokeStyle="rgba(40,40,40,.6)"; ctx.lineWidth=2; for(let i=0;i<8;i++){ const sx=(i*viewW/8); ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx+30, viewH); ctx.stroke(); } ctx.restore(); }
+  if(J.banner>0){ const warn = J.bannerText.indexOf("GAZE")>=0; ctx.save(); ctx.globalAlpha=Math.min(1,J.banner); drawText(J.bannerText, viewW/2, viewH*0.28, warn?"13px":"12px", warn?"#ffd24a":"#ffe7a0", "center"); ctx.restore(); }
+  drawVignette();
+  drawJobHud(J);
+  if(J.reveal>0){
+    const t = J.reveal; let a = t>2.2 ? (2.6 - t)/0.4 : (t>0.6 ? 1 : t/0.6); a = Math.max(0, Math.min(1, a));
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.fillStyle = "#07060a"; ctx.fillRect(0,0,viewW,viewH);
+    if(medusaImg.complete && medusaImg.naturalWidth>0){
+      const iw=medusaImg.naturalWidth, ih=medusaImg.naturalHeight, sc=Math.max(viewW/iw, viewH/ih), dw=iw*sc, dh=ih*sc;
+      ctx.drawImage(medusaImg, (viewW-dw)/2, (viewH-dh)/2, dw, dh);
+    } else { ctx.fillStyle="#16271b"; ctx.fillRect(0,0,viewW,viewH); }
+    const gg = ctx.createLinearGradient(0, viewH*0.55, 0, viewH); gg.addColorStop(0,"rgba(7,6,10,0)"); gg.addColorStop(1,"rgba(7,6,10,.85)"); ctx.fillStyle=gg; ctx.fillRect(0, viewH*0.55, viewW, viewH*0.45);
+    drawText(J.bossName, viewW/2, viewH*0.84, "26px", "#ffe7a0", "center");
+    drawText("THE INNER SANCTUM", viewW/2, viewH*0.905, "11px", "#cdbf90", "center");
+    ctx.restore();
+  }
 }
 function updateJob(dt){
   const J = job; if(!J) return;
@@ -5568,6 +6117,8 @@ function drawJobHud(J){
       ? "Move with the pad, hold HIT to attack, tap SWAP to change weapons. Clear them and beat " + J.bossName + "."
       : jobMode === "fps"
       ? "Strafe left and right to aim and dodge, hold FIRE to shoot. Drop them all and take down " + J.bossName + "."
+      : jobMode === "rooms"
+      ? "Turn with left and right to aim, hold FIRE to shoot. Clear each room then press forward. When Medusa glares, turn away. Beat " + J.bossName + "."
       : jobMode === "spin"
       ? "Run with the pad and JUMP to hop. Hold DOWN then JUMP to charge a spin, release to blast off. Pop the shells and take down " + J.bossName + "."
       : J.theme === "digital"
@@ -5702,8 +6253,8 @@ const moveKey = {
 window.addEventListener("keydown", e => {
   const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
   if(state.scene === "job"){
-    const td = jobMode === "topdown", be = jobMode === "beatemup", pf = jobMode === "platformer";
-    const dpad = td || be;
+    const td = jobMode === "topdown", be = jobMode === "beatemup", pf = jobMode === "platformer", rooms = jobMode === "rooms";
+    const dpad = td || be || rooms;
     if(k === "ArrowLeft" || k === "a"){ jobHold.left = true; e.preventDefault(); return; }
     if(k === "ArrowRight" || k === "d"){ jobHold.right = true; e.preventDefault(); return; }
     if(k === "ArrowUp" || k === "w"){ if(dpad) jobHold.up = true; else if(pf || jobMode === "spin"){ jobJumpQueued = true; jobHold.jumpHeld = true; } e.preventDefault(); return; }
@@ -5780,6 +6331,7 @@ function wireEvents(){
   el("btnChap6").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(6); });
   el("btnChap7").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(7); });
   el("btnChap8").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(8); });
+  el("btnChap9").addEventListener("click", () => { ensureAudio(); sfxClick(); startLevel(9); });
   el("btnGo").addEventListener("click", () => { sfxClick(); resetRun(); transitionTo("overworld"); toast("Move with the arrows or the pad. Press A near a door."); });
   el("btnReplay").addEventListener("click", () => { sfxClick(); resetRun(); transitionTo("overworld"); toast("Fresh recon. Follow the gold stars."); });
   el("btnTitle").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
@@ -5818,7 +6370,7 @@ function wireEvents(){
   el("btnOutroTitle").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
   el("btnCh2Title").addEventListener("click", () => { sfxClick(); updateTitleInfo(); transitionTo("title"); });
   // stop click based buttons from keeping focus, so a later Space press cannot double fire
-  ["dlgNext","dlgLeave","btnCase","caseClose","btnMute","btnStart","btnHow","btnReset","btnIntroGo","btnChap1","btnChap2","btnChap3","btnChap4","btnChap5","btnChap6","btnChap7","btnChap8","btnGo","btnReplay","btnTitle","btnUniv","lessonLeave","pitchLeave","btnWinStart","btnWinTitle","btnFailRetry","btnFailTitle","btnJobStreet","btnJobTitle","btnJobRetry","btnJobTitle2","btnOutroNext","btnOutroReplay","btnOutroTitle","btnCh2Title"]
+  ["dlgNext","dlgLeave","btnCase","caseClose","btnMute","btnStart","btnHow","btnReset","btnIntroGo","btnChap1","btnChap2","btnChap3","btnChap4","btnChap5","btnChap6","btnChap7","btnChap8","btnChap9","btnGo","btnReplay","btnTitle","btnUniv","lessonLeave","pitchLeave","btnWinStart","btnWinTitle","btnFailRetry","btnFailTitle","btnJobStreet","btnJobTitle","btnJobRetry","btnJobTitle2","btnOutroNext","btnOutroReplay","btnOutroTitle","btnCh2Title"]
     .forEach(id => el(id).addEventListener("mousedown", e => e.preventDefault()));
   window.addEventListener("resize", () => { resize(); centerCam(); });
   window.addEventListener("orientationchange", () => { setTimeout(() => { resize(); centerCam(); }, 200); });
