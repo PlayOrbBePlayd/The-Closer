@@ -170,6 +170,16 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
 .leadWhy{font-size:13px; color:var(--mut); margin-top:8px;}
 #caseClose{margin-top:14px; width:100%;}
 
+/* book nook */
+.bookAuthor{font-size:13px; color:var(--mut); font-style:italic; margin-top:2px;}
+.bookLink{display:inline-block; margin-top:12px; font-family:var(--arcade); font-size:9px; letter-spacing:.5px;
+  color:#06231d; background:var(--teal); padding:9px 11px; border-radius:8px; text-decoration:none;}
+.bookLink:active{transform:translateY(1px);}
+.nookIntro{background:rgba(255,227,176,.08); border:1px solid rgba(255,227,176,.25); border-radius:12px;
+  padding:12px 14px; margin-bottom:14px; font-size:15px; line-height:1.45; color:#ffe7b0;}
+.nookOutro{margin-top:12px; font-size:14px; color:var(--mut); text-align:center; line-height:1.5;}
+#nookClose{margin-top:14px; width:100%;}
+
 /* complete */
 .done{
   max-width:600px; width:100%; background:linear-gradient(180deg,var(--panel2),var(--panel));
@@ -360,6 +370,15 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
       <div class="modalH">CASE FILE&nbsp;&nbsp;MARIA</div>
       <div id="caseBody"></div>
       <button id="caseClose" class="primarybtn">Close</button>
+    </div>
+  </div>
+
+  <!-- book nook -->
+  <div id="booknook" class="overlay hidden">
+    <div class="modal">
+      <div class="modalH" id="nookH">THE BOOK NOOK</div>
+      <div id="nookBody"></div>
+      <button id="nookClose" class="primarybtn">Back to the street</button>
     </div>
   </div>
 
@@ -2159,6 +2178,79 @@ const LEVELS = {
       nextK:"What is next", nextV:"The night belongs to Dracula again, and you have closed every client from a clogged sink to the Lord of the Castle himself. You did not win with tricks. You won by listening. That is the whole game. Your lifetime points and every move you learned are yours to keep." }
   }
 };
+/* ---------- the book nook: original summaries with attribution, links to the authors ---------- */
+const BOOKNOOK = {
+  1:{ cards:[
+    { title:"Never Split the Difference", author:"Chris Voss with Tahl Raz",
+      blurb:"Chris Voss spent over two decades as the FBI's lead kidnapping negotiator, then discovered the same skills win business deals. His big idea is tactical empathy: before you propose anything, prove you understand how the other person sees the world. Labeling is a signature move. You name the emotion you sense out loud, something like \u201cIt seems like you have been burned before,\u201d and the buyer feels heard instead of hunted. People do not say yes to the smartest pitch. They say yes to the person who understood them first.",
+      url:"https://www.blackswanltd.com" }
+  ]},
+  2:{ cards:[
+    { title:"Never Split the Difference", author:"Chris Voss with Tahl Raz",
+      blurb:"Mirroring is the simplest move in the book and one of the strongest. Repeat the last few words your buyer just said, in a curious tone, then go quiet. The silence does the work. People are drawn to what feels familiar, and a mirror invites them to keep explaining. Most salespeople talk themselves out of deals. A good mirror lets the buyer talk themselves into telling you the truth.",
+      url:"https://www.blackswanltd.com" }
+  ]},
+  3:{ cards:[
+    { title:"Never Split the Difference", author:"Chris Voss with Tahl Raz",
+      blurb:"Calibrated questions are open questions that start with how or what, with no possible one word answer. They hand the buyer the feeling of control while pulling them into solving the problem with you. \u201cHow would that work on your end?\u201d beats any clever argument, because the answer they build is one they already believe.",
+      url:"https://www.blackswanltd.com" },
+    { title:"SPIN Selling", author:"Neil Rackham",
+      blurb:"Rackham's team studied over 35,000 real sales calls across 12 years, the largest research project ever done on selling. The finding: top sellers do not pitch harder, they ask better questions in a sequence. Situation, Problem, Implication, Need payoff. By the end, the buyer has described the cost of the problem and the value of fixing it in their own words, which is far more convincing than anything you could say.",
+      url:"https://www.huthwaiteinternational.com" }
+  ]},
+  4:{ cards:[
+    { title:"The Sandler Selling System", author:"David Sandler",
+      blurb:"Sandler's rule: buyers buy for their own reasons, not yours, and the real reason is usually a pain they have not fully admitted. The pain funnel is a gentle stack of questions that starts wide, \u201cTell me more about that,\u201d and sinks deeper. What have you tried? Did it work? What has it cost you? No pressure anywhere. Just honest exploration until the true size of the problem is sitting on the table where both of you can see it.",
+      url:"https://www.sandler.com" }
+  ]},
+  5:{ cards:[
+    { title:"Strategic Selling", author:"Robert Miller and Stephen Heiman",
+      blurb:"The book that proved a complex sale is never one decision by one person. There is an Economic buyer who signs, User buyers who live with the result, Technical buyers who screen you out, and if you are smart, a Coach who guides you through. Win every influence or the deal dies in a meeting you were never invited to. Selling to a committee means mapping the room before you pitch the room.",
+      url:"https://www.kornferry.com/about-us/our-story/miller-heiman-group" }
+  ]},
+  6:{ cards:[
+    { title:"The Challenger Sale", author:"Matthew Dixon and Brent Adamson",
+      blurb:"Built on a study of thousands of sales reps, this book overturned the idea that relationship builders win. The top performers were challengers: they teach the customer something genuinely new about the customer's own business, tailor the message to each person in the room, and take control of the conversation politely but firmly. You do not win a know it all by agreeing. You win by bringing an insight they did not have.",
+      url:"https://www.challengerinc.com" }
+  ]},
+  7:{ cards:[
+    { title:"Fanatical Prospecting", author:"Jeb Blount",
+      blurb:"Blount's brutal fact: the number one reason salespeople fail is an empty pipeline, and the cause of an empty pipeline is the failure to prospect consistently. Top earners prospect every single day, across phone, email, and in person, even when they are busy and especially when they do not feel like it. His 30 day rule says the work you do or skip right now decides your results a quarter from today. Keep the funnel full and slumps cannot find you.",
+      url:"https://www.jebblount.com" }
+  ]},
+  8:{ cards:[
+    { title:"Secrets of Closing the Sale", author:"Zig Ziglar",
+      blurb:"Ziglar's whole philosophy fits in one idea: build your own success by helping other people get what they truly need first. Closing is not a trick you spring at the end. It is the natural last step of honest service, asked for with confidence because you genuinely believe the buyer is better off saying yes.",
+      url:"https://www.ziglar.com" },
+    { title:"The Psychology of Selling", author:"Brian Tracy",
+      blurb:"Tracy argues selling is mostly an inner game. Your self image sets your income like a thermostat, and small daily improvements in skill compound into enormous differences in results. Master the basics, manage your own mind, and treat every no as practice rather than verdict.",
+      url:"https://www.briantracy.com" }
+  ]},
+  9:{ cards:[
+    { title:"Getting to Yes", author:"Roger Fisher and William Ury",
+      blurb:"The Harvard Negotiation Project classic. Separate the people from the problem, focus on interests rather than positions, invent options for mutual gain, and insist on fair standards. Hard bargaining makes enemies. Principled negotiation makes deals both sides want to keep.",
+      url:"https://www.williamury.com" },
+    { title:"The Sales Bible", author:"Jeffrey Gitomer",
+      blurb:"Gitomer's law: all things being equal, people buy from people they like, and all things not being equal, they still do. Give value first, long before you ask for anything, and the relationship earns the sale for you.",
+      url:"https://www.gitomer.com" }
+  ]},
+  10:{ h:"THE CLOSER'S BOOKSHELF", shelf:true,
+    intro:"Every book from the journey, hoarded by the Creature and shared with you. The game taught you the moves. These taught the game.",
+    cards:[
+      { title:"Never Split the Difference", author:"Chris Voss with Tahl Raz", url:"https://www.blackswanltd.com" },
+      { title:"SPIN Selling", author:"Neil Rackham", url:"https://www.huthwaiteinternational.com" },
+      { title:"The Sandler Selling System", author:"David Sandler", url:"https://www.sandler.com" },
+      { title:"Strategic Selling", author:"Robert Miller and Stephen Heiman", url:"https://www.kornferry.com/about-us/our-story/miller-heiman-group" },
+      { title:"The Challenger Sale", author:"Matthew Dixon and Brent Adamson", url:"https://www.challengerinc.com" },
+      { title:"Fanatical Prospecting", author:"Jeb Blount", url:"https://www.jebblount.com" },
+      { title:"Secrets of Closing the Sale", author:"Zig Ziglar", url:"https://www.ziglar.com" },
+      { title:"The Psychology of Selling", author:"Brian Tracy", url:"https://www.briantracy.com" },
+      { title:"Getting to Yes", author:"Roger Fisher and William Ury", url:"https://www.williamury.com" },
+      { title:"The Sales Bible", author:"Jeffrey Gitomer", url:"https://www.gitomer.com" }
+    ],
+    outro:"Ten books. Ten levels. One rule that never changes: read the room, serve the need, earn the close." }
+};
+
 let currentLevel = 1;
 let LV = LEVELS[1];
 function flag(name){ return "level" + currentLevel + name; }
@@ -2187,6 +2279,9 @@ function loadLevel(n){
   else if(LV.style === "greek"){ critters.push(makeCritter("satyr", 660, 520)); critters.push(makeCritter("echo", 920, 560)); }
   else if(LV.style === "monster"){ critters.push(makeCritter("hunchback", 380, 500)); critters.push(makeCritter("phantom", 980, 500)); critters.push(makeCritter("bride", 520, 630)); critters.push(makeCritter("tarantula", 880, 650)); }
   resetCollected();
+  handoff = (n === 2) ? {style:LEVELS[1].style, x:-40, y:746, dir:1, phase:"in", timer:0, given:false}
+          : (n === 3) ? {style:LEVELS[2].style, x:-40, y:746, dir:1, phase:"in", timer:0, given:false}
+          : null;
 }
 function fillBrief(){
   el("briefH").textContent = LV.no;
@@ -2220,6 +2315,9 @@ let jobSwingQueued = false;
 
 let currentTalk = null;
 let dlgLine = 0;
+let dlgStage = "lines";
+let nookOpen = false;
+let handoff = null;
 let notebookOpen = false;
 
 function uniOpen(){ return count >= LV.intelOrder.length; }
@@ -2322,7 +2420,7 @@ function update(dt){
   t += dt;
   if(state.scene === "job"){ (jobMode === "topdown" ? updateTopdown : jobMode === "beatemup" ? updateBeat : jobMode === "fps" ? updateFps : jobMode === "rooms" ? updateRooms : jobMode === "spin" ? updateSpin : jobMode === "fly" ? updateFly : updateJob)(dt); return; }
   if(state.scene === "finale"){ updateFinale(dt); return; }
-  if(state.scene !== "overworld" || notebookOpen){ player.moving = false; return; }
+  if(state.scene !== "overworld" || notebookOpen || nookOpen){ player.moving = false; return; }
   let dx=0, dy=0;
   if(hold.left) dx -= 1; if(hold.right) dx += 1; if(hold.up) dy -= 1; if(hold.down) dy += 1;
   player.moving = (dx !== 0 || dy !== 0);
@@ -2336,6 +2434,7 @@ function update(dt){
   player.x = clamp(player.x, 0, WORLD_W - player.w);
   player.y = clamp(player.y, 0, WORLD_H - player.h);
   centerCam(dt);
+  updateHandoff(dt);
   state.near = null;
   for(const it of INTERACTIVES){ if(aabb(player, it.trigger)){ state.near = it; break; } }
   for(const tu of critters){
@@ -3729,6 +3828,61 @@ function drawDecor(){
     ctx.fillStyle = "#1a1208"; circle(dux+5, duy-5, 0.8);
   }
 }
+function drawMiniBook(bx, by){
+  ctx.save(); ctx.translate(bx, by);
+  ctx.fillStyle = "#8a4a2a";
+  ctx.beginPath(); ctx.moveTo(-7.5, 0.6); ctx.lineTo(0, 3.2); ctx.lineTo(7.5, 0.6);
+  ctx.lineTo(7.5, 3.8); ctx.lineTo(0, 6.4); ctx.lineTo(-7.5, 3.8); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#f2ead2";
+  ctx.beginPath(); ctx.moveTo(-6.4, -0.4); ctx.lineTo(0, 2.0); ctx.lineTo(6.4, -0.4);
+  ctx.lineTo(6.4, 2.6); ctx.lineTo(0, 5.0); ctx.lineTo(-6.4, 2.6); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#b9ae8e"; ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  ctx.moveTo(-5, 1.2); ctx.lineTo(-1.4, 2.5); ctx.moveTo(1.4, 2.5); ctx.lineTo(5, 1.2);
+  ctx.moveTo(-5, 2.6); ctx.lineTo(-1.4, 3.9); ctx.moveTo(1.4, 3.9); ctx.lineTo(5, 2.6);
+  ctx.stroke();
+  ctx.strokeStyle = "#8a4a2a"; ctx.lineWidth = 0.8;
+  ctx.beginPath(); ctx.moveTo(0, 2.0); ctx.lineTo(0, 5.0); ctx.stroke();
+  ctx.restore();
+}
+function updateHandoff(dt){
+  if(!handoff) return;
+  const hs = 130, stopX = 684;
+  if(handoff.phase === "in"){
+    handoff.dir = 1; handoff.x += hs*dt;
+    if(handoff.x >= stopX){ handoff.x = stopX; handoff.phase = "hand"; handoff.timer = 1.5; }
+  } else if(handoff.phase === "hand"){
+    handoff.timer -= dt;
+    if(!handoff.given && handoff.timer <= 0.75){ handoff.given = true; toast("The book travels on."); }
+    if(handoff.timer <= 0) handoff.phase = "out";
+  } else if(handoff.phase === "out"){
+    handoff.dir = -1; handoff.x -= hs*dt;
+    if(handoff.x < -60) handoff = null;
+  }
+}
+function drawHandoffWalker(){
+  if(!handoff) return;
+  const x = handoff.x, feet = handoff.y, st = handoff.style;
+  const coat = st === "nineties" ? "#3a4a6a" : "#2f8f7e";
+  const hair = st === "nineties" ? "#1f1f26" : "#2a2a33";
+  const walking = handoff.phase !== "hand";
+  const lp = walking ? Math.sin(t*14) : 0;
+  ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(x, feet, 11, 4, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#26344f";
+  ctx.fillRect(x-6, feet-10, 5, 10 + (walking && lp > 0 ? 1.5 : 0));
+  ctx.fillRect(x+1, feet-10, 5, 10 + (walking && lp < 0 ? 1.5 : 0));
+  ctx.fillStyle = coat; rr(ctx, x-8, feet-26, 16, 17, 4); ctx.fill();
+  ctx.fillStyle = "#e8b48a"; circle(x, feet-30, 6);
+  ctx.fillStyle = hair; dome(x, feet-32, 6);
+  ctx.fillStyle = "#23304a";
+  circle(x-2 + handoff.dir, feet-30, 1.2); circle(x+2 + handoff.dir, feet-30, 1.2);
+  if(!handoff.given) drawMiniBook(x + handoff.dir*9, feet-19);
+  else if(handoff.phase === "hand"){
+    ctx.save(); ctx.globalAlpha = 0.85; ctx.fillStyle = "#ffe39a";
+    ctx.font = "10px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("\u2728", x + 18, feet - 36); ctx.restore();
+  }
+}
 function drawTheo(){
   const x = 730, feet = 720;
   const st = LV.style;
@@ -3747,6 +3901,22 @@ function drawTheo(){
     ctx.fillStyle = "#ffd24a"; circle(-3, -17, 1.8); circle(3, -17, 1.8);
     ctx.fillStyle = "#1a2a1a"; circle(-3, -17, 0.8); circle(3, -17, 0.8);
     ctx.restore();
+    // the Creature's hoard: all ten books from the journey, piled on the shore
+    const BKC = ["#c0392b","#2980b9","#27ae60","#8e44ad","#f39c12","#16a085","#d35400","#aab2bd","#ffcb47","#34e0c4"];
+    const piles = [4, 3, 3], px = [x-32, x, x+32], py = feet + 26;
+    ctx.fillStyle = "rgba(0,0,0,.25)";
+    for(let p = 0; p < 3; p++){ ctx.beginPath(); ctx.ellipse(px[p], py + 3, 13, 3, 0, 0, Math.PI*2); ctx.fill(); }
+    let bi = 0;
+    for(let p = 0; p < 3; p++){
+      for(let i = 0; i < piles[p]; i++){
+        const jit = Math.sin((p*7 + i)*9) * 1.6;
+        ctx.fillStyle = BKC[bi++];
+        rr(ctx, px[p]-10 + jit, py - i*5, 20, 4.4, 1.5); ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,.28)";
+        ctx.fillRect(px[p]-9 + jit, py - i*5 + 0.8, 18, 1);
+      }
+    }
+    drawMiniBook(px[0], py - piles[0]*5 - 2);
     return;
   }
   const coat = st === "downtown" ? "#5a6270" : st === "suburb" ? "#b06aa0" : st === "industrial" ? "#7a6a4a" : st === "roman" ? "#b5462f" : st === "future" ? "#27406a" : st === "georgian" ? "#6e5a3e" : st === "nineties" ? "#3a4a6a" : st === "alien" ? "#6a3aa0" : st === "steppe" ? "#3a5a8f" : "#2f8f7e";
@@ -3756,6 +3926,7 @@ function drawTheo(){
   ctx.fillStyle = "#e8b48a"; circle(x, feet-26, 6);                          // head
   ctx.fillStyle = hair; dome(x, feet-28, 6);                                 // hair
   ctx.fillStyle = "#23304a"; circle(x-2, feet-26, 1.2); circle(x+2, feet-26, 1.2);
+  if(!handoff || handoff.given) drawMiniBook(x, feet-14);
   if(st === "alien"){ ctx.strokeStyle = "#7be0a0"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x-3, feet-33); ctx.lineTo(x-5, feet-41); ctx.moveTo(x+3, feet-33); ctx.lineTo(x+5, feet-41); ctx.stroke(); ctx.save(); ctx.shadowBlur=8; ctx.shadowColor="#b6ff6a"; ctx.fillStyle = "#dfffb0"; circle(x-5, feet-42, 2); circle(x+5, feet-42, 2); ctx.restore(); }
   if(st === "steppe"){ ctx.fillStyle = "#7a3a2a"; ctx.beginPath(); ctx.moveTo(x-7, feet-30); ctx.lineTo(x, feet-43); ctx.lineTo(x+7, feet-30); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#caa86a"; ctx.fillRect(x-7, feet-31, 14, 3); ctx.fillStyle = "#ffcb47"; circle(x, feet-43, 1.6); }
 }
@@ -4253,6 +4424,7 @@ function drawTown(){
     else drawStar(UNI.x + UNI.w/2, UNI.y - 18, UNI.x);
   }
   if(lessonDoneRun) drawStar(BUILDINGS[3].x + BUILDINGS[3].w/2, BUILDINGS[3].y - markLift, BUILDINGS[3].x);
+  drawHandoffWalker();
   drawTheo();
   for(const _c of critters.slice().sort((a,b)=>a.y-b.y)) drawCritter(_c);
   drawPlayer();
@@ -4960,7 +5132,9 @@ function hideConversationScene(){
 
 /* dialogue */
 function openTalk(talk){
-  currentTalk = talk; dlgLine = 0; setScene("dialogue"); setConversationScene(talk.id); renderDlg(); sfxBlip();
+  currentTalk = talk; dlgLine = 0; dlgStage = "lines";
+  el("dlgLeave").textContent = "Leave";
+  setScene("dialogue"); setConversationScene(talk.id); renderDlg(); sfxBlip();
 }
 function renderDlg(){
   if(!currentTalk) return;
@@ -4973,12 +5147,19 @@ function renderDlg(){
 }
 function dlgNext(){
   if(!currentTalk) return;
+  if(dlgStage === "ask"){ openBookNook(); return; }
   if(dlgLine < currentTalk.lines.length - 1){ dlgLine++; renderDlg(); sfxBlip(); }
+  else if(currentTalk === LV.talks.bench && BOOKNOOK[currentLevel]){
+    logTalkIntel(currentTalk);
+    dlgStage = "ask"; renderAsk(); sfxBlip();
+  }
   else { endTalk(); }
 }
-function dlgLeave(){ currentTalk = null; setScene("overworld"); }
-function endTalk(){
-  const talk = currentTalk;
+function dlgLeave(){
+  if(dlgStage === "ask"){ finishTalk(); return; }
+  currentTalk = null; setScene("overworld");
+}
+function logTalkIntel(talk){
   if(talk && talk.intelId){
     const id = talk.intelId;
     if(!collected[id]){
@@ -4987,8 +5168,43 @@ function endTalk(){
       if(count >= LV.intelOrder.length) pendingComplete = true;
     }
   }
-  currentTalk = null; setScene("overworld");
+}
+function finishTalk(){
+  currentTalk = null; dlgStage = "lines"; setScene("overworld");
   if(pendingComplete){ pendingComplete = false; setTimeout(showComplete, 950); }
+}
+function endTalk(){ logTalkIntel(currentTalk); finishTalk(); }
+function renderAsk(){
+  el("dlgText").textContent = "Would you like to learn more about this level's sales theory?";
+  el("dlgNext").textContent = "Yes, learn more";
+  el("dlgLeave").textContent = "No, I will learn through practice";
+  vis(el("dlgLeave"), true);
+}
+function openBookNook(){
+  currentTalk = null; dlgStage = "lines"; setScene("overworld");
+  buildNook();
+  el("booknook").classList.remove("hidden");
+  nookOpen = true; sfxBlip();
+}
+function closeNook(){
+  el("booknook").classList.add("hidden");
+  nookOpen = false;
+  if(pendingComplete){ pendingComplete = false; setTimeout(showComplete, 600); }
+}
+function buildNook(){
+  const nb = BOOKNOOK[currentLevel]; if(!nb) return;
+  el("nookH").textContent = nb.h || "THE BOOK NOOK";
+  let h = "";
+  if(nb.intro) h += '<div class="nookIntro">' + nb.intro + '</div>';
+  nb.cards.forEach(c => {
+    h += '<div class="lead"><div class="leadLabel">' + c.title + '</div>';
+    h += '<div class="bookAuthor">' + c.author + '</div>';
+    if(c.blurb) h += '<div class="leadClue" style="margin-top:9px">' + c.blurb + '</div>';
+    h += '<div><a class="bookLink" href="' + c.url + '" target="_blank" rel="noopener noreferrer">' +
+         (nb.shelf ? "Visit \u2197" : "Visit the author \u2197") + '</a></div></div>';
+  });
+  if(nb.outro) h += '<div class="nookOutro">' + nb.outro + '</div>';
+  el("nookBody").innerHTML = h;
 }
 
 /* notebook */
@@ -7085,6 +7301,7 @@ function resetRun(){
   centerCam();
 }
 function actionA(){
+  if(nookOpen){ closeNook(); return; }
   if(state.scene === "finale"){ transitionTo("title"); return; }
   if(state.scene === "dialogue") dlgNext();
   else if(state.scene === "overworld"){
@@ -7129,7 +7346,7 @@ window.addEventListener("keydown", e => {
   if(moveKey[k] !== undefined){ hold[moveKey[k]] = true; e.preventDefault(); return; }
   if(k === "enter" || k === " " || k === "e"){ e.preventDefault(); actionA(); return; }
   if(k === "n"){ if(state.scene === "overworld"){ notebookOpen ? closeCase() : openCase(); } return; }
-  if(k === "escape"){ if(notebookOpen) closeCase(); else if(state.scene === "lesson") leaveLesson(); else if(state.scene === "pitch") leavePitch(); else if(state.scene === "dialogue") dlgLeave(); }
+  if(k === "escape"){ if(nookOpen) closeNook(); else if(notebookOpen) closeCase(); else if(state.scene === "lesson") leaveLesson(); else if(state.scene === "pitch") leavePitch(); else if(state.scene === "dialogue") dlgLeave(); }
 });
 window.addEventListener("keyup", e => {
   const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
@@ -7165,6 +7382,7 @@ function wireEvents(){
   });
   el("dlgNext").addEventListener("click", dlgNext);
   el("dlgLeave").addEventListener("click", dlgLeave);
+  el("nookClose").addEventListener("click", () => { sfxClick(); closeNook(); });
   el("btnStart").addEventListener("click", () => {
     ensureAudio(); sfxClick();
     if(!save.seenIntro){ save.seenIntro = true; persist(); openIntro("brief"); }
