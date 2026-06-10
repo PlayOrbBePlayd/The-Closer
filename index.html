@@ -170,6 +170,20 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
 .leadWhy{font-size:13px; color:var(--mut); margin-top:8px;}
 #caseClose{margin-top:14px; width:100%;}
 
+/* tower defense */
+#towerBar{ position:absolute; left:0; right:0; bottom:calc(10px + env(safe-area-inset-bottom));
+  display:flex; gap:8px; align-items:center; justify-content:center; flex-wrap:wrap;
+  z-index:13; pointer-events:auto; padding:0 10px; }
+.twbtn{ font-family:var(--arcade); font-size:9px; line-height:1.5; letter-spacing:.5px;
+  color:var(--ink); background:rgba(10,16,30,.86); border:1px solid rgba(255,255,255,.18);
+  border-radius:12px; padding:9px 12px; cursor:pointer; }
+.twbtn span{ color:var(--gold); }
+.twbtn.sel{ border-color:var(--teal); background:rgba(52,224,196,.16); }
+.twbtn:disabled{ opacity:.45; }
+.twcash{ font-family:var(--arcade); font-size:9px; color:var(--gold);
+  background:rgba(10,16,30,.86); border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:13px 12px; }
+.twstart{ font-size:10px; padding:13px 14px; }
+
 /* pitch theater */
 @keyframes tremble{
   0%{transform:translate(0,0);} 20%{transform:translate(-1.5px,0.5px);} 40%{transform:translate(1.5px,-0.5px);}
@@ -375,6 +389,24 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
     <div id="jobBtns">
       <button id="jbFire" class="jbtn">FIRE</button>
       <button id="jbJump" class="jbtn jump">JUMP</button>
+    </div>
+  </div>
+
+  <!-- tower defense bar -->
+  <div id="towerBar" class="hidden">
+    <button id="twPhone" class="twbtn">PHONE<br><span>50</span></button>
+    <button id="twMail" class="twbtn">MAIL<br><span>70</span></button>
+    <button id="twRider" class="twbtn">RIDER<br><span>90</span></button>
+    <div id="twCash" class="twcash">CASH 130</div>
+    <button id="twStart" class="primarybtn twstart">START WAVE</button>
+  </div>
+
+  <!-- tower defense question card -->
+  <div id="towersQ" class="overlay hidden">
+    <div class="lessonCard">
+      <span class="lessonTag">FIELD QUESTION</span>
+      <div class="lessonCardTitle" id="twqTitle">Question</div>
+      <div id="twqBody"></div>
     </div>
   </div>
 
@@ -2006,13 +2038,10 @@ const LEVELS = {
     winLede1:"You did not pitch one buyer, you read a whole room. Sofia got her return, you turned Dom from saboteur to champion, and you proved the books to Leo. Three yeses, one deal.",
     winLede2:"Now for the part they do not teach in business school. With the deal closed, the floor falls away and you step onto the sand of the arena. Take up your spears, because the Gladiator and his beasts are waiting. Points from the job bank to your lifetime total.",
     failLede:"You lost the room. Pitching features to the owner, bulldozing the manager, or brushing off the bookkeeper all lose with a committee. Win each person on what they care about, and turn the holdout into your champion.",
-    job:{ mode:"platformer", theme:"arena", bossName:"THE GLADIATOR", W:3300, speedPar:74,
-      enemyHp:3, enemySpeed:74, shotSpeed:640, shotCd:0.2, bossProjSpeed:380, bossAtk:1.0, bossSpread:5,
-      plats:[{x:560,dy:120,w:150},{x:980,dy:155,w:140},{x:1400,dy:115,w:150},{x:1820,dy:160,w:140},{x:2240,dy:120,w:150},{x:2660,dy:158,w:150}],
-      enemies:[{x:520},{x:760},{x:1000,platIdx:1},{x:1240},{x:1460,big:true,hp:9,speed:54},{x:1700,platIdx:3},{x:1940},{x:2180},{x:2260,platIdx:4},{x:2480,big:true,hp:10,speed:56},{x:2700},{x:2900,big:true,hp:11,speed:56}],
-      boss:{dx:300, w:150, h:150, hp:60}, hazards:[{x:900,w:80},{x:1640,w:90},{x:2420,w:90}],
-      winLede:"The Gladiator falls and the arena erupts. You threw true, dodged the beasts, and stood last on the sand. The committee is closed and the crowd is roaring your name.",
-      failLede:"The beasts and the blade got the better of you this round. The deal still stands, so take up your spears and step back onto the sand.",
+    job:{ mode:"breaker", theme:"arena", bossName:"THE GLADIATOR", speedPar:85,
+      boss:{ hp:30 },
+      winLede:"The last shield clatters to the sand and the Gladiator drops his guard one beat too long. Your loaf flies true, the wall is broken, and the whole arena is chanting for the baker. The committee never stood a chance.",
+      failLede:"The shield wall held and your last loaf rolled dead on the sand. The deal still stands, so dust off your peel and step back into the arena.",
       failH:"DOWN ON THE SAND" },
     outro:{ cleared:"CHAPTER FIVE CLEARED", tag:"The Committee",
       recap:"You closed your first committee. You read three people with three different wins, gave each what they needed, and turned the one working against you into your strongest champion. Then you stood last in the arena. That is how real deals get done.",
@@ -2045,10 +2074,10 @@ const LEVELS = {
     winLede1:"You did not out argue a know it all, you taught him something true. One insight connected three problems he could not see, and the proudest being on Zorbon leaned in and listened.",
     winLede2:"Now for the fun part. With the deal closed, you seal your helmet and drop straight down the dark beacon shaft, blaster up and eyes forward. Something has settled over the grid core and drunk the whole colony dark, THE BLIND SPOT, the one thing even Zorg could not see. Go light it up. Points from the job bank to your lifetime total.",
     failLede:"You lost him. Flattery, fear, feature dumps, and arguing all tell a know it all you have nothing real. Win him by teaching one true thing he has not seen, then hand him the fix.",
-    job:{ mode:"fps", theme:"cosmic", bossName:"THE BLIND SPOT", speedPar:60,
-      boss:{ hp:78 },
-      winLede:"THE BLIND SPOT cracks open in a flood of light and the colony blazes awake. The market glows, the goo flows, the welcome beacon sweeps the sky, and the ships are already turning for home. Zorbon can see again, and it can see because of you.",
-      failLede:"The dark closed back in around you this round. The deal still stands, so seal your helmet and drop back down the beacon shaft.",
+    job:{ mode:"lander", theme:"cosmic", bossName:"THE BLIND SPOT", speedPar:160,
+      boss:{ hp:5 },
+      winLede:"The fifth ship settles onto the pad as soft as a snowflake and the colony blazes awake. Five crews step out under the dome, the market glows, and the new beacon sweeps the sky. Zorbon can see again, and the ships came home because you guided every one of them in.",
+      failLede:"Too many hulls met the rock tonight and the dark closed back in. The deal still stands, so climb the tower and talk the next ships down.",
       failH:"LOST IN THE DARK" },
     outro:{ cleared:"CHAPTER SIX CLEARED", tag:"The Know It All",
       recap:"You closed the one buyer who was sure he had nothing left to learn. You did not flatter him and you did not fight him. You taught him one true thing about his own world, handed him the fix, then relit the whole colony with your own two hands.",
@@ -2081,14 +2110,11 @@ const LEVELS = {
     winLede1:"You did not out wait an empty pipeline, you filled it. One true pattern showed the proudest khan on the steppe why the world stopped coming, and he chose to ride out and meet it again.",
     winLede2:"Now for the fun part. With the deal struck, you swing onto a fast steppe pony, sling your bow, and gallop out to carry the Khan's word and reopen the roads yourself. Ride hard, loose true, and scatter what has gone quiet across the steppe. Points from the job bank to your lifetime total.",
     failLede:"You lost him. Waiting, flattery, a taller banner, and shame all keep a pipeline empty. Win him by showing the one true pattern, then hand him the system that fills it.",
-    job:{ mode:"platformer", theme:"steppe", bossName:"THE LONG SILENCE", W:3600, speedPar:80,
-      enemyHp:3, enemySpeed:88, shotSpeed:680, shotCd:0.18, bossProjSpeed:430, bossAtk:0.9, bossSpread:7,
-      plats:[{x:560,dy:120,w:150},{x:1000,dy:160,w:140},{x:1440,dy:118,w:150},{x:1880,dy:158,w:140},{x:2320,dy:120,w:150},{x:2780,dy:160,w:150}],
-      enemies:[{x:540},{x:780},{x:1040,platIdx:1},{x:1300},{x:1520,big:true,hp:9,speed:58},{x:1780,platIdx:3},{x:2020},{x:2260},{x:2380,platIdx:4},{x:2580,big:true,hp:10,speed:60},{x:2800},{x:3000,big:true,hp:11,speed:60},{x:3180}],
-      boss:{dx:300, w:170, h:150, hp:72}, hazards:[{x:960,w:80},{x:1700,w:90},{x:2520,w:90}],
-      winLede:"The roads are open and the riders pour back onto the steppe. Caravans turn for the trade ground, news rides in from every horizon, and the families unpack their gers. Khan Tomor sits at the center of the steppe again, and he sits there because of you.",
-      failLede:"The silence swallowed your ride this time. The deal still stands, so mount up and gallop back out to reopen the roads.",
-      failH:"LOST IN THE DUST" },
+    job:{ mode:"towers", theme:"steppe", bossName:"THE LONG SILENCE", speedPar:300,
+      boss:{ hp:900 },
+      winLede:"THE LONG SILENCE breaks apart on the last rampart and the pipeline mouth roars back to life. Five waves of dry spell came for the camp and not one of them ends the story. The roads hum, the riders ride, and the khan's funnel never ran empty on your watch.",
+      failLede:"The silence slipped past your towers and drank the pipeline dry. The deal still stands, so rebuild the line and hold the camp.",
+      failH:"THE PIPELINE RAN DRY" },
     outro:{ cleared:"CHAPTER SEVEN CLEARED", tag:"The Empty Pipeline",
       recap:"You closed a proud khan who was sure the world would always ride to him. You did not flatter him and you did not shame him. You showed him one true pattern, gave him a system to fill his empty camp, then rode out and reopened the roads yourself.",
       nextK:"What is next", nextV:"The Iron Khan rides again. Next comes the long maybe, a buyer who likes everything and will commit to nothing, where you learn to turn an endless someday into a clear yes. Your lifetime points and learned moves carry over." }
@@ -2539,7 +2565,7 @@ function moveAxis(axis, amt){
 
 function update(dt){
   t += dt;
-  if(state.scene === "job"){ (jobMode === "topdown" ? updateTopdown : jobMode === "beatemup" ? updateBeat : jobMode === "fps" ? updateFps : jobMode === "rooms" ? updateRooms : jobMode === "spin" ? updateSpin : jobMode === "fly" ? updateFly : updateJob)(dt); return; }
+  if(state.scene === "job"){ (jobMode === "topdown" ? updateTopdown : jobMode === "beatemup" ? updateBeat : jobMode === "fps" ? updateFps : jobMode === "rooms" ? updateRooms : jobMode === "spin" ? updateSpin : jobMode === "fly" ? updateFly : jobMode === "breaker" ? updateBreaker : jobMode === "lander" ? updateLander : jobMode === "towers" ? updateTowers : updateJob)(dt); return; }
   if(state.scene === "finale"){ updateFinale(dt); return; }
   if(state.scene !== "overworld" || notebookOpen || nookOpen){ player.moving = false; return; }
   let dx=0, dy=0;
@@ -4830,7 +4856,7 @@ function drawRoom(talk){
 }
 
 function draw(){
-  if(state.scene === "job" || state.scene === "jobwin" || state.scene === "jobfail"){ (jobMode === "topdown" ? drawTopdown : jobMode === "beatemup" ? drawBeat : jobMode === "fps" ? drawFps : jobMode === "rooms" ? drawRooms : jobMode === "spin" ? drawSpin : jobMode === "fly" ? drawFly : drawJob)(); return; }
+  if(state.scene === "job" || state.scene === "jobwin" || state.scene === "jobfail"){ (jobMode === "topdown" ? drawTopdown : jobMode === "beatemup" ? drawBeat : jobMode === "fps" ? drawFps : jobMode === "rooms" ? drawRooms : jobMode === "spin" ? drawSpin : jobMode === "fly" ? drawFly : jobMode === "breaker" ? drawBreaker : jobMode === "lander" ? drawLander : jobMode === "towers" ? drawTowers : drawJob)(); return; }
   if(state.scene === "finale"){ drawFinale(); return; }
   if(state.scene === "lesson"){ drawRoom(PROF); }
   else if(state.scene === "pitch" || state.scene === "win" || state.scene === "fail"){ drawRoom(LV.client.npc); }
@@ -4872,7 +4898,9 @@ function setScene(s){
   vis(el("pitchMeter"),  s === "pitch");
   vis(el("screenWin"),   s === "win");
   vis(el("screenFail"),  s === "fail");
-  vis(el("jobControls"),  s === "job");
+  vis(el("jobControls"),  s === "job" && jobMode !== "towers");
+  vis(el("towerBar"),     s === "job" && jobMode === "towers");
+  if(s !== "job") vis(el("towersQ"), false);
   vis(el("screenJobWin"), s === "jobwin");
   vis(el("screenJobFail"),s === "jobfail");
   if(s !== "job"){ jobHold.left = jobHold.right = jobHold.up = jobHold.down = jobHold.fire = jobHold.jumpHeld = false; jobJumpQueued = false; }
@@ -5639,22 +5667,25 @@ function newJob(){
 function startJob(){
   ensureAudio(); JC = Object.assign({}, JOB, LV.job);
   jobMode = (LV.job && LV.job.mode) || "platformer";
-  job = (jobMode === "topdown") ? newTopdown() : (jobMode === "beatemup") ? newBeat() : (jobMode === "fps") ? newFps() : (jobMode === "rooms") ? newRooms() : (jobMode === "spin") ? newSpin() : (jobMode === "fly") ? newFly() : newJob();
+  job = (jobMode === "topdown") ? newTopdown() : (jobMode === "beatemup") ? newBeat() : (jobMode === "fps") ? newFps() : (jobMode === "rooms") ? newRooms() : (jobMode === "spin") ? newSpin() : (jobMode === "fly") ? newFly() : (jobMode === "breaker") ? newBreaker() : (jobMode === "lander") ? newLander() : (jobMode === "towers") ? newTowers() : newJob();
   jobHold.left=jobHold.right=jobHold.up=jobHold.down=jobHold.fire=jobHold.jumpHeld=false; jobJumpQueued=false; jobSwingQueued=false;
   configJobControls();
   setScene("job"); sfxBlip();
+  if(jobMode === "towers") twUpdateBar();
 }
 function configJobControls(){
   const m = jobMode;
   const spin = (m === "spin");
   const rooms = (m === "rooms");
+  const towers = (m === "towers");
   const dpad = (m === "topdown" || m === "beatemup" || spin || rooms);
   el("jobPad").classList.toggle("dpad", dpad);
+  vis(el("jobPad"), !towers);
   vis(el("jbUp"), dpad && !spin); vis(el("jbDown"), dpad && !rooms);
-  vis(el("jbJump"), m === "platformer" || m === "beatemup" || spin || m === "fly");
-  el("jbJump").textContent = m === "beatemup" ? "SWAP" : spin ? "SPIN" : m === "fly" ? "FLAP" : "JUMP";
-  vis(el("jbFire"), !spin && m !== "fly");
-  el("jbFire").textContent = m === "topdown" ? "SWING" : m === "beatemup" ? "HIT" : "FIRE";
+  vis(el("jbJump"), m === "platformer" || m === "beatemup" || spin || m === "fly" || m === "lander");
+  el("jbJump").textContent = m === "beatemup" ? "SWAP" : spin ? "SPIN" : m === "fly" ? "FLAP" : m === "lander" ? "THRUST" : "JUMP";
+  vis(el("jbFire"), !spin && m !== "fly" && m !== "lander" && !towers);
+  el("jbFire").textContent = m === "topdown" ? "SWING" : m === "beatemup" ? "HIT" : m === "breaker" ? "LAUNCH" : "FIRE";
 }
 function leaveJob(){ transitionTo("overworld"); }
 function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh){ return ax < bx+bw && ax+aw > bx && ay < by+bh && ay+ah > by; }
@@ -5668,6 +5699,7 @@ function hitEnemy(e, dmg){
   job.score += Math.round((crit?40:20) * comboMult());
   const hcol = job.theme === "digital" ? "#5fd0e0" : job.theme === "permits" ? "#ffcf5a" : job.theme === "backlog" ? "#46d08a" : job.theme === "arena" ? "#d8b27a" : "#7bdc8a";
   splat(e.x+e.w/2, e.y+6, hcol, crit); sfxHit();
+  if(crit){ burst(e.x+e.w/2, e.y+6, "#ffffff", 6); addShake(2.5); }
   if(e.hp <= 0){ e.alive = false; job.score += Math.round(60 * comboMult()) + (e.big ? 200 : 0); burst(e.x+e.w/2, e.y+e.h/2, e.big ? "#ffcb47" : hcol, e.big ? 26 : 16); if(e.big) sfxBoom(); }
 }
 function hitBoss(b, dmg){
@@ -5675,6 +5707,7 @@ function hitBoss(b, dmg){
   job.score += Math.round((crit?70:36) * comboMult());
   const hcol = job.theme === "digital" ? "#bff7ee" : job.theme === "permits" ? "#ffe08a" : job.theme === "backlog" ? "#bdf5d0" : job.theme === "arena" ? "#ffe0a0" : "#9be0a0";
   splat(b.x+b.w*0.5, b.y+20, hcol, crit); sfxHit();
+  if(crit){ burst(b.x+b.w*0.5, b.y+20, "#ffffff", 8); addShake(3); }
   if(b.hp <= 0){ b.alive = false; job.score += 500; burst(b.x+b.w/2, b.y+b.h/2, hcol, 30); sfxBoom(); }
 }
 function hurtPlayer(amount, fromX){
@@ -5823,13 +5856,58 @@ function drawVignette(){
 function drawTopdown(){
   const J = job; if(!J) return; const A = J.arena;
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  const g = ctx.createLinearGradient(0,0,0,viewH); g.addColorStop(0,"#0b1430"); g.addColorStop(1,"#070b1c");
+  const g = ctx.createLinearGradient(0,0,0,viewH); g.addColorStop(0,"#0a0f2a"); g.addColorStop(0.55,"#0b1430"); g.addColorStop(1,"#060a18");
   ctx.fillStyle = g; ctx.fillRect(0,0,viewW,viewH);
-  ctx.fillStyle = "#101a3a"; rr(ctx, A.x, A.y, A.w, A.h, 14); ctx.fill();
-  ctx.strokeStyle = "rgba(120,180,255,.08)"; ctx.lineWidth = 1;
-  for(let x=A.x+30; x<A.x+A.w; x+=40){ ctx.beginPath(); ctx.moveTo(x,A.y); ctx.lineTo(x,A.y+A.h); ctx.stroke(); }
-  for(let y=A.y+30; y<A.y+A.h; y+=40){ ctx.beginPath(); ctx.moveTo(A.x,y); ctx.lineTo(A.x+A.w,y); ctx.stroke(); }
-  ctx.strokeStyle = "#34e0c4"; ctx.lineWidth = 3; rr(ctx, A.x, A.y, A.w, A.h, 14); ctx.stroke();
+  // server rack skyline glittering behind the arena
+  for(let i = 0; i < 9; i++){
+    const rx = (i * viewW / 8.4) % viewW, rw = 34 + (i*13)%26, rh = 58 + (i*29)%70;
+    ctx.fillStyle = "rgba(16,26,58,.9)"; rr(ctx, rx, A.y - rh - 6, rw, rh, 4); ctx.fill();
+    for(let ly = 0; ly < 4; ly++){
+      const on = Math.sin(J.time*2.2 + i*1.7 + ly) > 0.2;
+      ctx.fillStyle = on ? (ly%2 ? "rgba(95,208,224,.8)" : "rgba(52,224,196,.7)") : "rgba(255,255,255,.07)";
+      ctx.fillRect(rx + 5, A.y - rh + 6 + ly*12, rw - 10, 2.5);
+    }
+  }
+  // arena floor with a moving pulse grid and scanline sweep
+  ctx.fillStyle = "#0e1736"; rr(ctx, A.x, A.y, A.w, A.h, 14); ctx.fill();
+  const pulse = (J.time * 90) % 140;
+  ctx.lineWidth = 1;
+  for(let x = A.x + 30; x < A.x + A.w; x += 40){
+    const dPulse = Math.abs(((x - A.x) % 140) - pulse);
+    ctx.strokeStyle = "rgba(120,180,255," + (dPulse < 22 ? 0.3 : 0.08) + ")";
+    ctx.beginPath(); ctx.moveTo(x, A.y); ctx.lineTo(x, A.y + A.h); ctx.stroke();
+  }
+  for(let y = A.y + 30; y < A.y + A.h; y += 40){
+    ctx.strokeStyle = "rgba(120,180,255,.08)";
+    ctx.beginPath(); ctx.moveTo(A.x, y); ctx.lineTo(A.x + A.w, y); ctx.stroke();
+  }
+  const sweepY = A.y + ((J.time * 46) % A.h);
+  const sg = ctx.createLinearGradient(0, sweepY - 26, 0, sweepY + 4);
+  sg.addColorStop(0, "rgba(52,224,196,0)"); sg.addColorStop(1, "rgba(52,224,196,.10)");
+  ctx.fillStyle = sg; ctx.fillRect(A.x, sweepY - 26, A.w, 30);
+  // breathing neon border with corner brackets
+  ctx.save(); ctx.shadowBlur = 12 + Math.sin(J.time*2.4)*6; ctx.shadowColor = "#34e0c4";
+  ctx.strokeStyle = "#34e0c4"; ctx.lineWidth = 3; rr(ctx, A.x, A.y, A.w, A.h, 14); ctx.stroke(); ctx.restore();
+  ctx.strokeStyle = "#9bf0e0"; ctx.lineWidth = 3;
+  for(const [cxk, cyk] of [[0,0],[1,0],[0,1],[1,1]]){
+    const bx = A.x + cxk*A.w + (cxk ? -20 : 20), by = A.y + cyk*A.h + (cyk ? -20 : 20);
+    ctx.beginPath();
+    ctx.moveTo(bx, A.y + cyk*A.h); ctx.lineTo(A.x + cxk*A.w, A.y + cyk*A.h); ctx.lineTo(A.x + cxk*A.w, by);
+    ctx.stroke();
+  }
+  // soft light pools under everything that moves
+  ctx.fillStyle = "rgba(95,208,224,.10)";
+  for(const e of J.enemies){ if(e.alive){ ctx.beginPath(); ctx.ellipse(e.x + e.w/2, e.y + e.h, e.w*0.7, 6, 0, 0, Math.PI*2); ctx.fill(); } }
+  if(J.boss.alive){ ctx.fillStyle = "rgba(255,107,107,.12)"; ctx.beginPath(); ctx.ellipse(J.boss.x + J.boss.w/2, J.boss.y + J.boss.h, J.boss.w*0.7, 9, 0, 0, Math.PI*2); ctx.fill(); }
+  if(typeof J.px === "number" && typeof J.py === "number"){ ctx.fillStyle = "rgba(52,224,196,.14)"; ctx.beginPath(); ctx.ellipse(J.px + 14, J.py + 34, 20, 6, 0, 0, Math.PI*2); ctx.fill(); }
+  // drifting data motes
+  for(let i = 0; i < 12; i++){
+    const mx = A.x + ((i*97 + J.time*22*(1 + i%3)) % A.w);
+    const my = A.y + ((i*61 + J.time*9) % A.h);
+    ctx.globalAlpha = 0.16 + (i%4)*0.06;
+    ctx.fillStyle = i%2 ? "#5fd0e0" : "#9bf0e0"; circle(mx, my, 1.3);
+  }
+  ctx.globalAlpha = 1;
   for(const p of J.pickups){ if(!p.taken) drawHeartPickup(p.x+7, p.y+7); }
   for(const q of J.proj){ ctx.fillStyle="#ff6b6b"; circle(q.x,q.y,q.r); ctx.fillStyle="rgba(255,255,255,.3)"; circle(q.x-2,q.y-2,q.r*0.4); }
   for(const e of J.enemies){ if(e.alive) drawTdEnemy(e, J); }
@@ -5957,14 +6035,66 @@ function drawBeat(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   let g = ctx.createLinearGradient(0,0,0,viewH); g.addColorStop(0,"#2a2418"); g.addColorStop(1,"#171208");
   ctx.fillStyle = g; ctx.fillRect(0,0,viewW,viewH);
+  // far parallax: a blueprint skyline that scrolls at quarter speed
+  {
+    const off = J.camX * 0.25;
+    ctx.fillStyle = "rgba(34,30,20,.9)";
+    for(let i = -1; i < 10; i++){
+      const bx = i * 150 - (off % 150), bw = 86 + (i*37)%50, bh = viewH*0.12 + ((i*53)%60);
+      ctx.fillRect(bx, viewH*0.2 - bh, bw, bh);
+      ctx.fillStyle = "rgba(255,203,120,.16)";
+      for(let wy = 0; wy < 3; wy++) for(let wx = 0; wx < 3; wx++){
+        if(((i*7 + wx + wy*3) % 4) === 0) ctx.fillRect(bx + 10 + wx*24, viewH*0.2 - bh + 10 + wy*16, 12, 8);
+      }
+      ctx.fillStyle = "rgba(34,30,20,.9)";
+    }
+    // a slow crane over the rooftops
+    const crx = viewW*0.7 - (off*0.6 % viewW);
+    ctx.strokeStyle = "rgba(60,52,34,.9)"; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(crx, viewH*0.2); ctx.lineTo(crx, viewH*0.04); ctx.lineTo(crx + 90, viewH*0.06); ctx.stroke();
+    ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(crx + 70, viewH*0.06); ctx.lineTo(crx + 70, viewH*0.12); ctx.stroke();
+    ctx.fillStyle = "rgba(60,52,34,.9)"; ctx.fillRect(crx + 64, viewH*0.12, 12, 9);
+  }
   ctx.save(); ctx.translate(-J.camX, 0);
+  // back wall with tall lit windows
   ctx.fillStyle = "#3a3326"; ctx.fillRect(0, viewH*0.2, J.W, viewH*0.45);
   ctx.fillStyle = "rgba(0,0,0,.18)"; for(let x=0;x<J.W;x+=90) ctx.fillRect(x, viewH*0.2, 6, viewH*0.45);
+  for(let x = 150; x < J.W; x += 360){
+    ctx.fillStyle = "rgba(255,214,130,.16)";
+    rr(ctx, x, viewH*0.24, 56, viewH*0.26, 6); ctx.fill();
+    ctx.fillStyle = "rgba(20,16,8,.5)";
+    ctx.fillRect(x + 26, viewH*0.24, 4, viewH*0.26);
+    ctx.fillRect(x, viewH*0.24 + viewH*0.13, 56, 4);
+  }
+  // notice boards and cabinets along the wall for rhythm
+  for(let x = 320; x < J.W; x += 360){
+    ctx.fillStyle = "#2c2618"; rr(ctx, x, viewH*0.4, 84, viewH*0.2, 4); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.5)";
+    for(let p = 0; p < 4; p++) ctx.fillRect(x + 8 + (p%2)*40, viewH*0.43 + Math.floor(p/2)*viewH*0.08, 26, viewH*0.055);
+    ctx.fillStyle = "rgba(192,57,43,.55)"; circle(x + 21, viewH*0.45, 2.4); circle(x + 61, viewH*0.53, 2.4);
+  }
   ctx.strokeStyle = "rgba(255,203,71,.12)"; ctx.lineWidth = 6;
   for(let x=120;x<J.W;x+=360){ ctx.beginPath(); ctx.moveTo(x, viewH*0.2); ctx.lineTo(x + 40, viewH*0.05); ctx.stroke(); }
+  // light shafts falling from the high windows onto the walkway
+  for(let x = 150; x < J.W; x += 360){
+    const lw = ctx.createLinearGradient(0, viewH*0.24, 0, viewH*0.78);
+    lw.addColorStop(0, "rgba(255,214,130,.13)"); lw.addColorStop(1, "rgba(255,214,130,0)");
+    ctx.fillStyle = lw;
+    ctx.beginPath(); ctx.moveTo(x + 4, viewH*0.24); ctx.lineTo(x + 52, viewH*0.24);
+    ctx.lineTo(x + 96, viewH*0.78); ctx.lineTo(x - 40, viewH*0.78); ctx.closePath(); ctx.fill();
+    for(let d = 0; d < 5; d++){
+      const dy = viewH*(0.3 + ((d*0.11 + J.time*0.035 + x*0.0001) % 0.42));
+      ctx.fillStyle = "rgba(255,230,170,.28)"; circle(x + 10 + d*14 + Math.sin(J.time + d)*6, dy, 1.2);
+    }
+  }
+  // plank floor with seams and a soft sheen
   ctx.fillStyle = "#4a4030"; ctx.fillRect(0, viewH*0.62, J.W, viewH*0.4);
   ctx.fillStyle = "rgba(255,255,255,.05)"; ctx.fillRect(0, viewH*0.62, J.W, 3);
+  ctx.fillStyle = "rgba(0,0,0,.1)";
+  for(let yL = 0; yL < 4; yL++) ctx.fillRect(0, viewH*(0.69 + yL*0.075), J.W, 2);
   ctx.fillStyle = "rgba(0,0,0,.12)"; for(let x=20;x<J.W;x+=70) ctx.fillRect(x, viewH*0.72, 36, 3);
+  ctx.fillStyle = "rgba(255,224,150,.04)";
+  ctx.beginPath(); ctx.ellipse(J.camX + viewW*0.5, viewH*0.8, viewW*0.55, viewH*0.16, 0, 0, Math.PI*2); ctx.fill();
   const things = [];
   for(const e of J.foes){ if(e.alive) things.push(e); }
   if(J.boss.alive) things.push(J.boss);
@@ -6170,6 +6300,21 @@ function drawFps(){
   for(let i=-3;i<=3;i++){ const fx = viewW/2 + i*(viewW*0.5); ctx.beginPath(); ctx.moveTo(fx, viewH); ctx.lineTo(vp, horizon); ctx.stroke(); ctx.beginPath(); ctx.moveTo(fx, 0); ctx.lineTo(vp, horizon); ctx.stroke(); }
   ctx.strokeStyle = "rgba(255,180,90,.10)";
   for(let k=1;k<=8;k++){ const p = k/9, y = horizon + p*(viewH - horizon); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(viewW, y); ctx.stroke(); }
+  { // warm horizon haze and slow hanging dust in the warehouse air
+    const hz = ctx.createLinearGradient(0, horizon - 36, 0, horizon + 30);
+    hz.addColorStop(0, "rgba(255,180,90,0)"); hz.addColorStop(0.5, "rgba(255,180,90,.12)"); hz.addColorStop(1, "rgba(255,180,90,0)");
+    ctx.fillStyle = hz; ctx.fillRect(0, horizon - 36, viewW, 66);
+    for(let i = 0; i < 16; i++){
+      const dx = (i*89 + J.time*7*(1 + i%3)) % viewW;
+      const dy = (i*53 + J.time*4) % viewH;
+      ctx.globalAlpha = 0.1 + (i%3)*0.05;
+      ctx.fillStyle = "#ffe0a0"; circle(dx, dy, 1.1 + (i%2)*0.5);
+    }
+    ctx.globalAlpha = 1;
+    const lc = ctx.createRadialGradient(viewW/2, viewH, 40, viewW/2, horizon, viewW*0.7);
+    lc.addColorStop(0, "rgba(255,224,150,.08)"); lc.addColorStop(1, "rgba(255,224,150,0)");
+    ctx.fillStyle = lc; ctx.fillRect(0, horizon, viewW, viewH - horizon);
+  }
   for(let i=0;i<7;i++){
     const px = ((i*viewW/7) + J.time*30*(0.5 + (i%3)*0.3)) % (viewW+60) - 30;
     const py = horizon + (((i*53) + J.time*60*(0.4 + (i%2)*0.4)) % (viewH - horizon));
@@ -6383,7 +6528,27 @@ function drawRooms(){
     ctx.save(); ctx.globalAlpha = 0.35 + 0.3*Math.sin(J.time*4); ctx.shadowBlur=22; ctx.shadowColor="#ffe08a"; ctx.fillStyle="#ffe7a0";
     ctx.fillRect(dx, dyp, dW, dH); ctx.beginPath(); ctx.arc(vp, dyp, dW/2, Math.PI, 0); ctx.fill(); ctx.restore();
   }
-  for(const tside of [-1,1]){ const txp = vp + tside*(bwW*0.36); const typ = bwy + bwH*0.34; ctx.fillStyle="#5a4326"; ctx.fillRect(txp-2, typ, 4, bwH*0.34); const fl = 4+Math.sin(J.time*9+tside)*1.6; ctx.save(); ctx.shadowBlur=12; ctx.shadowColor="#ff9a3a"; ctx.fillStyle="#ffb24a"; circle(txp, typ-2, fl); ctx.fillStyle="#ffe08a"; circle(txp, typ-3, fl*0.5); ctx.restore(); }
+  for(const tside of [-1,1]){ const txp = vp + tside*(bwW*0.36); const typ = bwy + bwH*0.34; ctx.fillStyle="#5a4326"; ctx.fillRect(txp-2, typ, 4, bwH*0.34); const fl = 4+Math.sin(J.time*9+tside)*1.6; ctx.save(); ctx.shadowBlur=12; ctx.shadowColor="#ff9a3a"; ctx.fillStyle="#ffb24a"; circle(txp, typ-2, fl); ctx.fillStyle="#ffe08a"; circle(txp, typ-3, fl*0.5); ctx.restore();
+    // embers drifting up from each torch
+    for(let em = 0; em < 4; em++){
+      const ep = (J.time*0.5 + em*0.27 + tside*0.13) % 1;
+      const ex = txp + Math.sin((J.time + em)*3 + tside) * (5 + ep*9);
+      const eyp = typ - 4 - ep*46;
+      ctx.globalAlpha = (1 - ep) * 0.6;
+      ctx.fillStyle = em % 2 ? "#ffb24a" : "#ff8a5a"; circle(ex, eyp, 1.4 - ep*0.7);
+    }
+    ctx.globalAlpha = 1;
+    // warm pool of torchlight on the wall
+    const tg = ctx.createRadialGradient(txp, typ, 4, txp, typ, 60);
+    tg.addColorStop(0, "rgba(255,178,74,.16)"); tg.addColorStop(1, "rgba(255,178,74,0)");
+    ctx.fillStyle = tg; circle(txp, typ, 60);
+  }
+  { // low temple mist breathing along the floor
+    const my = horizon + (viewH - horizon)*0.7;
+    const mg = ctx.createLinearGradient(0, my - 24, 0, my + 40);
+    mg.addColorStop(0, "rgba(220,210,185,0)"); mg.addColorStop(0.5, "rgba(220,210,185," + (0.05 + Math.sin(J.time*0.8)*0.02) + ")"); mg.addColorStop(1, "rgba(220,210,185,0)");
+    ctx.fillStyle = mg; ctx.fillRect(0, my - 24, viewW, 64);
+  }
   for(const pc of [0.18,0.4,0.7]){
     for(const side of [-1.05, 1.05]){
       const cx = fpsScreenX(side, J.s, pc), sc = fpsScale(pc), colW = sc*0.34, colH = sc*2.0, baseY = fpsScreenY(pc);
@@ -6705,6 +6870,37 @@ function drawSpin(){
   ctx.save(); ctx.globalAlpha = 0.05; ctx.fillStyle = "#cdeeff";
   for(let i=0;i<5;i++){ const x = (i*viewW/4 + ((J.time*10)%(viewW/4))); ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+30,0); ctx.lineTo(x-70,viewH); ctx.lineTo(x-110,viewH); ctx.closePath(); ctx.fill(); }
   ctx.restore();
+  // god rays swaying down from the surface
+  for(let i = 0; i < 4; i++){
+    const sway = Math.sin(J.time*0.5 + i*1.9) * 40;
+    const rx = viewW * (0.12 + i*0.26) + sway;
+    const rg = ctx.createLinearGradient(0, 0, 0, viewH*0.85);
+    rg.addColorStop(0, "rgba(190,240,255,.13)"); rg.addColorStop(1, "rgba(190,240,255,0)");
+    ctx.fillStyle = rg;
+    ctx.beginPath(); ctx.moveTo(rx - 14, 0); ctx.lineTo(rx + 26, 0);
+    ctx.lineTo(rx + 90, viewH*0.85); ctx.lineTo(rx - 80, viewH*0.85); ctx.closePath(); ctx.fill();
+  }
+  // far reef silhouette drifting at one third speed
+  {
+    const off = J.camX * 0.3;
+    ctx.fillStyle = "rgba(8,46,66,.65)";
+    for(let i = -1; i <= Math.ceil(viewW/200) + 1; i++){
+      const sd = Math.floor(off/200) + i, x = sd*200 - off;
+      const h = 60 + (sd*39)%56;
+      ctx.beginPath(); ctx.moveTo(x, J.gy + 10);
+      ctx.quadraticCurveTo(x + 50, J.gy - h, x + 100, J.gy + 10); ctx.fill();
+      ctx.fillRect(x + 130, J.gy - h*0.5, 9, h*0.5 + 10);
+      ctx.beginPath(); ctx.ellipse(x + 134, J.gy - h*0.5 - 6, 14, 8, 0, 0, Math.PI*2); ctx.fill();
+    }
+    // a tiny school of fish gliding past
+    const fx = (J.time * 34) % (viewW + 160) - 80;
+    ctx.fillStyle = "rgba(160,220,240,.4)";
+    for(let f = 0; f < 6; f++){
+      const fy = viewH*0.3 + Math.sin(J.time*2 + f)*10 + (f%3)*14;
+      ctx.beginPath(); ctx.ellipse(fx + f*16, fy, 5, 2.4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(fx + f*16 - 5, fy); ctx.lineTo(fx + f*16 - 9, fy - 3); ctx.lineTo(fx + f*16 - 9, fy + 3); ctx.closePath(); ctx.fill();
+    }
+  }
   ctx.save(); ctx.translate(-J.camX, 0);
   ctx.fillStyle = "rgba(190,235,255,.25)";
   for(let i=0;i<36;i++){ const bx = (i*149) % JC.W; if(bx < J.camX-20 || bx > J.camX+viewW+20) continue; const by = J.gy - ((J.time*36 + i*47) % (J.gy*0.9)) - 10; circle(bx, by, 2 + (i%3)); }
@@ -6712,6 +6908,11 @@ function drawSpin(){
   ctx.fillStyle = "#d8c79a"; ctx.fillRect(0, J.gy, JC.W, JOB.groundH+60);
   ctx.fillStyle = "#c2ad7e"; ctx.fillRect(0, J.gy, JC.W, 8);
   ctx.fillStyle = "rgba(120,95,55,.18)"; for(let x=40; x<JC.W; x+=170){ ctx.beginPath(); ctx.ellipse(x, J.gy+18, 38, 7, 0, 0, Math.PI*2); ctx.fill(); }
+  for(let x = 30; x < JC.W; x += 110){
+    const ca = 0.1 + Math.abs(Math.sin(J.time*1.6 + x*0.05)) * 0.12;
+    ctx.fillStyle = "rgba(220,245,255," + ca + ")";
+    ctx.beginPath(); ctx.ellipse(x + Math.sin(J.time + x)*8, J.gy + 4, 26, 3.4, 0, 0, Math.PI*2); ctx.fill();
+  }
   J.plats.forEach(pl => { ctx.fillStyle = "#e08aa0"; rr(ctx, pl.x, pl.y, pl.w, pl.h, 7); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(pl.x, pl.y, pl.w, 3); ctx.fillStyle = "#c96f88"; for(let k=8; k<pl.w-8; k+=18){ circle(pl.x+k, pl.y+pl.h-2, 3); } });
   J.hazards.forEach(z => { const n = Math.max(1, Math.floor(z.w/22)); for(let i=0;i<n;i++){ const ux = z.x+12+i*22, uy = z.y+8; ctx.strokeStyle = "#5a3f7a"; ctx.lineWidth = 2; for(let a=0;a<8;a++){ const an = a*Math.PI/4; ctx.beginPath(); ctx.moveTo(ux, uy); ctx.lineTo(ux+Math.cos(an)*13, uy+Math.sin(an)*13); ctx.stroke(); } ctx.fillStyle = "#3a2a52"; circle(ux, uy, 8); } });
   J.coins.forEach(c => { const sq = Math.abs(Math.cos(J.time*8 + c.x)); ctx.fillStyle = "#ffd24a"; ctx.beginPath(); ctx.ellipse(c.x, c.y, c.r*(0.4+sq*0.6), c.r, 0, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = "#fff3c0"; ctx.beginPath(); ctx.ellipse(c.x-1, c.y-1, c.r*0.2*(0.4+sq*0.6), c.r*0.4, 0, 0, Math.PI*2); ctx.fill(); });
@@ -7356,7 +7557,13 @@ function drawJobHud(J){
     drawText(J.bossName, viewW/2, by+30, "8px", J.theme === "digital" ? "#bff7ee" : J.theme === "permits" ? "#ffe08a" : J.theme === "backlog" ? "#bdf5d0" : J.theme === "arena" ? "#ffe0a0" : "#9be0a0", "center");
   }
   if(J.time < 4.5){
-    const hint = jobMode === "fly"
+    const hint = jobMode === "breaker"
+      ? "Move the peel with left and right, tap LAUNCH to serve. Smash the shield wall and strike " + J.bossName + " when his guard drops."
+      : jobMode === "lander"
+      ? "The beacon is dark, so you fly them in. Tilt with left and right, hold THRUST to brake, and set five ships down gently on the pads."
+      : jobMode === "towers"
+      ? "Pick a tower, tap a pad to build, tap again to upgrade. Answer field questions for bonus cash. Hold the pipeline through five waves of " + J.bossName + "."
+      : jobMode === "fly"
       ? "Tap or hold FLAP to rise, release to dive. Weave past the trees and dodge the flying garlic, then reach the castle before " + J.bossName + " crests the hills."
       : jobMode === "topdown"
       ? "Move with the pad, hold SWING to slash. Grab hearts to heal and beat " + J.bossName + "."
@@ -7379,6 +7586,77 @@ function drawJobHud(J){
   }
   if(J.flash > 0){ ctx.fillStyle = "rgba(255,255,255," + (J.flash*0.6) + ")"; ctx.fillRect(0,0,viewW,viewH); }
 }
+function jobParallax(J){
+  const th = J.theme;
+  const lay = (factor, col, painter) => {
+    const off = J.camX * factor, span = 240;
+    ctx.fillStyle = col;
+    for(let i = -1; i <= Math.ceil(viewW / span) + 1; i++){
+      const seed = Math.floor(off / span) + i;
+      const x = seed * span - off;
+      painter(x, seed);
+    }
+  };
+  if(th === "arena"){
+    lay(0.18, "rgba(58,44,28,.55)", (x, sd) => {
+      const h = 90 + (sd*37)%50;
+      ctx.fillRect(x, viewH*0.5 - h, 200, h);
+      ctx.fillStyle = "rgba(20,14,9,.5)";
+      for(let a = 0; a < 4; a++){ ctx.beginPath(); ctx.arc(x + 30 + a*48, viewH*0.5 - h + 30, 14, Math.PI, 0); ctx.fillRect(x + 16 + a*48, viewH*0.5 - h + 30, 28, h - 36); }
+      ctx.fillStyle = "rgba(58,44,28,.55)";
+    });
+  } else if(th === "digital"){
+    lay(0.15, "rgba(26,46,96,.5)", (x, sd) => {
+      const h = 110 + (sd*53)%90;
+      ctx.fillRect(x + 20, viewH*0.55 - h, 70, h);
+      ctx.fillRect(x + 120, viewH*0.55 - h*0.7, 56, h*0.7);
+      ctx.fillStyle = "rgba(95,208,224," + (Math.sin(J.time*2 + sd)*0.1 + 0.18) + ")";
+      ctx.fillRect(x + 30, viewH*0.55 - h + 14, 50, 3);
+      ctx.fillRect(x + 128, viewH*0.55 - h*0.7 + 10, 40, 3);
+      ctx.fillStyle = "rgba(26,46,96,.5)";
+    });
+  } else if(th === "permits"){
+    lay(0.16, "rgba(38,48,82,.5)", (x, sd) => {
+      const h = 100 + (sd*41)%80;
+      ctx.fillRect(x + 10, viewH*0.55 - h, 90, h);
+      ctx.strokeStyle = "rgba(120,160,255,.2)"; ctx.lineWidth = 1.5;
+      ctx.strokeRect(x + 18, viewH*0.55 - h + 10, 74, h - 20);
+      ctx.fillRect(x + 130, viewH*0.55 - h*0.6, 60, h*0.6);
+    });
+  } else if(th === "backlog"){
+    lay(0.17, "rgba(48,42,30,.6)", (x, sd) => {
+      const h = 80 + (sd*31)%70;
+      for(let stk = 0; stk < 3; stk++) ctx.fillRect(x + 14 + stk*60, viewH*0.55 - h + stk*14, 44, h - stk*14);
+      ctx.fillStyle = "rgba(220,205,160,.14)";
+      ctx.fillRect(x + 18, viewH*0.55 - h + 8, 36, 3);
+      ctx.fillStyle = "rgba(48,42,30,.6)";
+    });
+  } else if(th === "steppe"){
+    lay(0.12, "rgba(58,72,96,.55)", (x, sd) => {
+      const h = 100 + (sd*47)%70;
+      ctx.beginPath(); ctx.moveTo(x - 30, viewH*0.55);
+      ctx.lineTo(x + 90, viewH*0.55 - h); ctx.lineTo(x + 230, viewH*0.55);
+      ctx.closePath(); ctx.fill();
+    });
+  } else {
+    lay(0.15, "rgba(28,52,42,.55)", (x, sd) => {
+      const h = 70 + (sd*43)%60;
+      ctx.fillRect(x + 16, viewH*0.55 - h, 64, h);
+      ctx.beginPath(); ctx.moveTo(x + 8, viewH*0.55 - h); ctx.lineTo(x + 48, viewH*0.55 - h - 22); ctx.lineTo(x + 88, viewH*0.55 - h); ctx.closePath(); ctx.fill();
+      ctx.fillRect(x + 130, viewH*0.55 - h*0.8, 14, h*0.8);
+      ctx.beginPath(); ctx.ellipse(x + 137, viewH*0.55 - h*0.8 - 8, 18, 12, 0, 0, Math.PI*2); ctx.fill();
+    });
+  }
+  // near layer: soft rolling band at half speed for every theme
+  const off2 = J.camX * 0.45;
+  ctx.fillStyle = "rgba(0,0,0,.16)";
+  ctx.beginPath(); ctx.moveTo(0, viewH*0.62);
+  for(let x = 0; x <= viewW + 40; x += 40){
+    const k = Math.floor((x + off2) / 40);
+    ctx.lineTo(x, viewH*0.62 - 12 - ((k*29)%26));
+  }
+  ctx.lineTo(viewW, viewH*0.62); ctx.closePath(); ctx.fill();
+}
 function drawJob(){
   const J = job; if(!J) return;
   const digital = J.theme === "digital";
@@ -7397,13 +7675,29 @@ function drawJob(){
   const g = ctx.createLinearGradient(0,0,0,viewH);
   g.addColorStop(0,TH.g0); g.addColorStop(1,TH.g1);
   ctx.fillStyle = g; ctx.fillRect(0,0,viewW,viewH);
+  jobParallax(J);
   ctx.save(); ctx.translate(-J.camX, 0);
   drawJobBg(J);
   ctx.fillStyle = TH.ground; ctx.fillRect(0, J.gy, JC.W, JOB.groundH + 60);
   ctx.fillStyle = TH.lip; ctx.fillRect(0, J.gy, JC.W, 8);
+  ctx.fillStyle = "rgba(0,0,0,.14)";
+  for(let x = 0; x < JC.W; x += 64){ ctx.fillRect(x, J.gy + 8, 2, JOB.groundH + 52); }
+  ctx.fillRect(0, J.gy + 30, JC.W, 2);
   ctx.fillStyle = TH.dot; for(let x=40; x<JC.W; x+=180){ ctx.beginPath(); ctx.ellipse(x, J.gy+16, 40, 7, 0, 0, Math.PI*2); ctx.fill(); }
-  J.plats.forEach(p => { ctx.fillStyle = TH.plat; rr(ctx, p.x, p.y, p.w, p.h, 5); ctx.fill(); ctx.fillStyle="rgba(255,255,255,.06)"; ctx.fillRect(p.x, p.y, p.w, 3); });
+  J.plats.forEach(p => {
+    ctx.fillStyle = "rgba(0,0,0,.25)";
+    ctx.fillRect(p.x + 8, p.y + p.h, 5, J.gy - p.y - p.h);
+    ctx.fillRect(p.x + p.w - 13, p.y + p.h, 5, J.gy - p.y - p.h);
+    ctx.fillStyle = TH.plat; rr(ctx, p.x, p.y, p.w, p.h, 5); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.fillRect(p.x, p.y, p.w, 3);
+    ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.fillRect(p.x, p.y + p.h - 3, p.w, 3);
+    ctx.fillStyle = "rgba(255,255,255,.18)";
+    circle(p.x + 6, p.y + p.h/2, 1.6); circle(p.x + p.w - 6, p.y + p.h/2, 1.6);
+  });
   J.hazards.forEach(z => {
+    ctx.save(); ctx.globalAlpha = 0.25 + Math.sin(J.time*5 + z.x)*0.12;
+    ctx.fillStyle = TH.haz; ctx.beginPath(); ctx.ellipse(z.x + z.w/2, z.y + z.h - 2, z.w*0.7, 10, 0, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
     ctx.fillStyle = TH.haz;
     const n = Math.max(1, Math.floor(z.w/12));
     for(let i=0;i<n;i++){ const sx = z.x + i*12; ctx.beginPath(); ctx.moveTo(sx, z.y+z.h); ctx.lineTo(sx+6, z.y-2); ctx.lineTo(sx+12, z.y+z.h); ctx.closePath(); ctx.fill(); }
@@ -7419,6 +7713,652 @@ function drawJob(){
   drawVignette();
   drawJobHud(J);
 }
+/* ===================== CHAPTER FIVE BONUS: THE SHIELD WALL (paddle and loaf) ===================== */
+function newBreaker(){
+  const cols = clamp(Math.floor((viewW - 36) / 42), 7, 12);
+  const bw = Math.floor((viewW - 36) / cols) - 6, bh = 18;
+  const bricks = [];
+  const rowCol = ["#8e2f24","#a8442e","#b5462f","#c9a24a","#9a7d3a"];
+  for(let r = 0; r < 5; r++) for(let c = 0; c < cols; c++){
+    const stag = (r % 2) ? 3 : 0;
+    bricks.push({ x:18 + c*(bw+6) + stag, y:128 + r*(bh+7), w:bw, h:bh, hp:r < 2 ? 2 : 1, row:r, alive:true });
+  }
+  const boss = { x:viewW/2 - 34, y:64, w:68, h:46, vx:74, hp:JC.boss.hp, maxHp:JC.boss.hp,
+    alive:true, hurt:0, state:"march", stateT:3 + Math.random()*2, spearX:0 };
+  return {
+    paddle:{ x:viewW/2 - 44, w:88, y:viewH - 86 },
+    ball:{ x:0, y:0, vx:0, vy:0, stuck:true, r:7, speed:360 },
+    spears:[], bricks, boss, parts:[],
+    hp:300, maxHp:300, invuln:0,
+    theme:JC.theme, bossName:JC.bossName,
+    camX:0, time:0, combo:0, comboTimer:0, hitsTaken:0, score:0,
+    ended:false, win:false, bossEngaged:true, flash:0
+  };
+}
+function updateBreaker(dt){
+  const J = job; J.time += dt;
+  if(J.combo > 0){ J.comboTimer -= dt; if(J.comboTimer <= 0) J.combo = 0; }
+  if(J.invuln > 0) J.invuln -= dt;
+  if(J.flash > 0) J.flash -= dt;
+  updateParts(dt);
+  // paddle
+  const pv = 430 * dt;
+  if(jobHold.left)  J.paddle.x -= pv;
+  if(jobHold.right) J.paddle.x += pv;
+  J.paddle.x = clamp(J.paddle.x, 10, viewW - 10 - J.paddle.w);
+  // ball
+  const B = J.ball;
+  if(B.stuck){
+    B.x = J.paddle.x + J.paddle.w/2; B.y = J.paddle.y - 12;
+    if(jobHold.fire && !J.ended){ B.stuck = false; B.vx = (Math.random()<0.5?-1:1) * 130; B.vy = -B.speed; sfxShot(); }
+  } else if(!J.ended){
+    const sp = B.speed + Math.min(140, J.time * 4);
+    const m = Math.hypot(B.vx, B.vy) || 1;
+    B.vx = B.vx / m * sp; B.vy = B.vy / m * sp;
+    B.x += B.vx * dt; B.y += B.vy * dt;
+    if(B.x < 14 + B.r){ B.x = 14 + B.r; B.vx = Math.abs(B.vx); sfxBlip(); }
+    if(B.x > viewW - 14 - B.r){ B.x = viewW - 14 - B.r; B.vx = -Math.abs(B.vx); sfxBlip(); }
+    if(B.y < 18 + B.r){ B.y = 18 + B.r; B.vy = Math.abs(B.vy); sfxBlip(); }
+    // paddle bounce
+    if(B.vy > 0 && B.y + B.r >= J.paddle.y && B.y + B.r <= J.paddle.y + 16 &&
+       B.x >= J.paddle.x - B.r && B.x <= J.paddle.x + J.paddle.w + B.r){
+      B.y = J.paddle.y - B.r;
+      B.vx = ((B.x - (J.paddle.x + J.paddle.w/2)) / (J.paddle.w/2)) * 300;
+      B.vy = -Math.abs(B.vy); sfxBlip();
+    }
+    // lost ball
+    if(B.y > viewH + 30){
+      J.hp = Math.max(0, J.hp - 100); J.hitsTaken++; J.combo = 0; sfxHurt();
+      B.stuck = true; B.vx = B.vy = 0;
+    }
+    // bricks
+    for(const k of J.bricks){
+      if(!k.alive) continue;
+      if(B.x + B.r > k.x && B.x - B.r < k.x + k.w && B.y + B.r > k.y && B.y - B.r < k.y + k.h){
+        const oxl = (B.x + B.r) - k.x, oxr = (k.x + k.w) - (B.x - B.r);
+        const oyt = (B.y + B.r) - k.y, oyb = (k.y + k.h) - (B.y - B.r);
+        const minO = Math.min(oxl, oxr, oyt, oyb);
+        if(minO === oxl) B.vx = -Math.abs(B.vx);
+        else if(minO === oxr) B.vx = Math.abs(B.vx);
+        else if(minO === oyt) B.vy = -Math.abs(B.vy);
+        else B.vy = Math.abs(B.vy);
+        k.hp--; addCombo(); J.score += Math.round(20 * comboMult());
+        splat(k.x + k.w/2, k.y + k.h/2, rowColBreaker(k.row), false); sfxHit();
+        if(k.hp <= 0){ k.alive = false; J.score += Math.round(30 * comboMult()); burst(k.x + k.w/2, k.y + k.h/2, rowColBreaker(k.row), 10); }
+        break;
+      }
+    }
+    // the Gladiator
+    const b = J.boss;
+    if(b.alive && B.y - B.r < b.y + b.h && B.y + B.r > b.y && B.x + B.r > b.x && B.x - B.r < b.x + b.w){
+      if(b.state === "throw"){
+        b.hp -= 6; b.hurt = 0.15; addCombo(); J.score += Math.round(70 * comboMult());
+        splat(b.x + b.w/2, b.y + b.h/2, "#ffe0a0", true); sfxHit();
+        B.vy = Math.abs(B.vy);
+        if(b.hp <= 0){ b.alive = false; J.score += 600; burst(b.x + b.w/2, b.y + b.h/2, "#ffcb47", 32); sfxBoom(); }
+      } else {
+        B.vy = Math.abs(B.vy); B.vx += (B.x - (b.x + b.w/2)) * 2;
+        J.score += 5; sfxBoss();
+      }
+    }
+  }
+  // boss behavior
+  const b = J.boss;
+  if(b.alive && !J.ended){
+    if(b.hurt > 0) b.hurt -= dt;
+    b.stateT -= dt;
+    if(b.state === "march"){
+      b.x += b.vx * dt;
+      if(b.x < 20){ b.x = 20; b.vx = Math.abs(b.vx); }
+      if(b.x > viewW - 20 - b.w){ b.x = viewW - 20 - b.w; b.vx = -Math.abs(b.vx); }
+      if(b.stateT <= 0){ b.state = "aim"; b.stateT = 0.6; b.spearX = J.paddle.x + J.paddle.w/2; }
+    } else if(b.state === "aim"){
+      if(b.stateT <= 0){
+        b.state = "throw"; b.stateT = 1.3;
+        J.spears.push({ x:b.x + b.w/2, y:b.y + b.h, vy:330 + J.time*2 });
+        sfxShot();
+      }
+    } else if(b.state === "throw"){
+      if(b.stateT <= 0){ b.state = "march"; b.stateT = 2.6 + Math.random()*1.6; }
+    }
+  }
+  // spears
+  for(const sp of J.spears){
+    sp.y += sp.vy * dt;
+    if(sp.y > J.paddle.y - 6 && sp.y < J.paddle.y + 18 && sp.x > J.paddle.x - 4 && sp.x < J.paddle.x + J.paddle.w + 4 && J.invuln <= 0 && !J.ended){
+      J.hp = Math.max(0, J.hp - 50); J.hitsTaken++; J.combo = 0; J.invuln = 0.8; sp.y = viewH + 99; sfxHurt();
+    }
+  }
+  J.spears = J.spears.filter(sp => sp.y < viewH + 40);
+  if(J.hp <= 0 && !J.ended){ J.ended = true; J.win = false; setTimeout(showJobFail, 350); }
+  if(!b.alive && !J.ended){ J.ended = true; J.win = true; J.flash = 0.6; setTimeout(showJobWin, 750); }
+}
+function rowColBreaker(r){ return ["#8e2f24","#a8442e","#b5462f","#c9a24a","#9a7d3a"][r] || "#b5462f"; }
+function drawBreaker(){
+  const J = job;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  // arena backdrop
+  const g = ctx.createLinearGradient(0,0,0,viewH);
+  g.addColorStop(0, "#241a12"); g.addColorStop(0.55, "#3a2a1a"); g.addColorStop(1, "#6e5230");
+  ctx.fillStyle = g; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = "rgba(255,255,255,.05)";
+  for(let i = 0; i < 7; i++){ rr(ctx, 14 + i*(viewW-28)/7 + 4, 12, (viewW-28)/7 - 10, 34, 6); ctx.fill(); }
+  ctx.fillStyle = "#c8a96e"; ctx.fillRect(0, viewH-44, viewW, 44);
+  ctx.fillStyle = "rgba(0,0,0,.12)"; for(let i=0;i<9;i++) circle(40 + i*(viewW-80)/8, viewH-22, 5);
+  // bricks: the shield wall
+  for(const k of J.bricks){
+    if(!k.alive) continue;
+    ctx.fillStyle = k.hp > 1 ? shade(rowColBreaker(k.row), -18) : rowColBreaker(k.row);
+    rr(ctx, k.x, k.y, k.w, k.h, 5); ctx.fill();
+    ctx.fillStyle = "rgba(255,224,150,.8)"; circle(k.x + k.w/2, k.y + k.h/2, 2.6);
+    ctx.fillStyle = "rgba(255,255,255,.14)"; ctx.fillRect(k.x+2, k.y+2, k.w-4, 3);
+  }
+  // the Gladiator
+  const b = J.boss;
+  if(b.alive){
+    const bx = b.x, by = b.y;
+    ctx.fillStyle = b.hurt > 0 ? "#ffe0a0" : "#9a7d3a"; rr(ctx, bx+18, by+12, b.w-36, b.h-16, 8); ctx.fill();
+    ctx.fillStyle = "#e3a978"; circle(bx + b.w/2, by + 8, 10);
+    ctx.fillStyle = "#b5462f"; ctx.beginPath(); ctx.ellipse(bx + b.w/2, by, 10, 5, 0, Math.PI, 0); ctx.fill();
+    if(b.state !== "throw"){
+      ctx.fillStyle = "#7a5a2a"; rr(ctx, bx + 6, by + 10, 22, b.h - 12, 10); ctx.fill();
+      ctx.fillStyle = "#c9a24a"; circle(bx + 17, by + b.h/2 + 4, 4);
+    } else {
+      ctx.strokeStyle = "#d8c6a0"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(bx + b.w - 8, by + 14); ctx.lineTo(bx + b.w - 8, by + b.h + 4); ctx.stroke();
+    }
+    if(b.state === "aim"){ ctx.fillStyle = "rgba(255,107,107,.6)"; circle(bx + b.w/2, by + b.h + 10, 4 + Math.sin(t*18)*2); }
+  }
+  // spears
+  ctx.strokeStyle = "#d8c6a0"; ctx.lineWidth = 3;
+  for(const sp of J.spears){ ctx.beginPath(); ctx.moveTo(sp.x, sp.y - 16); ctx.lineTo(sp.x, sp.y); ctx.stroke(); }
+  // paddle: the baker's peel
+  ctx.fillStyle = "#7a5a2a"; rr(ctx, J.paddle.x, J.paddle.y, J.paddle.w, 12, 6); ctx.fill();
+  ctx.fillStyle = "#9a7448"; rr(ctx, J.paddle.x + J.paddle.w/2 - 5, J.paddle.y + 10, 10, 16, 4); ctx.fill();
+  // the loaf
+  ctx.fillStyle = "#d8a35a"; ctx.beginPath(); ctx.ellipse(J.ball.x, J.ball.y, J.ball.r + 1.5, J.ball.r, 0, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = "#a8743a"; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(J.ball.x - 4, J.ball.y - 2); ctx.lineTo(J.ball.x + 4, J.ball.y - 2); ctx.stroke();
+  for(const p of J.parts){ ctx.globalAlpha = Math.min(1, p.life*2); ctx.fillStyle = p.color; circle(p.x, p.y, p.r); }
+  ctx.globalAlpha = 1;
+  if(J.flash > 0){ ctx.fillStyle = "rgba(255,224,150," + (J.flash*0.8) + ")"; ctx.fillRect(0,0,viewW,viewH); }
+  drawJobHud(J);
+}
+
+/* ===================== CHAPTER SIX BONUS: DARK BEACON LANDINGS (lander) ===================== */
+function landerTerrain(){
+  const pts = []; const n = 13;
+  for(let i = 0; i <= n; i++){
+    pts.push({ x: i * viewW / n, y: viewH - 60 - Math.abs(Math.sin(i * 2.1 + 1)) * 130 - Math.random()*40 });
+  }
+  return pts;
+}
+function landerPad(J){
+  const i = 2 + Math.floor(Math.random() * 8);
+  const y = J.terrain[i].y;
+  J.terrain[i+1].y = y; J.terrain[i+2].y = y;
+  const x0 = J.terrain[i].x + 4, x1 = J.terrain[i+2].x - 4;
+  const span = x1 - x0;
+  const w = Math.min(span, Math.max(46, 92 - J.landings * 9));
+  return { x: x0 + (span - w)/2, y, w };
+}
+function newLander(){
+  const J = {
+    terrain:null, pad:null, fog:[],
+    ship:null, landings:0, attempts:0, settleT:0,
+    hp:300, maxHp:300, invuln:0, fuel:100,
+    boss:{ alive:true, hp:5, maxHp:5 },
+    theme:JC.theme, bossName:JC.bossName,
+    parts:[], camX:0, time:0, combo:0, comboTimer:0, hitsTaken:0, score:0,
+    ended:false, win:false, bossEngaged:true, flash:0
+  };
+  J.terrain = landerTerrain();
+  J.pad = landerPad(J);
+  landerSpawn(J);
+  return J;
+}
+function landerSpawn(J){
+  J.ship = { x:60, y:70, vx:46 + J.landings*6, vy:0, ang:0, down:false };
+  J.fuel = 100;
+  J.fog = [];
+  for(let i = 0; i < J.landings; i++){
+    J.fog.push({ x:Math.random()*viewW, y:viewH*0.45 + Math.random()*viewH*0.35, r:90 + Math.random()*70, vx:(Math.random()<0.5?-1:1)*(14+Math.random()*16) });
+  }
+}
+function landerGroundY(J, x){
+  const pts = J.terrain;
+  for(let i = 0; i < pts.length - 1; i++){
+    if(x >= pts[i].x && x <= pts[i+1].x){
+      const f = (x - pts[i].x) / (pts[i+1].x - pts[i].x || 1);
+      return pts[i].y + (pts[i+1].y - pts[i].y) * f;
+    }
+  }
+  return viewH - 60;
+}
+function updateLander(dt){
+  const J = job; J.time += dt;
+  if(J.combo > 0){ J.comboTimer -= dt; if(J.comboTimer <= 0) J.combo = 0; }
+  if(J.flash > 0) J.flash -= dt;
+  updateParts(dt);
+  for(const f of J.fog){ f.x += f.vx * dt; if(f.x < -f.r) f.x = viewW + f.r; if(f.x > viewW + f.r) f.x = -f.r; }
+  if(J.settleT > 0){
+    J.settleT -= dt;
+    if(J.settleT <= 0 && !J.ended){
+      if(J.landings >= 5){ J.boss.alive = false; J.ended = true; J.win = true; J.flash = 0.7; setTimeout(showJobWin, 750); }
+      else { J.pad = landerPad(J); landerSpawn(J); }
+    }
+    return;
+  }
+  const S = J.ship; if(!S || J.ended) return;
+  const rot = 2.3 * dt;
+  if(jobHold.left)  S.ang -= rot;
+  if(jobHold.right) S.ang += rot;
+  S.ang = clamp(S.ang, -1.4, 1.4);
+  const thrusting = jobHold.jumpHeld && J.fuel > 0;
+  if(thrusting){
+    S.vx += Math.sin(S.ang) * 150 * dt;
+    S.vy -= Math.cos(S.ang) * 150 * dt;
+    J.fuel = Math.max(0, J.fuel - 20 * dt);
+    if(Math.random() < 0.6) J.parts.push({ x:S.x - Math.sin(S.ang)*14, y:S.y + Math.cos(S.ang)*14, vx:-Math.sin(S.ang)*120 + (Math.random()-0.5)*40, vy:Math.cos(S.ang)*120, life:0.3, color:"#ffcb47", r:2.5 });
+  }
+  S.vy += 52 * dt;
+  S.x += S.vx * dt; S.y += S.vy * dt;
+  if(S.x < 12){ S.x = 12; S.vx = Math.abs(S.vx)*0.5; }
+  if(S.x > viewW - 12){ S.x = viewW - 12; S.vx = -Math.abs(S.vx)*0.5; }
+  if(S.y < 14){ S.y = 14; S.vy = Math.abs(S.vy)*0.4; }
+  const gy = landerGroundY(J, S.x);
+  if(S.y + 11 >= gy){
+    J.attempts++;
+    const onPad = S.x > J.pad.x - 4 && S.x < J.pad.x + J.pad.w + 4 && Math.abs(gy - J.pad.y) < 8;
+    const gentle = Math.abs(S.vx) < 42 && S.vy < 58 && Math.abs(S.ang) < 0.38;
+    if(onPad && gentle){
+      J.landings++; addCombo();
+      const pts = Math.round((220 + J.fuel * 2.2) * comboMult());
+      J.score += pts;
+      J.boss.hp = Math.max(0, 5 - J.landings);
+      burst(S.x, gy - 10, "#9bf0e0", 14); sfxDone();
+      J.ship = null; J.settleT = 1.0;
+    } else {
+      J.hp = Math.max(0, J.hp - 100); J.hitsTaken++; J.combo = 0;
+      burst(S.x, gy - 8, "#ff8a5a", 26); sfxBoom();
+      J.ship = null; J.settleT = 1.0;
+      if(J.hp <= 0){ J.ended = true; J.win = false; setTimeout(showJobFail, 500); }
+    }
+  }
+}
+function drawLander(){
+  const J = job;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const g = ctx.createLinearGradient(0,0,0,viewH);
+  g.addColorStop(0, "#070b1c"); g.addColorStop(0.7, "#101a36"); g.addColorStop(1, "#1a2a4a");
+  ctx.fillStyle = g; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = "rgba(255,255,255,.7)";
+  for(let i = 0; i < 26; i++){ ctx.globalAlpha = 0.25 + ((i*53)%10)/16; circle((i*97)%viewW, (i*61)%Math.round(viewH*0.6), 1.1); }
+  ctx.globalAlpha = 1;
+  // terrain
+  ctx.fillStyle = "#2a3550";
+  ctx.beginPath(); ctx.moveTo(0, viewH);
+  for(const p of J.terrain) ctx.lineTo(p.x, p.y);
+  ctx.lineTo(viewW, viewH); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#3cc8ff"; ctx.lineWidth = 1.4; ctx.globalAlpha = 0.5;
+  ctx.beginPath(); for(let i=0;i<J.terrain.length;i++){ const p=J.terrain[i]; i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y); } ctx.stroke();
+  ctx.globalAlpha = 1;
+  // pad
+  ctx.fillStyle = "#34e0c4"; rr(ctx, J.pad.x, J.pad.y - 4, J.pad.w, 6, 3); ctx.fill();
+  ctx.fillStyle = "rgba(52,224,196," + (0.3 + Math.sin(t*4)*0.18) + ")";
+  circle(J.pad.x + 6, J.pad.y - 9, 2.6); circle(J.pad.x + J.pad.w - 6, J.pad.y - 9, 2.6);
+  // ship
+  const S = J.ship;
+  if(S){
+    ctx.save(); ctx.translate(S.x, S.y); ctx.rotate(S.ang);
+    ctx.fillStyle = "#cdd6e6"; ctx.beginPath(); ctx.moveTo(0,-13); ctx.lineTo(9,5); ctx.lineTo(-9,5); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#3cc8ff"; circle(0, -3, 3.4);
+    ctx.strokeStyle = "#9aa0a6"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(-8,5); ctx.lineTo(-12,11); ctx.moveTo(8,5); ctx.lineTo(12,11); ctx.stroke();
+    if(jobHold.jumpHeld && J.fuel > 0){ ctx.fillStyle = "#ffcb47"; ctx.beginPath(); ctx.moveTo(-4,6); ctx.lineTo(0, 14 + Math.random()*7); ctx.lineTo(4,6); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    // velocity readout
+    const danger = Math.abs(S.vx) >= 42 || S.vy >= 58 || Math.abs(S.ang) >= 0.38;
+    drawText((danger ? "STEADY..." : "GOOD"), S.x, S.y - 26, "7px", danger ? "#ff6b6b" : "#34e0c4", "center");
+  }
+  // the blind spot fog, drawn over the world
+  for(const f of J.fog){
+    const fg = ctx.createRadialGradient(f.x, f.y, f.r*0.2, f.x, f.y, f.r);
+    fg.addColorStop(0, "rgba(4,6,14,.94)"); fg.addColorStop(1, "rgba(4,6,14,0)");
+    ctx.fillStyle = fg; circle(f.x, f.y, f.r);
+  }
+  for(const p of J.parts){ ctx.globalAlpha = Math.min(1, p.life*2.5); ctx.fillStyle = p.color; circle(p.x, p.y, p.r); }
+  ctx.globalAlpha = 1;
+  // fuel
+  ctx.fillStyle="rgba(10,16,30,.82)"; rr(ctx, 12, 44, 184, 22, 8); ctx.fill();
+  drawText("FUEL", 24, 55, "8px", "#bfe3ff", "left");
+  ctx.fillStyle="rgba(255,255,255,.12)"; rr(ctx, 62, 50, 124, 10, 5); ctx.fill();
+  ctx.fillStyle = J.fuel > 30 ? "#3cc8ff" : "#ff6b6b"; rr(ctx, 62, 50, 124 * (J.fuel/100), 10, 5); ctx.fill();
+  drawText("SHIPS DOWN " + J.landings + " / 5", viewW - 22, 66, "8px", "#9bf0e0", "right");
+  if(J.flash > 0){ ctx.fillStyle = "rgba(155,240,224," + (J.flash*0.7) + ")"; ctx.fillRect(0,0,viewW,viewH); }
+  drawJobHud(J);
+}
+
+/* ===================== CHAPTER SEVEN BONUS: PIPELINE DEFENSE (towers) ===================== */
+const TW_TYPES = {
+  phone:{ name:"PHONE", cost:50, range:95,  dmg:6,  rate:0.45, color:"#3cc8ff", proj:280, splash:0 },
+  mail:{  name:"MAIL",  cost:70, range:150, dmg:11, rate:1.3,  color:"#ffcb47", proj:190, splash:46 },
+  rider:{ name:"RIDER", cost:90, range:115, dmg:24, rate:0.95, color:"#ff8fb0", proj:340, splash:0 }
+};
+const TW_QUESTIONS = [
+  { q:"Your pipeline is empty today. When did that emptiness really begin?",
+    opts:[ {t:"About thirty days ago, when the prospecting stopped", ok:true},
+           {t:"This morning, when the leads dried up", ok:false},
+           {t:"It is just bad luck in the territory", ok:false} ],
+    fb:"Right. What you do or skip now decides next month. The thirty day rule never sleeps." },
+  { q:"What is the number one reason salespeople fail?",
+    opts:[ {t:"Weak closing technique", ok:false},
+           {t:"An empty pipeline from skipped prospecting", ok:true},
+           {t:"Bad pricing", ok:false} ],
+    fb:"Exactly. The funnel starves first, the numbers fall later." },
+  { q:"When should a fanatical prospector prospect?",
+    opts:[ {t:"When the calendar is light", ok:false},
+           {t:"Only when the pipeline looks thin", ok:false},
+           {t:"Every single day, busy or not", ok:true} ],
+    fb:"Yes. Daily, especially when you least feel like it. Slumps cannot find a full funnel." },
+  { q:"Which channel should carry your outreach?",
+    opts:[ {t:"A balanced mix of phone, mail, and in person", ok:true},
+           {t:"Whichever one feels most comfortable", ok:false},
+           {t:"Wait for referrals to ride in", ok:false} ],
+    fb:"Right. One channel is a bottleneck. The khan rides every road." }
+];
+function towersLayout(){
+  const W = viewW, H = viewH;
+  const path = [[0,0.4],[0.2,0.4],[0.2,0.72],[0.48,0.72],[0.48,0.28],[0.74,0.28],[0.74,0.58],[1.02,0.58]]
+    .map(p => ({ x:p[0]*W, y:p[1]*H }));
+  const pads = [[0.1,0.27],[0.1,0.55],[0.31,0.58],[0.31,0.86],[0.38,0.42],[0.61,0.42],[0.62,0.15],[0.86,0.43],[0.86,0.73]]
+    .map(p => ({ x:p[0]*W, y:p[1]*H, tower:null }));
+  return { path, pads };
+}
+function newTowers(){
+  const L = towersLayout();
+  return {
+    phase:"build", wave:1, cash:130, sel:"phone",
+    path:L.path, pads:L.pads, creeps:[], shots:[], spawnQ:[], spawnT:0,
+    bossCreep:null,
+    hp:300, maxHp:300,
+    boss:{ alive:true, hp:JC.boss.hp, maxHp:JC.boss.hp },
+    theme:JC.theme, bossName:JC.bossName,
+    parts:[], camX:0, time:0, combo:0, comboTimer:0, hitsTaken:0, score:0,
+    ended:false, win:false, bossEngaged:false, flash:0
+  };
+}
+function twWaveComp(w){
+  const mk = (kind, n) => Array.from({length:n}, () => kind);
+  if(w === 1) return mk("wisp", 8);
+  if(w === 2) return mk("wisp", 8).concat(mk("husk", 4));
+  if(w === 3) return mk("wisp", 10).concat(mk("husk", 6), mk("brute", 2));
+  if(w === 4) return mk("wisp", 6).concat(mk("husk", 8), mk("brute", 6));
+  return mk("wisp", 10).concat(mk("brute", 6), ["boss"]);
+}
+function twCreepStats(kind, w){
+  const ws = 1 + (w - 1) * 0.35;
+  if(kind === "wisp")  return { hp:14*ws, speed:72, reward:9,  leak:40,  r:10, color:"#cfd8e6" };
+  if(kind === "husk")  return { hp:32*ws, speed:46, reward:14, leak:55,  r:13, color:"#caa86a" };
+  if(kind === "brute") return { hp:78*ws, speed:30, reward:26, leak:75,  r:17, color:"#8a7a5a" };
+  return { hp:JC.boss.hp, speed:16, reward:260, leak:300, r:30, color:"#3a2f4a" };
+}
+function twStartWave(){
+  const J = job;
+  if(J.phase !== "build" || J.ended) return;
+  J.phase = "wave"; J.spawnQ = twWaveComp(J.wave); J.spawnT = 0.4;
+  el("twStart").disabled = true;
+  el("twStart").textContent = "WAVE " + J.wave + " / 5";
+  sfxBlip();
+}
+function twUpdateBar(){
+  const J = job; if(!J || jobMode !== "towers") return;
+  el("twCash").textContent = "CASH " + J.cash;
+  ["phone","mail","rider"].forEach(k => {
+    const b = el("tw" + k.charAt(0).toUpperCase() + k.slice(1));
+    b.classList.toggle("sel", J.sel === k);
+    b.disabled = J.cash < TW_TYPES[k].cost;
+  });
+  if(J.phase === "build"){ el("twStart").disabled = false; el("twStart").textContent = "START WAVE " + J.wave; }
+}
+function twTap(px, py){
+  const J = job;
+  if(!J || jobMode !== "towers" || state.scene !== "job" || J.phase === "quiz" || J.ended) return;
+  for(const pad of J.pads){
+    if(Math.hypot(px - pad.x, py - pad.y) < 26){
+      if(!pad.tower){
+        const tp = TW_TYPES[J.sel];
+        if(J.cash >= tp.cost){
+          J.cash -= tp.cost;
+          pad.tower = { kind:J.sel, lvl:1, cd:0, range:tp.range, dmg:tp.dmg, rate:tp.rate };
+          burst(pad.x, pad.y, tp.color, 10); sfxClick();
+        } else sfxFail();
+      } else {
+        const tw = pad.tower, base = TW_TYPES[tw.kind];
+        const upCost = Math.round(base.cost * 0.8) * tw.lvl;
+        if(tw.lvl < 3 && J.cash >= upCost){
+          J.cash -= upCost; tw.lvl++;
+          tw.dmg = Math.round(base.dmg * (1 + (tw.lvl-1) * 0.6));
+          tw.range = Math.round(base.range * (1 + (tw.lvl-1) * 0.12));
+          burst(pad.x, pad.y, "#ffe39a", 14); sfxIntel();
+        } else sfxFail();
+      }
+      twUpdateBar();
+      return;
+    }
+  }
+}
+function twCreepPos(c){
+  const P = job.path;
+  let d = c.prog;
+  for(let i = 0; i < P.length - 1; i++){
+    const seg = Math.hypot(P[i+1].x - P[i].x, P[i+1].y - P[i].y);
+    if(d <= seg){
+      const f = d / seg;
+      return { x:P[i].x + (P[i+1].x - P[i].x)*f, y:P[i].y + (P[i+1].y - P[i].y)*f, end:false };
+    }
+    d -= seg;
+  }
+  return { x:P[P.length-1].x, y:P[P.length-1].y, end:true };
+}
+function twShowQuiz(){
+  const J = job;
+  J.phase = "quiz";
+  const Q = TW_QUESTIONS[(J.wave - 2) % TW_QUESTIONS.length];
+  el("twqTitle").textContent = Q.q;
+  const body = el("twqBody"); body.innerHTML = "";
+  shuffled(Q.opts).forEach(o => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o.t;
+    b.addEventListener("click", () => {
+      Array.prototype.forEach.call(body.querySelectorAll(".opt"), x => x.disabled = true);
+      b.classList.add(o.ok ? "correct" : "wrong");
+      const fb = document.createElement("div");
+      fb.className = "feedback " + (o.ok ? "good" : "bad");
+      if(o.ok){ J.cash += 90; J.score += 60; fb.textContent = Q.fb + "  +90 cash."; sfxDone(); }
+      else { fb.textContent = "Not this time. The right read pays cash on the steppe."; sfxFail(); }
+      body.appendChild(fb);
+      twUpdateBar();
+      setTimeout(() => { vis(el("towersQ"), false); J.phase = "build"; twUpdateBar(); }, 1500);
+    });
+    body.appendChild(b);
+  });
+  vis(el("towersQ"), true);
+}
+function updateTowers(dt){
+  const J = job;
+  if(J.phase === "quiz" || J.ended){ updateParts(dt); return; }
+  if(J.combo > 0){ J.comboTimer -= dt; if(J.comboTimer <= 0) J.combo = 0; }
+  if(J.flash > 0) J.flash -= dt;
+  updateParts(dt);
+  if(J.phase !== "wave") return;
+  J.time += dt;
+  // spawning
+  if(J.spawnQ.length){
+    J.spawnT -= dt;
+    if(J.spawnT <= 0){
+      const kind = J.spawnQ.shift();
+      const st = twCreepStats(kind, J.wave);
+      const c = { kind, prog:0, hp:st.hp, maxHp:st.hp, speed:st.speed, reward:st.reward, leak:st.leak, r:st.r, color:st.color, alive:true, wob:Math.random()*9 };
+      J.creeps.push(c);
+      if(kind === "boss"){ J.bossCreep = c; J.bossEngaged = true; }
+      J.spawnT = kind === "boss" ? 1.6 : (0.95 - J.wave * 0.07);
+    }
+  }
+  // creep movement
+  for(const c of J.creeps){
+    if(!c.alive) continue;
+    c.prog += c.speed * dt;
+    const pos = twCreepPos(c);
+    c.x = pos.x; c.y = pos.y;
+    if(pos.end){
+      c.alive = false;
+      J.hp = Math.max(0, J.hp - c.leak); J.hitsTaken++; J.combo = 0;
+      burst(pos.x, pos.y, "#ff6b6b", 14); sfxHurt();
+      if(c === J.bossCreep){ J.boss.hp = 0; }
+    }
+  }
+  // towers fire
+  for(const pad of J.pads){
+    const tw = pad.tower; if(!tw) continue;
+    tw.cd -= dt;
+    if(tw.cd > 0) continue;
+    let best = null;
+    for(const c of J.creeps){
+      if(!c.alive) continue;
+      if(Math.hypot(c.x - pad.x, c.y - pad.y) <= tw.range && (!best || c.prog > best.prog)) best = c;
+    }
+    if(best){
+      const tp = TW_TYPES[tw.kind];
+      J.shots.push({ x:pad.x, y:pad.y - 14, tgt:best, dmg:tw.dmg, speed:tp.proj, splash:tp.splash, color:tp.color });
+      tw.cd = tw.rate; sfxShot();
+    }
+  }
+  // shots
+  for(const sh of J.shots){
+    if(!sh.tgt.alive){ sh.dead = true; continue; }
+    const dx = sh.tgt.x - sh.x, dy = sh.tgt.y - sh.y;
+    const d = Math.hypot(dx, dy) || 1;
+    sh.x += dx / d * sh.speed * dt; sh.y += dy / d * sh.speed * dt;
+    if(d < 10){
+      sh.dead = true;
+      const hitOne = c => {
+        c.hp -= sh.dmg;
+        if(c.hp <= 0 && c.alive){
+          c.alive = false; addCombo();
+          J.cash += c.reward; J.score += Math.round(c.reward * 2 * comboMult());
+          burst(c.x, c.y, c.color, c.kind === "boss" ? 34 : 12);
+          if(c.kind === "boss"){ J.boss.hp = 0; J.boss.alive = false; sfxBoom(); } else sfxHit();
+        }
+      };
+      if(sh.splash){
+        burst(sh.x, sh.y, sh.color, 8);
+        for(const c of J.creeps){ if(c.alive && Math.hypot(c.x - sh.x, c.y - sh.y) <= sh.splash) hitOne(c); }
+      } else hitOne(sh.tgt);
+      if(J.bossCreep) J.boss.hp = Math.max(0, Math.round(J.bossCreep.hp));
+      twUpdateBar();
+    }
+  }
+  J.shots = J.shots.filter(sh => !sh.dead);
+  J.creeps = J.creeps.filter(c => c.alive || c === J.bossCreep);
+  // wave end
+  const liveCount = J.creeps.filter(c => c.alive).length;
+  if(!J.spawnQ.length && liveCount === 0 && J.phase === "wave"){
+    if(J.wave >= 5){
+      if(!J.ended){ J.ended = true; J.win = true; J.flash = 0.7; setTimeout(showJobWin, 750); }
+    } else {
+      J.wave++;
+      twShowQuiz();
+    }
+  }
+  if(J.hp <= 0 && !J.ended){ J.ended = true; J.win = false; setTimeout(showJobFail, 400); }
+}
+function drawTowers(){
+  const J = job;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const g = ctx.createLinearGradient(0,0,0,viewH);
+  g.addColorStop(0, "#caa86a"); g.addColorStop(1, "#a8854a");
+  ctx.fillStyle = g; ctx.fillRect(0,0,viewW,viewH);
+  ctx.fillStyle = "rgba(255,255,255,.06)";
+  for(let i = 0; i < 8; i++) circle((i*173)%viewW, (i*97)%viewH, 18 + (i*7)%14);
+  // path
+  ctx.strokeStyle = "#8a6a3a"; ctx.lineWidth = 26; ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.beginPath(); J.path.forEach((p,i) => i ? ctx.lineTo(p.x,p.y) : ctx.moveTo(p.x,p.y)); ctx.stroke();
+  ctx.strokeStyle = "rgba(0,0,0,.14)"; ctx.lineWidth = 3; ctx.setLineDash([8,10]);
+  ctx.beginPath(); J.path.forEach((p,i) => i ? ctx.lineTo(p.x,p.y) : ctx.moveTo(p.x,p.y)); ctx.stroke();
+  ctx.setLineDash([]);
+  // camp and pipeline mouth
+  const end = J.path[J.path.length-1];
+  ctx.fillStyle = "#e9e1cf"; circle(end.x - 16, end.y - 18, 17);
+  ctx.fillStyle = "#b5462f"; ctx.beginPath(); ctx.moveTo(end.x - 33, end.y - 22); ctx.lineTo(end.x - 16, end.y - 42); ctx.lineTo(end.x + 1, end.y - 22); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#7a5a2a"; rr(ctx, end.x - 26, end.y - 6, 34, 22, 5); ctx.fill();
+  ctx.fillStyle = "#5a4422"; ctx.beginPath(); ctx.ellipse(end.x - 9, end.y + 5, 9, 12, 0, 0, Math.PI*2); ctx.fill();
+  drawText("PIPELINE", end.x - 10, end.y + 30, "6px", "#3a2a12", "center");
+  // pads and towers
+  for(const pad of J.pads){
+    ctx.fillStyle = pad.tower ? "rgba(0,0,0,.1)" : "rgba(255,255,255,.22)";
+    circle(pad.x, pad.y, 16);
+    ctx.strokeStyle = "rgba(58,42,18,.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(pad.x, pad.y, 16, 0, Math.PI*2); ctx.stroke();
+    const tw = pad.tower;
+    if(tw){
+      if(J.phase === "build"){
+        ctx.fillStyle = "rgba(52,224,196,.07)"; circle(pad.x, pad.y, tw.range);
+      }
+      if(tw.kind === "phone"){
+        ctx.fillStyle = "#e9e1cf"; circle(pad.x, pad.y - 4, 11);
+        ctx.fillStyle = "#3cc8ff"; ctx.fillRect(pad.x - 1.5, pad.y - 28, 3, 16);
+        circle(pad.x, pad.y - 29, 3);
+      } else if(tw.kind === "mail"){
+        ctx.fillStyle = "#7a5a2a"; rr(ctx, pad.x - 13, pad.y - 14, 26, 14, 4); ctx.fill();
+        ctx.fillStyle = "#caa86a"; ctx.beginPath(); ctx.ellipse(pad.x, pad.y - 16, 13, 7, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = "#3a2a12"; circle(pad.x - 8, pad.y + 2, 4.5); circle(pad.x + 8, pad.y + 2, 4.5);
+      } else {
+        ctx.fillStyle = "#8a5a2b"; ctx.beginPath(); ctx.ellipse(pad.x, pad.y - 2, 12, 7, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#3a5a8f"; rr(ctx, pad.x - 4, pad.y - 18, 8, 12, 3); ctx.fill();
+        ctx.fillStyle = "#e8b48a"; circle(pad.x, pad.y - 21, 4);
+        ctx.strokeStyle = "#ff8fb0"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(pad.x + 4, pad.y - 16); ctx.lineTo(pad.x + 13, pad.y - 20); ctx.stroke();
+      }
+      for(let i = 0; i < tw.lvl; i++){ ctx.fillStyle = "#ffcb47"; circle(pad.x - 8 + i*8, pad.y + 13, 2.4); }
+    }
+  }
+  // creeps
+  for(const c of J.creeps){
+    if(!c.alive) continue;
+    const wob = Math.sin(t*5 + c.wob) * 2;
+    if(c.kind === "boss"){
+      ctx.fillStyle = "rgba(20,12,30,.35)"; circle(c.x, c.y + wob, c.r + 9);
+      ctx.fillStyle = c.color; circle(c.x, c.y + wob, c.r);
+      ctx.fillStyle = "#0c0816"; circle(c.x, c.y + wob + 4, c.r*0.45);
+      ctx.fillStyle = "#ffd24a"; circle(c.x - 9, c.y + wob - 8, 3); circle(c.x + 9, c.y + wob - 8, 3);
+    } else if(c.kind === "wisp"){
+      ctx.globalAlpha = 0.85; ctx.fillStyle = c.color;
+      circle(c.x, c.y + wob, c.r); circle(c.x - 6, c.y + wob + 4, c.r*0.5); ctx.globalAlpha = 1;
+      ctx.fillStyle = "#23304a"; circle(c.x - 3, c.y + wob - 2, 1.4); circle(c.x + 3, c.y + wob - 2, 1.4);
+    } else if(c.kind === "husk"){
+      ctx.fillStyle = c.color; circle(c.x, c.y + wob, c.r);
+      ctx.strokeStyle = "#8a6a3a"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(c.x, c.y + wob, c.r*0.6, 0.4, 2.6); ctx.stroke();
+    } else {
+      ctx.fillStyle = c.color; rr(ctx, c.x - c.r, c.y - c.r + wob, c.r*2, c.r*2, 6); ctx.fill();
+      ctx.fillStyle = "#5a4a32"; ctx.fillRect(c.x - c.r + 3, c.y - 3 + wob, c.r*2 - 6, 4);
+    }
+    if(c.hp < c.maxHp){
+      ctx.fillStyle = "rgba(0,0,0,.4)"; rr(ctx, c.x - 14, c.y - c.r - 10 + wob, 28, 4, 2); ctx.fill();
+      ctx.fillStyle = "#ff8a5a"; rr(ctx, c.x - 14, c.y - c.r - 10 + wob, 28 * (c.hp/c.maxHp), 4, 2); ctx.fill();
+    }
+  }
+  // shots
+  for(const sh of J.shots){ ctx.fillStyle = sh.color; circle(sh.x, sh.y, sh.splash ? 5 : 3.4); }
+  for(const p of J.parts){ ctx.globalAlpha = Math.min(1, p.life*2); ctx.fillStyle = p.color; circle(p.x, p.y, p.r); }
+  ctx.globalAlpha = 1;
+  if(J.phase === "build" && J.time < 0.1 && J.wave === 1){ }
+  if(J.phase === "build"){
+    drawText("BUILD PHASE  \u00b7  WAVE " + J.wave + " OF 5", viewW/2, viewH - 96, "8px", "#3a2a12", "center");
+  }
+  if(J.flash > 0){ ctx.fillStyle = "rgba(255,224,150," + (J.flash*0.7) + ")"; ctx.fillRect(0,0,viewW,viewH); }
+  drawJobHud(J);
+}
+
 function showJobWin(){
   const J = job;
   const noHit = J.hitsTaken === 0 ? 400 : 0;
@@ -7556,6 +8496,17 @@ function wireEvents(){
   el("dlgNext").addEventListener("click", dlgNext);
   el("dlgLeave").addEventListener("click", dlgLeave);
   el("nookClose").addEventListener("click", () => { sfxClick(); closeNook(); });
+  el("twStart").addEventListener("click", twStartWave);
+  ["phone","mail","rider"].forEach(k => {
+    el("tw" + k.charAt(0).toUpperCase() + k.slice(1)).addEventListener("click", () => {
+      if(job && jobMode === "towers"){ job.sel = k; twUpdateBar(); sfxClick(); }
+    });
+  });
+  el("view").addEventListener("pointerdown", e => {
+    if(jobMode !== "towers" || state.scene !== "job") return;
+    const r = el("view").getBoundingClientRect();
+    twTap(e.clientX - r.left, e.clientY - r.top);
+  });
   el("btnStart").addEventListener("click", () => {
     ensureAudio(); sfxClick();
     if(!save.seenIntro){ save.seenIntro = true; persist(); openIntro("brief"); }
