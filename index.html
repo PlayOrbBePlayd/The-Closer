@@ -170,6 +170,31 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
 .leadWhy{font-size:13px; color:var(--mut); margin-top:8px;}
 #caseClose{margin-top:14px; width:100%;}
 
+/* pitch theater */
+@keyframes tremble{
+  0%{transform:translate(0,0);} 20%{transform:translate(-1.5px,0.5px);} 40%{transform:translate(1.5px,-0.5px);}
+  60%{transform:translate(-1px,-0.5px);} 80%{transform:translate(1px,0.5px);} 100%{transform:translate(0,0);}
+}
+@keyframes goldpulse{
+  0%,100%{box-shadow:0 0 6px rgba(255,203,71,.35);} 50%{box-shadow:0 0 18px rgba(255,203,71,.85);}
+}
+@keyframes meterslam{
+  0%{transform:scaleY(1);} 35%{transform:scaleY(1.9);} 100%{transform:scaleY(1);}
+}
+#pitchMeter.low{ animation:tremble .28s linear infinite; border-color:rgba(255,107,107,.55); }
+#pitchMeter.high .meterBar{ animation:goldpulse 1.1s ease infinite; border-radius:6px; }
+#pitchMeter.slam .meterBar{ animation:meterslam .3s cubic-bezier(.2,1.6,.4,1) both; }
+.meterFill{ transition:width .38s cubic-bezier(.2,1.2,.3,1), background .3s; }
+.comboBadge{ display:none; font-family:var(--arcade); font-size:9px; color:#06231d; background:var(--teal);
+  padding:5px 8px; border-radius:8px; margin-right:8px; letter-spacing:.5px; }
+.comboBadge.on{ display:inline-block; animation:meterslam .25s ease both; }
+#goldflash{ position:fixed; inset:0; background:radial-gradient(circle at 50% 45%, rgba(255,224,130,.85), rgba(255,203,71,.25) 55%, transparent 75%);
+  opacity:0; pointer-events:none; z-index:60; }
+#goldflash.on{ animation:goldon .75s ease both; }
+@keyframes goldon{ 0%{opacity:0;} 18%{opacity:1;} 100%{opacity:0;} }
+#confettiLayer{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:61; }
+.cfp{ position:absolute; width:8px; height:12px; border-radius:2px; top:-16px; }
+
 /* book nook */
 .bookAuthor{font-size:13px; color:var(--mut); font-style:italic; margin-top:2px;}
 .bookLink{display:inline-block; margin-top:12px; font-family:var(--arcade); font-size:9px; letter-spacing:.5px;
@@ -564,7 +589,7 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
   <div id="pitchMeter" class="hidden">
     <div class="meterTop">
       <span class="meterName" id="meterName">RAPPORT</span>
-      <span class="meterRight"><span class="meterPts" id="meterPts">POINTS 0</span><button id="pitchLeave" class="iconbtn">LEAVE</button></span>
+      <span class="meterRight"><span class="comboBadge" id="meterCombo"></span><span class="meterPts" id="meterPts">POINTS 0</span><button id="pitchLeave" class="iconbtn">LEAVE</button></span>
     </div>
     <div class="meterBar"><div class="meterFill" id="meterFill"></div><div class="meterClose" id="meterClose"></div></div>
   </div>
@@ -577,6 +602,8 @@ canvas#view{position:absolute; inset:0; width:100%; height:100%; display:block;}
     <div class="pitchActions" id="pitchActions"></div>
   </div>
 
+  <div id="goldflash"></div>
+  <div id="confettiLayer"></div>
   <div id="toast"></div>
   <div id="fade"></div>
 </div>
@@ -2305,6 +2332,7 @@ let lessonDoneRun = false;
 let lessonIndex = 0;
 let pitchIndex = 0;
 let pitchRapport = 0;
+let pitchCombo = 0;
 let pitchPoints = 0;
 let pitchPendingFail = false;
 let job = null;
@@ -2354,6 +2382,7 @@ let audioCtx = null, muted = false;
 function ensureAudio(){
   if(!audioCtx){ try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){} }
   if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+  if(audioCtx) syncMusic();
 }
 function tone(freq, dur, type, vol, when){
   if(muted || !audioCtx) return;
@@ -2371,10 +2400,102 @@ const sfxIntel = () => { tone(660, 0.09, "triangle", 0.05); tone(990, 0.12, "tri
 const sfxDone  = () => { tone(523, 0.12, "triangle", 0.05); tone(659, 0.12, "triangle", 0.05, 0.12); tone(784, 0.18, "triangle", 0.05, 0.24); };
 const sfxFail  = () => { tone(330, 0.16, "sawtooth", 0.04); tone(247, 0.24, "sawtooth", 0.04, 0.14); };
 const sfxShot  = () => tone(520, 0.05, "square", 0.022);
-const sfxHit   = () => tone(760, 0.05, "square", 0.03);
-const sfxHurt  = () => tone(170, 0.16, "sawtooth", 0.05);
+const sfxHit   = () => { tone(760, 0.05, "square", 0.03); addShake(1.4); };
+const sfxHurt  = () => { tone(170, 0.16, "sawtooth", 0.05); addShake(7); hitPause = Math.max(hitPause, 0.06); };
 const sfxBoss  = () => tone(150, 0.12, "sawtooth", 0.03);
-const sfxBoom  = () => { tone(120, 0.26, "sawtooth", 0.06); tone(80, 0.36, "sawtooth", 0.05, 0.08); };
+const sfxBoom  = () => { tone(120, 0.26, "sawtooth", 0.06); tone(80, 0.36, "sawtooth", 0.05, 0.08); addShake(11); hitPause = Math.max(hitPause, 0.1); };
+
+/* ---------- game feel: screen shake and hit pause ---------- */
+let shake = 0, hitPause = 0;
+function addShake(n){ shake = Math.min(14, shake + n); }
+
+/* ---------- chiptune score: ten original motifs plus a title theme ----------
+   All melodies composed for this game. Notes are MIDI numbers, null is a rest.
+   Each track loops its own length. Eighth note grid at the given bpm.        */
+const MUSIC = {
+  title:{ bpm:100, lead:"square", mood:"confident",
+    mel:[60,64,67,72, 71,67,64,67, 69,72,74,77, 76,72,69,null, 65,69,72,76, 74,71,67,71, 72,74,76,79, 77,74,72,null],
+    bass:[36,null,43,null, 36,null,43,null, 41,null,45,null, 41,null,43,null, 38,null,45,null, 38,null,43,null, 36,null,41,null, 43,null,43,null] },
+  1:{ bpm:112, lead:"square", mood:"sunny street",
+    mel:[60,64,67,72, 67,64,60,null, 62,65,69,72, 69,65,62,null, 64,67,71,74, 71,67,64,null, 65,69,72,76, 74,72,67,null],
+    bass:[36,null,36,43, 36,null,36,43, 38,null,38,43, 38,null,38,43, 40,null,40,43, 40,null,40,43, 41,null,41,43, 43,null,43,null] },
+  2:{ bpm:108, lead:"square", mood:"neon high rise",
+    mel:[69,null,72,69, null,67,69,null, 64,null,67,64, null,62,64,null, 69,null,72,74, null,76,74,null, 72,69,67,64, 62,null,57,null],
+    bass:[33,33,null,33, 28,null,28,null, 29,29,null,29, 28,null,28,null, 33,33,null,33, 31,null,31,null, 29,29,null,29, 28,null,33,null] },
+  3:{ bpm:96, lead:"triangle", mood:"estate waltz",
+    mel:[62,66,69, 74,69,66, 62,67,71, 74,71,67, 64,67,71, 76,71,67, 62,66,69, 73,69,66],
+    bass:[38,null,null, 50,null,null, 43,null,null, 50,null,null, 40,null,null, 52,null,null, 45,null,null, 45,null,null] },
+  4:{ bpm:120, lead:"square", mood:"chrome shop arp",
+    mel:[64,67,71,74, 76,74,71,67, 64,66,69,73, 74,73,69,66, 64,67,71,74, 78,76,74,71, 69,71,73,76, 74,null,71,null],
+    bass:[40,null,40,null, 35,null,35,null, 38,null,38,null, 35,null,35,null, 40,null,40,null, 42,null,42,null, 38,null,38,null, 40,null,40,null] },
+  5:{ bpm:104, lead:"square", mood:"forum march",
+    mel:[64,65,64,62, 64,null,59,null, 64,65,67,65, 64,62,59,null, 64,67,69,67, 65,64,62,64, 65,64,62,60, 59,null,52,null],
+    bass:[40,null,40,40, 35,null,35,null, 41,null,41,41, 35,null,35,null, 40,null,40,40, 38,null,38,null, 36,null,35,null, 40,null,40,null] },
+  6:{ bpm:88, lead:"triangle", mood:"woozy dome",
+    mel:[60,62,64,66, 68,70,68,66, 64,null,68,null, 66,62,60,null, 64,66,68,70, 72,70,68,66, 68,null,64,null, 62,66,60,null],
+    bass:[36,null,null,42, null,null,38,null, 36,null,null,42, null,null,40,null, 36,null,null,44, null,null,38,null, 36,null,null,42, null,null,36,null] },
+  7:{ bpm:92, lead:"triangle", mood:"open steppe",
+    mel:[62,65,67,69, 72,69,67,65, 62,null,69,null, 67,65,62,null, 65,67,69,72, 74,72,69,67, 65,null,62,null, 60,62,57,null],
+    bass:[38,null,45,null, 38,null,45,null, 36,null,43,null, 38,null,45,null, 41,null,48,null, 41,null,48,null, 36,null,43,null, 38,null,38,null] },
+  8:{ bpm:100, lead:"triangle", mood:"reef drift",
+    mel:[65,69,71,72, 76,72,71,69, 65,67,69,71, 72,null,69,null, 65,69,72,76, 77,76,72,71, 69,67,65,67, 69,null,65,null],
+    bass:[41,null,41,48, null,41,null,48, 43,null,43,50, null,43,null,50, 41,null,41,48, null,41,null,48, 38,null,38,45, 41,null,41,null] },
+  9:{ bpm:110, lead:"square", mood:"mountain of the gods",
+    mel:[69,68,69,71, 72,null,76,75, 76,72,69,null, 68,64,68,null, 69,71,72,74, 76,77,76,74, 72,71,69,68, 69,null,64,null],
+    bass:[33,null,33,33, 40,null,40,null, 29,null,29,29, 40,null,40,null, 33,null,33,33, 31,null,31,null, 28,null,28,28, 33,null,33,null] },
+  10:{ bpm:80, lead:"triangle", mood:"red lagoon",
+    mel:[57,58,57,56, 57,null,63,null, 57,58,60,58, 57,56,53,null, 57,58,57,56, 57,null,64,63, 60,58,57,56, 53,null,45,null],
+    bass:[33,null,null,null, 39,null,null,null, 32,null,null,null, 33,null,null,null, 33,null,null,null, 39,null,null,null, 31,null,null,null, 33,null,null,null] }
+};
+const midiF = m => 440 * Math.pow(2, (m - 69) / 12);
+let musicGain = null;
+const music = { key:null, fast:false, step:0, nextT:0, timer:null };
+function mtone(freq, at, dur, type, vol){
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = type; o.frequency.value = freq;
+  o.connect(g); g.connect(musicGain);
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.linearRampToValueAtTime(vol, at + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  o.start(at); o.stop(at + dur + 0.03);
+}
+function scheduleMusic(){
+  if(music.key == null || muted || !audioCtx) return;
+  const tr = MUSIC[music.key]; if(!tr) return;
+  const bpm = tr.bpm * (music.fast ? 1.28 : 1);
+  const stepDur = 60 / bpm / 2;
+  while(music.nextT < audioCtx.currentTime + 0.22){
+    const i = music.step;
+    const m = tr.mel[i % tr.mel.length];
+    const b = tr.bass[i % tr.bass.length];
+    if(m != null) mtone(midiF(m), music.nextT, stepDur * 0.92, tr.lead, music.fast ? 0.02 : 0.016);
+    if(b != null) mtone(midiF(b), music.nextT, stepDur * 1.7, "triangle", 0.022);
+    music.step++; music.nextT += stepDur;
+  }
+}
+function playMusic(key, fast){
+  if(music.key === key && music.fast === !!fast && music.timer) return;
+  music.key = key; music.fast = !!fast;
+  if(muted || !audioCtx) return;
+  music.step = 0; music.nextT = audioCtx.currentTime + 0.06;
+  if(!music.timer) music.timer = setInterval(scheduleMusic, 60);
+}
+function stopMusic(){
+  if(music.timer){ clearInterval(music.timer); music.timer = null; }
+  music.key = null;
+}
+function syncMusic(){
+  if(muted || !audioCtx){ stopMusic(); return; }
+  if(!musicGain){ musicGain = audioCtx.createGain(); musicGain.gain.value = 1; musicGain.connect(audioCtx.destination); }
+  const sc = state.scene;
+  let key = null, fast = false, duck = false;
+  if(sc === "title" || sc === "intro") key = "title";
+  else if(sc === "job" || sc === "jobwin" || sc === "jobfail"){ key = currentLevel; fast = true; }
+  else if(sc === "pitch" || sc === "lesson" || sc === "dialogue"){ key = currentLevel; duck = true; }
+  else if(sc === "brief" || sc === "overworld" || sc === "complete" || sc === "win" || sc === "outro" || sc === "finale") key = currentLevel;
+  musicGain.gain.setTargetAtTime(duck ? 0.45 : 1, audioCtx.currentTime, 0.15);
+  if(key == null) stopMusic(); else playMusic(key, fast);
+}
 
 /* ---------- helpers ---------- */
 function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
@@ -4736,6 +4857,7 @@ function fadeThen(fn){
 function transitionTo(s){ fadeThen(() => setScene(s)); }
 function setScene(s){
   state.scene = s;
+  if(typeof syncMusic === "function" && audioCtx) syncMusic();
   vis(el("screenTitle"),    s === "title");
   vis(el("screenIntro"),    s === "intro");
   vis(el("screenBrief"),    s === "brief");
@@ -5347,11 +5469,26 @@ function renderMeter(){
   el("meterClose").style.left = LV.pitch.closeAt + "%";
   el("meterName").textContent = "RAPPORT  " + pitchRapport;
   el("meterPts").textContent = "POINTS " + pitchPoints;
+  const box = el("pitchMeter");
+  box.classList.toggle("low", pitchRapport > 0 && pitchRapport <= 22);
+  box.classList.toggle("high", pitchRapport >= LV.pitch.closeAt);
+  const cb = el("meterCombo");
+  if(pitchCombo >= 2){
+    cb.textContent = "COMBO x" + pitchCombo;
+    cb.classList.remove("on"); void cb.offsetWidth; cb.classList.add("on");
+  } else {
+    cb.classList.remove("on");
+  }
+}
+function meterSlam(){
+  const box = el("pitchMeter");
+  box.classList.remove("slam"); void box.offsetWidth; box.classList.add("slam");
 }
 function openPitch(){
   pitchIndex = 0;
   pitchRapport = clamp(LV.pitch.startRapport + (techEquipped() ? LV.pitch.edgeBonus : 0), 0, 100);
   pitchPoints = 0;
+  pitchCombo = 0;
   pitchPendingFail = false;
   setScene("pitch");
   renderMeter();
@@ -5389,8 +5526,10 @@ function onPitchAnswer(o, btn, wrap){
   Array.prototype.forEach.call(wrap.querySelectorAll(".opt"), b => { b.disabled = true; });
   btn.classList.add(o.good ? "correct" : "wrong");
   pitchRapport = clamp(pitchRapport + o.d, 0, 100);
-  if(o.pts) pitchPoints += o.pts;
+  pitchCombo = o.good ? pitchCombo + 1 : 0;
+  if(o.pts) pitchPoints += Math.round(o.pts * (1 + Math.min(0.5, Math.max(0, pitchCombo - 1) * 0.125)));
   renderMeter();
+  if(o.good) meterSlam();
   const sign = o.d > 0 ? "+" : "";
   setPitchFeedback(o.good ? "good" : "bad", o.fb + "    Rapport " + sign + o.d);
   if(o.good) sfxIntel(); else sfxBlip();
@@ -5398,9 +5537,41 @@ function onPitchAnswer(o, btn, wrap){
   const isLast = pitchIndex >= LV.pitch.beats.length - 1;
   let label, go;
   if(pitchRapport <= 0 || (isLast && !o.good)){ pitchPendingFail = true; label = "See how it ended"; go = showPitchFail; }
-  else if(isLast){ label = "Shake on it"; go = showPitchWin; }
+  else if(isLast){ label = "Shake on it"; go = closeCelebration; }
   else { label = "Continue"; go = () => { pitchIndex++; renderPitch(); }; }
   actions.appendChild(lessBtn("primarybtn", label, () => { sfxClick(); go(); }));
+}
+function confettiBurst(n){
+  const layer = el("confettiLayer");
+  const colors = ["#ffcb47","#34e0c4","#ff6b6b","#7fd0ff","#b6ff6a","#ff8fb0","#ffe39a"];
+  const W = window.innerWidth, H = window.innerHeight;
+  for(let i = 0; i < n; i++){
+    const p = document.createElement("div");
+    p.className = "cfp";
+    p.style.background = colors[i % colors.length];
+    p.style.left = (W*0.5 + (Math.random()-0.5) * W*0.5) + "px";
+    const drift = (Math.random()-0.5) * 220;
+    const fall = H * (0.7 + Math.random()*0.45);
+    const spin = 360 + Math.random()*720;
+    const dur = 1100 + Math.random()*900;
+    layer.appendChild(p);
+    p.animate([
+      { transform:"translate(0,0) rotate(0deg)", opacity:1 },
+      { transform:"translate(" + drift + "px," + fall + "px) rotate(" + spin + "deg)", opacity:0.15 }
+    ], { duration:dur, easing:"cubic-bezier(.15,.6,.4,1)", fill:"forwards" });
+    setTimeout(() => p.remove(), dur + 80);
+  }
+}
+function closeCelebration(){
+  const gf = el("goldflash");
+  gf.classList.remove("on"); void gf.offsetWidth; gf.classList.add("on");
+  confettiBurst(46);
+  meterSlam();
+  if(!muted && audioCtx){
+    [72,76,79,84].forEach((m,i) => tone(midiF(m), 0.22, "square", 0.05, i*0.09));
+    tone(midiF(48), 0.5, "triangle", 0.05, 0.27);
+  }
+  setTimeout(showPitchWin, 760);
 }
 function showPitchWin(){
   const mult = techEquipped() ? 1.5 : 1;
@@ -7378,8 +7549,10 @@ function wireEvents(){
   el("caseClose").addEventListener("click", closeCase);
   el("btnMute").addEventListener("click", () => {
     muted = !muted; el("btnMute").textContent = muted ? "SOUND OFF" : "SOUND ON";
-    if(!muted) ensureAudio();
+    save.muted = muted; persist();
+    if(muted) stopMusic(); else { ensureAudio(); syncMusic(); }
   });
+  document.addEventListener("pointerdown", () => { if(!muted){ ensureAudio(); } }, {once:true});
   el("dlgNext").addEventListener("click", dlgNext);
   el("dlgLeave").addEventListener("click", dlgLeave);
   el("nookClose").addEventListener("click", () => { sfxClick(); closeNook(); });
@@ -7460,8 +7633,20 @@ function wireEvents(){
 let lastT = 0;
 function loop(now){
   const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
-  update(dt); draw();
+  if(hitPause > 0){ hitPause -= dt; applyShake(dt); requestAnimationFrame(loop); return; }
+  update(dt); draw(); applyShake(dt);
   requestAnimationFrame(loop);
+}
+function applyShake(dt){
+  const cvEl = el("view");
+  const inJob = state.scene === "job";
+  if(shake > 0.3 && inJob){
+    const a = Math.random() * Math.PI * 2, r = shake * 0.7;
+    cvEl.style.transform = "translate(" + (Math.cos(a)*r).toFixed(1) + "px," + (Math.sin(a)*r).toFixed(1) + "px)";
+  } else if(cvEl.style.transform){
+    cvEl.style.transform = "";
+  }
+  shake = Math.max(0, shake - 40 * dt);
 }
 
 /* ---------- boot ---------- */
@@ -7476,6 +7661,8 @@ function loop(now){
   if(typeof save.seenIntro === "undefined") save.seenIntro = false;
   if(typeof save.chapter === "undefined") save.chapter = save.level1Complete ? 2 : 1;
   loadLevel(1);
+  muted = !!save.muted;
+  el("btnMute").textContent = muted ? "SOUND OFF" : "SOUND ON";
   updateTitleInfo();
   setObjective();
   wireEvents();
