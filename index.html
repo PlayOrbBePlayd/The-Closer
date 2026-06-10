@@ -7617,7 +7617,7 @@ function drawJobHud(J){
   }
   if(J.time < 4.5){
     const hint = jobMode === "breaker"
-      ? "Move the peel with left and right, tap LAUNCH to serve. Smash the shield wall and strike " + J.bossName + " when his guard drops."
+      ? "Move the peel with left and right, tap LAUNCH to serve. Catch falling bonuses for extra loaves and the furnace loaf, then strike " + J.bossName + " when his guard drops."
       : jobMode === "lander"
       ? "The beacon is dark, so you fly them in. Tilt with left and right, hold THRUST to brake, and set five ships down gently on the pads."
       : jobMode === "towers"
@@ -7773,11 +7773,11 @@ function drawJob(){
   drawJobHud(J);
 }
 /* ===================== CHAPTER FIVE BONUS: THE SHIELD WALL (paddle and loaf) ===================== */
+function mkBreakBall(stuck){ return { x:0, y:0, vx:0, vy:0, stuck:!!stuck, r:7 }; }
 function newBreaker(){
   const cols = clamp(Math.floor((viewW - 36) / 42), 7, 12);
   const bw = Math.floor((viewW - 36) / cols) - 6, bh = 18;
   const bricks = [];
-  const rowCol = ["#8e2f24","#a8442e","#b5462f","#c9a24a","#9a7d3a"];
   for(let r = 0; r < 5; r++) for(let c = 0; c < cols; c++){
     const stag = (r % 2) ? 3 : 0;
     bricks.push({ x:18 + c*(bw+6) + stag, y:128 + r*(bh+7), w:bw, h:bh, hp:r < 2 ? 2 : 1, row:r, alive:true });
@@ -7785,8 +7785,8 @@ function newBreaker(){
   const boss = { x:viewW/2 - 34, y:64, w:68, h:46, vx:74, hp:JC.boss.hp, maxHp:JC.boss.hp,
     alive:true, hurt:0, state:"march", stateT:3 + Math.random()*2, spearX:0 };
   return {
-    paddle:{ x:viewW/2 - 44, w:88, y:viewH - 86 },
-    ball:{ x:0, y:0, vx:0, vy:0, stuck:true, r:7, speed:360 },
+    paddle:{ x:viewW/2 - 50, w:100, y:viewH - 86 },
+    balls:[mkBreakBall(true)], drops:[], fire:0, speed:330,
     spears:[], bricks, boss, parts:[],
     hp:300, maxHp:300, invuln:0,
     theme:JC.theme, bossName:JC.bossName,
@@ -7794,27 +7794,55 @@ function newBreaker(){
     ended:false, win:false, bossEngaged:true, flash:0
   };
 }
+function breakerKillBoss(J){
+  const b = J.boss;
+  if(!b.alive) return;
+  b.hp = 0; b.alive = false;
+  J.score += 800;
+  burst(b.x + b.w/2, b.y + b.h/2, "#ffcb47", 34);
+  burst(b.x + b.w/2, b.y + b.h/2, "#ff8a5a", 20);
+  sfxBoom();
+}
+function breakerSmash(J, k, fiery){
+  k.hp -= fiery ? 99 : 1;
+  addCombo(); J.score += Math.round(20 * comboMult());
+  splat(k.x + k.w/2, k.y + k.h/2, fiery ? "#ff8a5a" : rowColBreaker(k.row), false);
+  sfxHit();
+  if(k.hp <= 0){
+    k.alive = false;
+    J.score += Math.round(30 * comboMult());
+    burst(k.x + k.w/2, k.y + k.h/2, fiery ? "#ffb24a" : rowColBreaker(k.row), 10);
+    if(Math.random() < 0.22){
+      J.drops.push({ x:k.x + k.w/2, y:k.y + k.h/2, vy:125, kind:(Math.random() < 0.7 ? "multi" : "fire") });
+    }
+  }
+}
 function updateBreaker(dt){
   const J = job; J.time += dt;
   if(J.combo > 0){ J.comboTimer -= dt; if(J.comboTimer <= 0) J.combo = 0; }
   if(J.invuln > 0) J.invuln -= dt;
   if(J.flash > 0) J.flash -= dt;
+  if(J.fire > 0) J.fire -= dt;
   updateParts(dt);
   // paddle
   const pv = 430 * dt;
   if(jobHold.left)  J.paddle.x -= pv;
   if(jobHold.right) J.paddle.x += pv;
   J.paddle.x = clamp(J.paddle.x, 10, viewW - 10 - J.paddle.w);
-  // ball
-  const B = J.ball;
-  if(B.stuck){
-    B.x = J.paddle.x + J.paddle.w/2; B.y = J.paddle.y - 12;
-    if(jobHold.fire && !J.ended){ B.stuck = false; B.vx = (Math.random()<0.5?-1:1) * 130; B.vy = -B.speed; sfxShot(); }
-  } else if(!J.ended){
-    const sp = B.speed + Math.min(140, J.time * 4);
+  const fiery = J.fire > 0;
+  // loaves
+  for(const B of J.balls){
+    if(B.stuck){
+      B.x = J.paddle.x + J.paddle.w/2; B.y = J.paddle.y - 12;
+      if(jobHold.fire && !J.ended){ B.stuck = false; B.vx = (Math.random()<0.5?-1:1) * 130; B.vy = -J.speed; sfxShot(); }
+      continue;
+    }
+    if(J.ended) continue;
+    const sp = J.speed + Math.min(110, J.time * 3);
     const m = Math.hypot(B.vx, B.vy) || 1;
     B.vx = B.vx / m * sp; B.vy = B.vy / m * sp;
     B.x += B.vx * dt; B.y += B.vy * dt;
+    if(fiery && Math.random() < 0.5) J.parts.push({ x:B.x, y:B.y, vx:(Math.random()-0.5)*40, vy:40+Math.random()*40, life:0.3, color:Math.random()<0.5?"#ff8a5a":"#ffcb47", r:2.5 });
     if(B.x < 14 + B.r){ B.x = 14 + B.r; B.vx = Math.abs(B.vx); sfxBlip(); }
     if(B.x > viewW - 14 - B.r){ B.x = viewW - 14 - B.r; B.vx = -Math.abs(B.vx); sfxBlip(); }
     if(B.y < 18 + B.r){ B.y = 18 + B.r; B.vy = Math.abs(B.vy); sfxBlip(); }
@@ -7825,32 +7853,30 @@ function updateBreaker(dt){
       B.vx = ((B.x - (J.paddle.x + J.paddle.w/2)) / (J.paddle.w/2)) * 300;
       B.vy = -Math.abs(B.vy); sfxBlip();
     }
-    // lost ball
-    if(B.y > viewH + 30){
-      J.hp = Math.max(0, J.hp - 100); J.hitsTaken++; J.combo = 0; sfxHurt();
-      B.stuck = true; B.vx = B.vy = 0;
-    }
     // bricks
     for(const k of J.bricks){
       if(!k.alive) continue;
       if(B.x + B.r > k.x && B.x - B.r < k.x + k.w && B.y + B.r > k.y && B.y - B.r < k.y + k.h){
-        const oxl = (B.x + B.r) - k.x, oxr = (k.x + k.w) - (B.x - B.r);
-        const oyt = (B.y + B.r) - k.y, oyb = (k.y + k.h) - (B.y - B.r);
-        const minO = Math.min(oxl, oxr, oyt, oyb);
-        if(minO === oxl) B.vx = -Math.abs(B.vx);
-        else if(minO === oxr) B.vx = Math.abs(B.vx);
-        else if(minO === oyt) B.vy = -Math.abs(B.vy);
-        else B.vy = Math.abs(B.vy);
-        k.hp--; addCombo(); J.score += Math.round(20 * comboMult());
-        splat(k.x + k.w/2, k.y + k.h/2, rowColBreaker(k.row), false); sfxHit();
-        if(k.hp <= 0){ k.alive = false; J.score += Math.round(30 * comboMult()); burst(k.x + k.w/2, k.y + k.h/2, rowColBreaker(k.row), 10); }
-        break;
+        if(!fiery){
+          const oxl = (B.x + B.r) - k.x, oxr = (k.x + k.w) - (B.x - B.r);
+          const oyt = (B.y + B.r) - k.y, oyb = (k.y + k.h) - (B.y - B.r);
+          const minO = Math.min(oxl, oxr, oyt, oyb);
+          if(minO === oxl) B.vx = -Math.abs(B.vx);
+          else if(minO === oxr) B.vx = Math.abs(B.vx);
+          else if(minO === oyt) B.vy = -Math.abs(B.vy);
+          else B.vy = Math.abs(B.vy);
+          breakerSmash(J, k, false);
+          break;
+        }
+        breakerSmash(J, k, true);
       }
     }
     // the Gladiator
     const b = J.boss;
     if(b.alive && B.y - B.r < b.y + b.h && B.y + B.r > b.y && B.x + B.r > b.x && B.x - B.r < b.x + b.w){
-      if(b.state === "throw"){
+      if(fiery){
+        breakerKillBoss(J);
+      } else if(b.state === "throw"){
         b.hp -= 6; b.hurt = 0.15; addCombo(); J.score += Math.round(70 * comboMult());
         splat(b.x + b.w/2, b.y + b.h/2, "#ffe0a0", true); sfxHit();
         B.vy = Math.abs(B.vy);
@@ -7861,6 +7887,44 @@ function updateBreaker(dt){
       }
     }
   }
+  // lost loaves: hp falls only when the last one drops
+  const before = J.balls.length;
+  J.balls = J.balls.filter(B => B.stuck || B.y <= viewH + 30);
+  if(J.balls.length === 0 && !J.ended){
+    J.hp = Math.max(0, J.hp - 100); J.hitsTaken++; J.combo = 0; sfxHurt();
+    J.balls.push(mkBreakBall(true));
+  } else if(J.balls.length < before){ sfxBlip(); }
+  // falling bonuses, caught with the peel
+  for(const d of J.drops){
+    d.y += d.vy * dt;
+    if(d.y > J.paddle.y - 8 && d.y < J.paddle.y + 18 && d.x > J.paddle.x - 10 && d.x < J.paddle.x + J.paddle.w + 10 && !J.ended){
+      d.taken = true;
+      if(d.kind === "multi"){
+        const movers = J.balls.filter(B => !B.stuck);
+        const src = movers.length ? movers : J.balls;
+        const target = Math.min(5, Math.max(2, J.balls.length * 2));
+        let gi = 0;
+        while(J.balls.length < target){
+          const o = src[gi++ % src.length];
+          const nb = mkBreakBall(false);
+          const ang = (o.stuck ? -Math.PI/2 : Math.atan2(o.vy, o.vx)) + (Math.random()-0.5) * 0.9;
+          const sp = J.speed + Math.min(110, J.time * 3);
+          nb.x = o.stuck ? J.paddle.x + J.paddle.w/2 : o.x;
+          nb.y = o.stuck ? J.paddle.y - 12 : o.y;
+          nb.vx = Math.cos(ang) * sp; nb.vy = Math.sin(ang) * sp;
+          if(nb.vy > -60) nb.vy = -Math.abs(nb.vy) - 60;
+          J.balls.push(nb);
+        }
+        J.score += 40; sfxIntel();
+        toast("MULTI LOAF  \u00b7  " + J.balls.length + " in the air");
+      } else {
+        J.fire = 8; J.score += 40;
+        tone(220, 0.3, "sawtooth", 0.05); tone(330, 0.3, "sawtooth", 0.05, 0.1); sfxIntel();
+        toast("FURNACE LOAF  \u00b7  nothing stops it");
+      }
+    }
+  }
+  J.drops = J.drops.filter(d => !d.taken && d.y < viewH + 24);
   // boss behavior
   const b = J.boss;
   if(b.alive && !J.ended){
@@ -7931,15 +7995,45 @@ function drawBreaker(){
   // spears
   ctx.strokeStyle = "#d8c6a0"; ctx.lineWidth = 3;
   for(const sp of J.spears){ ctx.beginPath(); ctx.moveTo(sp.x, sp.y - 16); ctx.lineTo(sp.x, sp.y); ctx.stroke(); }
+  // falling bonuses
+  for(const d of J.drops){
+    if(d.kind === "multi"){
+      ctx.fillStyle = "#0d3a34"; rr(ctx, d.x - 11, d.y - 8, 22, 16, 8); ctx.fill();
+      ctx.strokeStyle = "#34e0c4"; ctx.lineWidth = 1.6; rr(ctx, d.x - 11, d.y - 8, 22, 16, 8); ctx.stroke();
+      ctx.fillStyle = "#d8a35a";
+      ctx.beginPath(); ctx.ellipse(d.x - 4, d.y, 4, 3, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(d.x + 4, d.y, 4, 3, 0, 0, Math.PI*2); ctx.fill();
+    } else {
+      ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = "#ff8a5a";
+      ctx.fillStyle = "#3a1408"; rr(ctx, d.x - 11, d.y - 8, 22, 16, 8); ctx.fill();
+      ctx.fillStyle = "#ff8a5a";
+      ctx.beginPath(); ctx.moveTo(d.x - 5, d.y + 5); ctx.quadraticCurveTo(d.x - 6, d.y - 4, d.x, d.y - 7);
+      ctx.quadraticCurveTo(d.x + 6, d.y - 4, d.x + 5, d.y + 5); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#ffcb47";
+      ctx.beginPath(); ctx.moveTo(d.x - 2.4, d.y + 4); ctx.quadraticCurveTo(d.x, d.y - 2, d.x + 2.4, d.y + 4); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+  }
   // paddle: the baker's peel
   ctx.fillStyle = "#7a5a2a"; rr(ctx, J.paddle.x, J.paddle.y, J.paddle.w, 12, 6); ctx.fill();
   ctx.fillStyle = "#9a7448"; rr(ctx, J.paddle.x + J.paddle.w/2 - 5, J.paddle.y + 10, 10, 16, 4); ctx.fill();
-  // the loaf
-  ctx.fillStyle = "#d8a35a"; ctx.beginPath(); ctx.ellipse(J.ball.x, J.ball.y, J.ball.r + 1.5, J.ball.r, 0, 0, Math.PI*2); ctx.fill();
-  ctx.strokeStyle = "#a8743a"; ctx.lineWidth = 1.2;
-  ctx.beginPath(); ctx.moveTo(J.ball.x - 4, J.ball.y - 2); ctx.lineTo(J.ball.x + 4, J.ball.y - 2); ctx.stroke();
+  // the loaves
+  const fiery = J.fire > 0;
+  for(const B of J.balls){
+    if(fiery){ ctx.save(); ctx.shadowBlur = 14; ctx.shadowColor = "#ff8a5a"; }
+    ctx.fillStyle = fiery ? "#ff9e4a" : "#d8a35a";
+    ctx.beginPath(); ctx.ellipse(B.x, B.y, B.r + 1.5, B.r, 0, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = fiery ? "#ffe08a" : "#a8743a"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(B.x - 4, B.y - 2); ctx.lineTo(B.x + 4, B.y - 2); ctx.stroke();
+    if(fiery) ctx.restore();
+  }
   for(const p of J.parts){ ctx.globalAlpha = Math.min(1, p.life*2); ctx.fillStyle = p.color; circle(p.x, p.y, p.r); }
   ctx.globalAlpha = 1;
+  if(fiery){
+    ctx.fillStyle = "rgba(255,138,90,.06)"; ctx.fillRect(0,0,viewW,viewH);
+    drawText("FURNACE LOAF " + Math.ceil(J.fire), viewW/2, viewH - 60, "8px", "#ff9e4a", "center");
+  }
+  if(J.balls.length > 1) drawText(J.balls.length + " LOAVES", 24, 66, "8px", "#9bf0e0", "left");
   if(J.flash > 0){ ctx.fillStyle = "rgba(255,224,150," + (J.flash*0.8) + ")"; ctx.fillRect(0,0,viewW,viewH); }
   drawJobHud(J);
 }
