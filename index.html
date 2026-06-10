@@ -5926,12 +5926,12 @@ const BEAT_WEAPONS = [
 function newBeat(){
   const W = 2600, gy = viewH - 96, baseY = gy - 46;
   const bd = JC.boss, bw = 70, bh = 96;
-  const boss = { x: W - 170, y: baseY - (bh - 46), w:bw, h:bh, hp:bd.hp, maxHp:bd.hp, alive:true, atk:1.6, hurt:0, speed:40 };
+  const boss = { x: W - 170, y: baseY - (bh - 46), w:bw, h:bh, hp:bd.hp, maxHp:bd.hp, alive:true, atk:1.6, hurt:0, speed:40, tapeCd:2.6 };
   const foes = [];
   const spots = [ {x:380}, {x:620}, {x:840,big:true}, {x:1120}, {x:1360}, {x:1640,big:true}, {x:1900}, {x:2160} ];
   spots.forEach(s => { const big = !!s.big; foes.push({ x:s.x, y:baseY + (Math.random()*60 - 30), w:big?42:30, h:big?54:46, hp:big?7:3, alive:true, big, speed:big?34:((JC.enemySpeed||48) + 30), atkCd:0.9 }); });
   return {
-    mode:"beatemup", W, gy, baseY,
+    mode:"beatemup", W, gy, baseY, tapes:[],
     px:90, py:baseY, pr:16, facing:1,
     hp:JOB.playerHp, maxHp:JOB.playerHp, invuln:0,
     weapon:0, weapons:BEAT_WEAPONS, swapFlash:0, attack:0, attackCd:0,
@@ -5978,7 +5978,26 @@ function updateBeat(dt){
     if(Math.abs(dy) > 8) b.y += Math.sign(dy)*b.speed*0.6*dt;
     if(J.px > J.W - viewW) J.bossEngaged = true;
     if(J.bossEngaged && Math.abs(dx) < 44 && Math.abs(dy) < 70){ b.atk -= dt; if(b.atk <= 0){ b.atk = 1.4; hurtPlayer(20, bx); } }
+    // the red tape: thrown whenever the closer is in administrative range
+    if(Math.abs(dx) < viewW * 1.2 && Math.abs(dx) > 50){
+      b.tapeCd -= dt;
+      if(b.tapeCd <= 0){
+        b.tapeCd = 2.2;
+        J.tapes.push({ x:bx, y:clamp(J.py, J.baseY - 70, J.baseY + 70) + 30, vx:Math.sign(dx) * 250, rot:0, life:6 });
+        sfxShot();
+      }
+    }
   }
+  // rolling tape: dodge with up and down or eat ten percent
+  for(const tp of J.tapes){
+    tp.x += tp.vx * dt; tp.rot += tp.vx * dt * 0.09; tp.life -= dt;
+    if(Math.abs(tp.x - J.px) < 16 && Math.abs(tp.y - (J.py + 30)) < 22 && J.invuln <= 0){
+      hurtPlayer(Math.round(J.maxHp * 0.10), tp.x);
+      splat(tp.x, tp.y, "#c0392b", true);
+      tp.life = 0;
+    }
+  }
+  J.tapes = J.tapes.filter(tp => tp.life > 0 && tp.x > -40 && tp.x < J.W + 40);
   updateParts(dt);
   J.foes = J.foes.filter(e => e.alive);
   if(J.invuln > 0) J.invuln -= dt;
@@ -6006,6 +6025,11 @@ function drawBeatBoss(b, J){
   ctx.fillStyle = "#ffcb47"; dome(cx, b.y + b.h*0.18, b.w*0.26); ctx.fillRect(cx - b.w*0.26, b.y + b.h*0.18, b.w*0.52, 4);
   ctx.fillStyle = "#1a1205"; circle(cx - 5 + f*2, b.y + b.h*0.22, 2); circle(cx + 5 + f*2, b.y + b.h*0.22, 2);
   ctx.fillStyle = "#caa05a"; rr(ctx, b.x + (f > 0 ? b.w - 6 : -8), b.y + b.h*0.5, 12, 16, 2); ctx.fill();
+  if(typeof b.tapeCd === "number" && b.tapeCd < 0.5 && b.alive){
+    const hx = b.x + (f > 0 ? b.w + 4 : -4), hy = b.y + b.h*0.42 - (0.5 - b.tapeCd) * 16;
+    ctx.fillStyle = "#c0392b"; circle(hx, hy, 7);
+    ctx.fillStyle = "#2a2418"; circle(hx, hy, 2.6);
+  }
 }
 function drawBeatWeapon(J, x, y, f){
   const w = J.weapons[J.weapon].name;
@@ -6020,14 +6044,30 @@ function drawBeatWeapon(J, x, y, f){
 function drawBeatHero(J){
   if(J.invuln > 0 && Math.floor(J.time*20) % 2 === 0) return;
   const x = J.px, y = J.py, f = J.facing;
+  const gown = "#7a9ec9", trim = "#e9e1cf";
   ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); ctx.ellipse(x, y + 46, 16, 5, 0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = "#26344f"; ctx.fillRect(x - 9, y + 30, 7, 16); ctx.fillRect(x + 2, y + 30, 7, 16);
-  ctx.fillStyle = "#33415f"; rr(ctx, x - 11, y + 12, 22, 22, 4); ctx.fill();
-  ctx.fillStyle = "#eef1f6"; ctx.beginPath(); ctx.moveTo(x - 6, y + 12); ctx.lineTo(x, y + 22); ctx.lineTo(x + 6, y + 12); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#c0392b"; ctx.fillRect(x - 1.5, y + 13, 3, 8);
+  // flowing gown skirt with a moving hem
+  const sway = Math.sin(J.time * 9) * 1.6;
+  ctx.fillStyle = gown;
+  ctx.beginPath(); ctx.moveTo(x - 8, y + 24); ctx.lineTo(x + 8, y + 24);
+  ctx.lineTo(x + 15 + sway, y + 46); ctx.lineTo(x - 15 + sway, y + 46); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.12)";
+  ctx.beginPath(); ctx.moveTo(x - 8, y + 24); ctx.lineTo(x - 2, y + 24);
+  ctx.lineTo(x - 7 + sway, y + 46); ctx.lineTo(x - 15 + sway, y + 46); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = trim; ctx.fillRect(x - 15 + sway, y + 44, 30, 2.4);
+  ctx.fillStyle = "rgba(255,255,255,.16)"; ctx.fillRect(x - 1, y + 25, 2, 19);
+  // bodice with a laced front
+  ctx.fillStyle = gown; rr(ctx, x - 8, y + 11, 16, 15, 4); ctx.fill();
+  ctx.fillStyle = trim; ctx.beginPath(); ctx.moveTo(x - 6, y + 11); ctx.lineTo(x, y + 19); ctx.lineTo(x + 6, y + 11); ctx.closePath(); ctx.fill();
+  // puff sleeves and arms
+  ctx.fillStyle = gown; circle(x - 9, y + 14, 4); circle(x + 9, y + 14, 4);
+  ctx.fillStyle = "#e8b48a"; ctx.fillRect(x - 11, y + 17, 3.4, 8); ctx.fillRect(x + 7.6, y + 17, 3.4, 8);
+  // head with powdered updo and beauty mark
   ctx.fillStyle = "#e8b48a"; circle(x, y + 4, 7);
-  ctx.fillStyle = "#2a2018"; dome(x, y + 1, 7.5);
-  ctx.fillStyle = "#23304a"; circle(x + f*3, y + 4, 1.4);
+  ctx.fillStyle = "#eae6ee"; dome(x, y + 2, 8);
+  ctx.fillStyle = "#eae6ee"; circle(x, y - 4, 3.6);
+  ctx.fillStyle = "#b06aa0"; circle(x + 4, y - 2, 1.5);
+  ctx.fillStyle = "#23304a"; circle(x - 2 + f*2, y + 4, 1.3); circle(x + 2 + f*2, y + 4, 1.3);
   drawBeatWeapon(J, x, y, f);
 }
 function drawBeat(){
@@ -6095,6 +6135,25 @@ function drawBeat(){
   ctx.fillStyle = "rgba(0,0,0,.12)"; for(let x=20;x<J.W;x+=70) ctx.fillRect(x, viewH*0.72, 36, 3);
   ctx.fillStyle = "rgba(255,224,150,.04)";
   ctx.beginPath(); ctx.ellipse(J.camX + viewW*0.5, viewH*0.8, viewW*0.55, viewH*0.16, 0, 0, Math.PI*2); ctx.fill();
+  // red tape rolling across the office floor
+  for(const tp of J.tapes){
+    ctx.strokeStyle = "rgba(192,57,43,.7)"; ctx.lineWidth = 4;
+    ctx.beginPath();
+    const trail = Math.sign(tp.vx) * -1;
+    for(let seg = 0; seg <= 5; seg++){
+      const sx = tp.x + trail * seg * 13;
+      const sy = tp.y + 7 + Math.sin(tp.rot + seg * 1.3) * 2.4;
+      seg ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
+    }
+    ctx.stroke();
+    ctx.save(); ctx.translate(tp.x, tp.y); ctx.rotate(tp.rot);
+    ctx.fillStyle = "#c0392b"; circle(0, 0, 9);
+    ctx.fillStyle = "#a82f24"; circle(0, 0, 6.4);
+    ctx.fillStyle = "#2a2418"; circle(0, 0, 3);
+    ctx.fillStyle = "rgba(255,255,255,.4)"; ctx.fillRect(-1, -9, 2, 4);
+    ctx.restore();
+    ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(tp.x, tp.y + 12, 9, 3, 0, 0, Math.PI*2); ctx.fill();
+  }
   const things = [];
   for(const e of J.foes){ if(e.alive) things.push(e); }
   if(J.boss.alive) things.push(J.boss);
@@ -7568,7 +7627,7 @@ function drawJobHud(J){
       : jobMode === "topdown"
       ? "Move with the pad, hold SWING to slash. Grab hearts to heal and beat " + J.bossName + "."
       : jobMode === "beatemup"
-      ? "Move with the pad, hold HIT to attack, tap SWAP to change weapons. Clear them and beat " + J.bossName + "."
+      ? "Move with the pad, hold HIT to attack, tap SWAP to change weapons. Sidestep the rolling red tape, clear the floor, and beat " + J.bossName + "."
       : jobMode === "fps"
       ? "Strafe left and right to aim and dodge, hold FIRE to shoot. Drop them all and take down " + J.bossName + "."
       : jobMode === "rooms"
